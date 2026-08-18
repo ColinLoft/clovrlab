@@ -42,9 +42,25 @@ function b64(value: string) {
   return Buffer.from(value, "utf8").toString("base64");
 }
 
-function encodeHeader(value: string) {
+/** Strip CR/LF and other control chars so a value can never inject headers/commands. */
+function sanitizeHeaderValue(value: string) {
   // eslint-disable-next-line no-control-regex
-  return /^[\x00-\x7F]*$/.test(value) ? value : `=?UTF-8?B?${b64(value)}?=`;
+  return value.replace(/[\x00-\x1F\x7F]+/g, " ").trim();
+}
+
+const EMAIL_RE = /^[^\s@<>,;:"'\\]+@[^\s@<>,;:"'\\]+\.[^\s@<>,;:"'\\]+$/;
+
+/** Validate a single recipient address; rejects CR/LF and malformed values. */
+export function assertAddress(value: string) {
+  const addr = value.trim();
+  if (!EMAIL_RE.test(addr)) throw new Error(`Invalid email address: ${addr.slice(0, 80)}`);
+  return addr;
+}
+
+function encodeHeader(value: string) {
+  const clean = sanitizeHeaderValue(value);
+  // eslint-disable-next-line no-control-regex
+  return /^[\x00-\x7F]*$/.test(clean) ? clean : `=?UTF-8?B?${b64(clean)}?=`;
 }
 
 export function buildMessageId(domain: string) {
