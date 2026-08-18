@@ -21,7 +21,7 @@ function HQLogin() {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
-      if (data.user) navigate({ to: "/dashboard" });
+      if (data.user) navigate({ to: "/workspaces" });
     })();
   }, [navigate]);
 
@@ -33,7 +33,7 @@ function HQLogin() {
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: "/dashboard" });
+        navigate({ to: "/workspaces" });
       } else {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -45,7 +45,7 @@ function HQLogin() {
         });
         if (error) throw error;
         if (data.session) {
-          navigate({ to: "/dashboard" });
+          navigate({ to: "/workspaces" });
         } else {
           setError("Check your email to confirm the account. Note: signup requires an active invite from an admin.");
         }
