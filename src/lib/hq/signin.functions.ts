@@ -66,3 +66,16 @@ export const verifyPassword = createServerFn({ method: "POST" })
     await client.auth.signOut();
     return { ok: true as const };
   });
+
+/**
+ * Onboarding gate: is this email allowed to create an account?
+ * Runs server-side so the browser can't use it to probe who works here.
+ */
+export const checkOnboardingEmail = createServerFn({ method: "POST" })
+  .inputValidator((data) => emailSchema.parse(data))
+  .handler(async ({ data }) => {
+    const email = data.email.trim().toLowerCase();
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: ok } = await supabaseAdmin.rpc("onboarding_invite_check", { _email: email });
+    return { ok: !!(ok as any)?.ok };
+  });

@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.hr_employee_auto_invite() FROM anon, authenticated, PUBLIC;

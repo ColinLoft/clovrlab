@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { checkOnboardingEmail } from "@/lib/hq/signin.functions";
 import {
   Mail, ShieldCheck, KeyRound, ImagePlus, ClipboardCheck, Compass,
   Check, ArrowLeft, ArrowRight, Loader2, Upload, LayoutDashboard,
@@ -183,9 +184,8 @@ function EmailStep({ email, setEmail, busy, setBusy, setError, setNotice, onSent
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) { setError("Enter a valid email address."); return; }
     setError(null); setBusy(true);
     try {
-      const { data, error } = await supabase.rpc("onboarding_invite_check", { _email: value });
-      if (error) throw error;
-      if (!(data as any)?.ok) {
+      const gate = await checkOnboardingEmail({ data: { email: value } });
+      if (!gate.ok) {
         setError("That email hasn't been added to the team directory yet. Ask your manager to add you, then try again.");
         return;
       }
