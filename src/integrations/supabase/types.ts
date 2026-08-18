@@ -417,42 +417,6 @@ export type Database = {
           },
         ]
       }
-      channel_role_access: {
-        Row: {
-          channel_id: string
-          created_at: string
-          id: string
-          role_id: string
-        }
-        Insert: {
-          channel_id: string
-          created_at?: string
-          id?: string
-          role_id: string
-        }
-        Update: {
-          channel_id?: string
-          created_at?: string
-          id?: string
-          role_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "channel_role_access_channel_id_fkey"
-            columns: ["channel_id"]
-            isOneToOne: false
-            referencedRelation: "channels"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "channel_role_access_role_id_fkey"
-            columns: ["role_id"]
-            isOneToOne: false
-            referencedRelation: "custom_roles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       channels: {
         Row: {
           category_id: string | null
