@@ -39,7 +39,9 @@ async function cloudflareSocket(host: string, port: number): Promise<MailSocket 
 
 async function nodeSocket(host: string, port: number): Promise<MailSocket> {
   const tls = await import("node:tls");
-  const socket = tls.connect({ host, port, servername: host, rejectUnauthorized: false });
+  // Certificate chain + hostname are validated against the system CA store:
+  // mailbox credentials travel over this socket, so a MITM must not be possible.
+  const socket = tls.connect({ host, port, servername: host, rejectUnauthorized: true });
   const chunks: string[] = [];
   let waiter: ((v: string | null) => void) | null = null;
   let closed = false;

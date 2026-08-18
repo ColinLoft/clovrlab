@@ -13,36 +13,12 @@ const credsSchema = z.object({ email: z.string().email(), password: z.string().m
 export const startSignIn = createServerFn({ method: "POST" })
   .inputValidator((data) => emailSchema.parse(data))
   .handler(async ({ data }) => {
-    const email = data.email.trim().toLowerCase();
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-
-    const { data: profile } = await supabaseAdmin
-      .from("profiles")
-      .select("id, full_name")
-      .ilike("email", email)
-      .maybeSingle();
-
-    if (profile) return { status: "password" as const, name: (profile as any).full_name ?? null };
-
-    const { data: invite } = await supabaseAdmin
-      .from("invites")
-      .select("id, full_name, accepted_at, expires_at")
-      .ilike("email", email)
-      .is("accepted_at", null)
-      .gt("expires_at", new Date().toISOString())
-      .maybeSingle();
-
-    if (invite) return { status: "onboard" as const, name: (invite as any).full_name ?? null };
-
-    const { data: employee } = await supabaseAdmin
-      .from("hr_employees")
-      .select("id, full_name")
-      .ilike("email", email)
-      .maybeSingle();
-
-    if (employee) return { status: "onboard" as const, name: (employee as any).full_name ?? null };
-
-    return { status: "unknown" as const, name: null };
+    // Deliberately uniform: the response must never reveal whether this address
+    // belongs to an employee, a pending invite, or nobody at all (account
+    // enumeration). Everyone is sent to the password step; new hires use the
+    // separate "New hire?" onboarding link.
+    void data.email;
+    return { status: "password" as const, name: null as string | null };
   });
 
 /**

@@ -246,13 +246,9 @@ function MeetingRoom() {
         meData = { id: `guest-${inv.id}`, name, external: true };
         await markMeetingInviteJoined({ data: { token: inviteToken, meetingId: id, name } });
       } else {
-        // Open link — anyone with the URL can join by giving a name.
-        const cachedName = typeof window !== "undefined" ? window.sessionStorage.getItem(`meeting-guest-${id}`) : null;
-        if (!cachedName) { setGuestNamePrompt({ email: null }); return; }
-        const guestId = window.sessionStorage.getItem(`meeting-guestid-${id}`) ||
-          `guest-${Math.random().toString(36).slice(2, 10)}`;
-        window.sessionStorage.setItem(`meeting-guestid-${id}`, guestId);
-        meData = { id: guestId, name: cachedName, external: true };
+        // No session and no invite token: knowing the meeting URL is not enough to join.
+        setError("This meeting is private. Sign in with your Clovr account, or ask the host for a guest invite link.");
+        return;
       }
 
       meRef.current = meData;

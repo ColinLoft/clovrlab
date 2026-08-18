@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.dm_recipient_read_only() FROM PUBLIC, anon, authenticated;

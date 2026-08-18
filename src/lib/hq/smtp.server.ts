@@ -42,9 +42,25 @@ function b64(value: string) {
   return Buffer.from(value, "utf8").toString("base64");
 }
 
-function encodeHeader(value: string) {
+/** Strip CR/LF and other control chars so a value can never inject headers/commands. */
+function sanitizeHeaderValue(value: string) {
   // eslint-disable-next-line no-control-regex
-  return /^[\x00-\x7F]*$/.test(value) ? value : `=?UTF-8?B?${b64(value)}?=`;
+  return value.replace(/[\x00-\x1F\x7F]+/g, " ").trim();
+}
+
+const EMAIL_RE = /^[^\s@<>,;:"'\\]+@[^\s@<>,;:"'\\]+\.[^\s@<>,;:"'\\]+$/;
+
+/** Validate a single recipient address; rejects CR/LF and malformed values. */
+export function assertAddress(value: string) {
+  const addr = value.trim();
+  if (!EMAIL_RE.test(addr)) throw new Error(`Invalid email address: ${addr.slice(0, 80)}`);
+  return addr;
+}
+
+function encodeHeader(value: string) {
+  const clean = sanitizeHeaderValue(value);
+  // eslint-disable-next-line no-control-regex
+  return /^[\x00-\x7F]*$/.test(clean) ? clean : `=?UTF-8?B?${b64(clean)}?=`;
 }
 
 export function buildMessageId(domain: string) {
@@ -53,13 +69,17 @@ export function buildMessageId(domain: string) {
 
 export function buildMimeMessage(mail: OutgoingMail, messageId: string): string {
   const boundary = `bnd_${crypto.randomUUID().replace(/-/g, "")}`;
+  const from = assertAddress(mail.from);
+  const to = mail.to.map(assertAddress);
+  const cc = (mail.cc ?? []).map(assertAddress);
+  const inReplyTo = mail.inReplyTo ? sanitizeHeaderValue(mail.inReplyTo) : null;
   const headers = [
-    `From: ${mail.fromName ? `${encodeHeader(mail.fromName)} <${mail.from}>` : mail.from}`,
-    `To: ${mail.to.join(", ")}`,
-    ...(mail.cc?.length ? [`Cc: ${mail.cc.join(", ")}`] : []),
+    `From: ${mail.fromName ? `${encodeHeader(mail.fromName)} <${from}>` : from}`,
+    `To: ${to.join(", ")}`,
+    ...(cc.length ? [`Cc: ${cc.join(", ")}`] : []),
     `Subject: ${encodeHeader(mail.subject)}`,
     `Message-ID: ${messageId}`,
-    ...(mail.inReplyTo ? [`In-Reply-To: ${mail.inReplyTo}`, `References: ${mail.inReplyTo}`] : []),
+    ...(inReplyTo ? [`In-Reply-To: ${inReplyTo}`, `References: ${inReplyTo}`] : []),
     `Date: ${new Date().toUTCString()}`,
     "MIME-Version: 1.0",
   ];
@@ -87,6 +107,9 @@ export function buildMimeMessage(mail: OutgoingMail, messageId: string): string 
 }
 
 export async function sendSmtpMail(config: SmtpConfig, mail: OutgoingMail): Promise<{ messageId: string }> {
+  const envelopeFrom = assertAddress(config.username);
+  const recipients = [...mail.to, ...(mail.cc ?? [])].map(assertAddress);
+  if (recipients.length === 0) throw new Error("At least one recipient is required.");
   const socket = await connectTLS(config.host, config.port);
   try {
     await command(socket, null, [220]);
@@ -94,12 +117,12 @@ export async function sendSmtpMail(config: SmtpConfig, mail: OutgoingMail): Prom
     await command(socket, "AUTH LOGIN", [334]);
     await command(socket, b64(config.username), [334]);
     await command(socket, b64(config.password), [235]);
-    await command(socket, `MAIL FROM:<${config.username}>`, [250]);
-    for (const rcpt of [...mail.to, ...(mail.cc ?? [])]) {
+    await command(socket, `MAIL FROM:<${envelopeFrom}>`, [250]);
+    for (const rcpt of recipients) {
       await command(socket, `RCPT TO:<${rcpt}>`, [250, 251]);
     }
     await command(socket, "DATA", [354]);
-    const messageId = buildMessageId(mail.from.split("@")[1] || "localhost");
+    const messageId = buildMessageId(assertAddress(mail.from).split("@")[1] || "localhost");
     const raw = buildMimeMessage(mail, messageId)
       .split(/\r?\n/)
       .map((line) => (line.startsWith(".") ? "." + line : line))
