@@ -53,12 +53,20 @@ export function AppGate({ children }: { children: ReactNode }) {
           </div>
         )}
 
+        <a
+          href="/workspaces"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-medium transition hover:bg-muted"
+        >
+          See all my workspaces <ArrowUpRight className="h-3.5 w-3.5" />
+        </a>
+
         <button
           onClick={async () => { await supabase.auth.signOut(); window.location.href = "/hq-login"; }}
-          className="mt-6 flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
+          className="mt-4 flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
         >
           <LogOut className="h-3.5 w-3.5" /> Sign out
         </button>
+
       </div>
     </div>
   );
