@@ -38,9 +38,9 @@ export const APP_OVERRIDE_KEY = "hq.app.override";
 const NEUTRAL_HOSTS = [/\.lovable\.app$/, /\.lovableproject\.com$/, /^localhost$/, /^127\./];
 
 /**
- * Resolves which team app the browser is currently pointed at.
- * Real deployments use the first hostname label (eng.clovrlab.com -> "eng").
- * Preview/local hosts have no subdomain, so `?app=eng` (sticky) is used instead.
+ * Every workspace lives on the single HQ host. `?app=<slug>` selects it and is
+ * remembered per browser tab, so several workspaces can be open at once.
+ * A legacy team subdomain (eng.clovrlab.com) still resolves for compatibility.
  */
 export function resolveAppSlug(): string {
   if (typeof window === "undefined") return "hq";
@@ -52,23 +52,19 @@ export function resolveAppSlug(): string {
     return param;
   }
 
+  let stored: string | null = null;
+  try { stored = sessionStorage.getItem(APP_OVERRIDE_KEY); } catch {}
+  if (stored) return stored;
 
   const neutral = NEUTRAL_HOSTS.some((re) => re.test(hostname));
   if (!neutral) {
     const parts = hostname.split(".");
     if (parts.length >= 3) {
       const label = parts[0].toLowerCase();
-      if (label !== "www") return label;
+      if (label !== "www" && label !== "hq") return label;
     }
-    return "hq";
   }
-
-  try {
-    return sessionStorage.getItem(APP_OVERRIDE_KEY) || "hq";
-  } catch {
-    return "hq";
-  }
-
+  return "hq";
 }
 
 /** Root domain used to build cross-app links (clovrlab.com). */
@@ -80,13 +76,11 @@ export function rootDomain(): string | null {
   return parts.length >= 2 ? parts.slice(-2).join(".") : null;
 }
 
-/** Absolute URL for another app — real subdomain when possible, `?app=` fallback. */
+/** Same-origin URL for a workspace — one host, `?app=` selects the workspace. */
 export function appUrl(app: Pick<OrgApp, "subdomain" | "landing_route">): string {
-  if (typeof window === "undefined") return app.landing_route;
-  const root = rootDomain();
-  if (root) return `${window.location.protocol}//${app.subdomain}.${root}${app.landing_route}`;
   return `${app.landing_route}?app=${encodeURIComponent(app.subdomain)}`;
 }
+
 
 export async function fetchApps(): Promise<OrgApp[]> {
   const { data } = await db.from("org_apps").select("*").order("sort_order");
