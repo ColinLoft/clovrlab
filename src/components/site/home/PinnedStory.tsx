@@ -90,30 +90,41 @@ function Layer({
     [70, 0, 0, -70],
   );
 
+  // Only the chapter that is actually on screen decodes video — the other
+  // four stay as posters until the scroll reaches them.
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  useEffect(() => {
+    const stop = opacity.on("change", (v) => {
+      const el = videoRef.current;
+      if (!el) return;
+      if (v > 0.02) {
+        if (el.preload !== "auto") el.preload = "auto";
+        if (!el.getAttribute("src")) el.setAttribute("src", c.src);
+        void el.play().catch(() => {});
+      } else if (!el.paused) {
+        el.pause();
+      }
+    });
+    return stop;
+  }, [opacity, c.src]);
+
   return (
     <>
       <motion.div style={{ opacity }} className="absolute inset-0" aria-hidden={i !== 0}>
         <motion.video
+          ref={videoRef}
           style={{ scale, y }}
           className="h-full w-full object-cover"
           muted
           loop
           playsInline
-          preload="auto"
+          preload={i === 0 ? "metadata" : "none"}
           poster={c.poster}
           aria-label={c.alt}
-          ref={(el) => {
-            if (!el) return;
-            const io = new IntersectionObserver(
-              ([e]) => (e && e.isIntersecting ? void el.play().catch(() => {}) : el.pause()),
-              { threshold: 0.05 },
-            );
-            io.observe(el);
-          }}
-        >
-          <source src={c.src} type="video/mp4" />
-        </motion.video>
+          src={i === 0 ? c.src : undefined}
+        />
       </motion.div>
+
 
       <motion.div
         style={{ opacity, y: textY }}
