@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkspacesRouteImport } from './routes/workspaces'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as TechnologyRouteImport } from './routes/technology'
 import { Route as SystemRouteImport } from './routes/system'
@@ -120,6 +121,11 @@ import { Route as HqAdminDepartmentsRouteImport } from './routes/_hq.admin.depar
 import { Route as HqAdminCompanyRouteImport } from './routes/_hq.admin.company'
 import { Route as HqAdminAppsRouteImport } from './routes/_hq.admin.apps'
 
+const WorkspacesRoute = WorkspacesRouteImport.update({
+  id: '/workspaces',
+  path: '/workspaces',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WelcomeRoute = WelcomeRouteImport.update({
   id: '/welcome',
   path: '/welcome',
@@ -688,6 +694,7 @@ export interface FileRoutesByFullPath {
   '/system': typeof SystemRoute
   '/technology': typeof TechnologyRoute
   '/welcome': typeof WelcomeRoute
+  '/workspaces': typeof WorkspacesRoute
   '/accounting': typeof HqAccountingRoute
   '/analytics': typeof HqAnalyticsRoute
   '/applicants': typeof HqApplicantsRoute
@@ -798,6 +805,7 @@ export interface FileRoutesByTo {
   '/system': typeof SystemRoute
   '/technology': typeof TechnologyRoute
   '/welcome': typeof WelcomeRoute
+  '/workspaces': typeof WorkspacesRoute
   '/accounting': typeof HqAccountingRoute
   '/analytics': typeof HqAnalyticsRoute
   '/applicants': typeof HqApplicantsRoute
@@ -907,6 +915,7 @@ export interface FileRoutesById {
   '/system': typeof SystemRoute
   '/technology': typeof TechnologyRoute
   '/welcome': typeof WelcomeRoute
+  '/workspaces': typeof WorkspacesRoute
   '/_hq/accounting': typeof HqAccountingRoute
   '/_hq/analytics': typeof HqAnalyticsRoute
   '/_hq/applicants': typeof HqApplicantsRoute
@@ -1020,6 +1029,7 @@ export interface FileRouteTypes {
     | '/system'
     | '/technology'
     | '/welcome'
+    | '/workspaces'
     | '/accounting'
     | '/analytics'
     | '/applicants'
@@ -1130,6 +1140,7 @@ export interface FileRouteTypes {
     | '/system'
     | '/technology'
     | '/welcome'
+    | '/workspaces'
     | '/accounting'
     | '/analytics'
     | '/applicants'
@@ -1238,6 +1249,7 @@ export interface FileRouteTypes {
     | '/system'
     | '/technology'
     | '/welcome'
+    | '/workspaces'
     | '/_hq/accounting'
     | '/_hq/analytics'
     | '/_hq/applicants'
@@ -1351,6 +1363,7 @@ export interface RootRouteChildren {
   SystemRoute: typeof SystemRoute
   TechnologyRoute: typeof TechnologyRoute
   WelcomeRoute: typeof WelcomeRoute
+  WorkspacesRoute: typeof WorkspacesRoute
   LegalCookiesRoute: typeof LegalCookiesRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
@@ -1360,6 +1373,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/workspaces': {
+      id: '/workspaces'
+      path: '/workspaces'
+      fullPath: '/workspaces'
+      preLoaderRoute: typeof WorkspacesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/welcome': {
       id: '/welcome'
       path: '/welcome'
@@ -2381,6 +2401,7 @@ const rootRouteChildren: RootRouteChildren = {
   SystemRoute: SystemRoute,
   TechnologyRoute: TechnologyRoute,
   WelcomeRoute: WelcomeRoute,
+  WorkspacesRoute: WorkspacesRoute,
   LegalCookiesRoute: LegalCookiesRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
