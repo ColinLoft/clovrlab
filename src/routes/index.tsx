@@ -16,6 +16,14 @@ const desc =
   "A nonprofit building sensing, operations software and autonomous aircraft so responders see wildfires, floods and storms sooner.";
 
 export const Route = createFileRoute("/")({
+  beforeLoad: () => {
+    if (typeof window === "undefined") return;
+    const h = window.location.hostname.toLowerCase();
+    if (h === "hq.clovrlab.com" || h.startsWith("hq.") || h.startsWith("hq--")) {
+      throw redirect({ to: "/hq-login" });
+    }
+  },
+
   head: () => ({
     meta: [
       { title },
