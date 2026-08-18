@@ -117,12 +117,12 @@ export async function sendSmtpMail(config: SmtpConfig, mail: OutgoingMail): Prom
     await command(socket, "AUTH LOGIN", [334]);
     await command(socket, b64(config.username), [334]);
     await command(socket, b64(config.password), [235]);
-    await command(socket, `MAIL FROM:<${config.username}>`, [250]);
-    for (const rcpt of [...mail.to, ...(mail.cc ?? [])]) {
+    await command(socket, `MAIL FROM:<${envelopeFrom}>`, [250]);
+    for (const rcpt of recipients) {
       await command(socket, `RCPT TO:<${rcpt}>`, [250, 251]);
     }
     await command(socket, "DATA", [354]);
-    const messageId = buildMessageId(mail.from.split("@")[1] || "localhost");
+    const messageId = buildMessageId(assertAddress(mail.from).split("@")[1] || "localhost");
     const raw = buildMimeMessage(mail, messageId)
       .split(/\r?\n/)
       .map((line) => (line.startsWith(".") ? "." + line : line))
