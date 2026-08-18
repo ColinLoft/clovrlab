@@ -176,7 +176,13 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const matches = useMatches();
-  const isHQ = matches.some((m) => m.routeId?.startsWith("/_hq") || m.routeId === "/hq-login");
+  const isHQ = matches.some(
+    (m) =>
+      m.routeId?.startsWith("/_hq") ||
+      m.routeId === "/hq-login" ||
+      m.routeId === "/workspaces" ||
+      m.routeId === "/welcome",
+  );
   const isChromeless = matches.some((m) => m.routeId?.startsWith("/meeting"));
 
   useEffect(() => {
