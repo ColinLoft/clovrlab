@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { DisasterReel } from "@/components/site/home/DisasterReel";
 import { DisasterStats } from "@/components/site/home/DisasterStats";
 import { PinnedStory } from "@/components/site/home/PinnedStory";
