@@ -107,6 +107,9 @@ export function buildMimeMessage(mail: OutgoingMail, messageId: string): string 
 }
 
 export async function sendSmtpMail(config: SmtpConfig, mail: OutgoingMail): Promise<{ messageId: string }> {
+  const envelopeFrom = assertAddress(config.username);
+  const recipients = [...mail.to, ...(mail.cc ?? [])].map(assertAddress);
+  if (recipients.length === 0) throw new Error("At least one recipient is required.");
   const socket = await connectTLS(config.host, config.port);
   try {
     await command(socket, null, [220]);
