@@ -69,13 +69,17 @@ export function buildMessageId(domain: string) {
 
 export function buildMimeMessage(mail: OutgoingMail, messageId: string): string {
   const boundary = `bnd_${crypto.randomUUID().replace(/-/g, "")}`;
+  const from = assertAddress(mail.from);
+  const to = mail.to.map(assertAddress);
+  const cc = (mail.cc ?? []).map(assertAddress);
+  const inReplyTo = mail.inReplyTo ? sanitizeHeaderValue(mail.inReplyTo) : null;
   const headers = [
-    `From: ${mail.fromName ? `${encodeHeader(mail.fromName)} <${mail.from}>` : mail.from}`,
-    `To: ${mail.to.join(", ")}`,
-    ...(mail.cc?.length ? [`Cc: ${mail.cc.join(", ")}`] : []),
+    `From: ${mail.fromName ? `${encodeHeader(mail.fromName)} <${from}>` : from}`,
+    `To: ${to.join(", ")}`,
+    ...(cc.length ? [`Cc: ${cc.join(", ")}`] : []),
     `Subject: ${encodeHeader(mail.subject)}`,
     `Message-ID: ${messageId}`,
-    ...(mail.inReplyTo ? [`In-Reply-To: ${mail.inReplyTo}`, `References: ${mail.inReplyTo}`] : []),
+    ...(inReplyTo ? [`In-Reply-To: ${inReplyTo}`, `References: ${inReplyTo}`] : []),
     `Date: ${new Date().toUTCString()}`,
     "MIME-Version: 1.0",
   ];
