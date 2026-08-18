@@ -199,8 +199,16 @@ export function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
                     </span>
                   </a>
                 ))}
+                <a
+                  href="/workspaces"
+                  onClick={() => setOpen(null)}
+                  className="mt-1 block rounded-lg px-2 py-2 text-[12px] font-medium text-primary hover:bg-muted"
+                >
+                  All workspaces →
+                </a>
               </div>
               <div className="mt-2 border-t border-border pt-2">
+
                 <p className="px-2 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Quick apps</p>
                 <div className="grid grid-cols-3 gap-1">
                   {APPS.map((a) => (
