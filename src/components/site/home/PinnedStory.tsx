@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useSpring, type MotionValue } from "framer-motion";
 import fireClip from "@/assets/hero-fire-aerial.mp4.asset.json";
 import tornadoClip from "@/assets/reel-tornado.mp4.asset.json";
