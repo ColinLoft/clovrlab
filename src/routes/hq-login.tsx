@@ -45,14 +45,6 @@ function HQLogin() {
     setBusy(true);
     try {
       const res = await startSignIn({ data: { email: email.trim().toLowerCase() } });
-      if (res.status === "unknown") {
-        setError("We don't have that email on the team yet. Ask an admin to add you to the directory.");
-        return;
-      }
-      if (res.status === "onboard") {
-        window.location.href = `/welcome?email=${encodeURIComponent(email.trim().toLowerCase())}`;
-        return;
-      }
       setGreetName(res.name);
       setStep("password");
     } catch (err: any) {
