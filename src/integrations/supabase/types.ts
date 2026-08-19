@@ -6389,6 +6389,39 @@ export type Database = {
         }
         Relationships: []
       }
+      sys_error_log: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          method: string | null
+          path: string | null
+          service: string
+          stack: string | null
+          status: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          method?: string | null
+          path?: string | null
+          service?: string
+          stack?: string | null
+          status?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          method?: string | null
+          path?: string | null
+          service?: string
+          stack?: string | null
+          status?: number | null
+        }
+        Relationships: []
+      }
       user_custom_roles: {
         Row: {
           assigned_at: string
