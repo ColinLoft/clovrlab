@@ -119,6 +119,7 @@ import { Route as HqClientsIdRouteImport } from './routes/_hq.clients.$id'
 import { Route as HqAdminSlackRouteImport } from './routes/_hq.admin.slack'
 import { Route as HqAdminOrgRouteImport } from './routes/_hq.admin.org'
 import { Route as HqAdminItRouteImport } from './routes/_hq.admin.it'
+import { Route as HqAdminHealthRouteImport } from './routes/_hq.admin.health'
 import { Route as HqAdminDepartmentsRouteImport } from './routes/_hq.admin.departments'
 import { Route as HqAdminCompanyRouteImport } from './routes/_hq.admin.company'
 import { Route as HqAdminAppsRouteImport } from './routes/_hq.admin.apps'
@@ -674,6 +675,11 @@ const HqAdminItRoute = HqAdminItRouteImport.update({
   path: '/admin/it',
   getParentRoute: () => HqRoute,
 } as any)
+const HqAdminHealthRoute = HqAdminHealthRouteImport.update({
+  id: '/admin/health',
+  path: '/admin/health',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqAdminDepartmentsRoute = HqAdminDepartmentsRouteImport.update({
   id: '/admin/departments',
   path: '/admin/departments',
@@ -801,6 +807,7 @@ export interface FileRoutesByFullPath {
   '/admin/apps': typeof HqAdminAppsRoute
   '/admin/company': typeof HqAdminCompanyRoute
   '/admin/departments': typeof HqAdminDepartmentsRoute
+  '/admin/health': typeof HqAdminHealthRoute
   '/admin/it': typeof HqAdminItRoute
   '/admin/org': typeof HqAdminOrgRoute
   '/admin/slack': typeof HqAdminSlackRoute
@@ -912,6 +919,7 @@ export interface FileRoutesByTo {
   '/admin/apps': typeof HqAdminAppsRoute
   '/admin/company': typeof HqAdminCompanyRoute
   '/admin/departments': typeof HqAdminDepartmentsRoute
+  '/admin/health': typeof HqAdminHealthRoute
   '/admin/it': typeof HqAdminItRoute
   '/admin/org': typeof HqAdminOrgRoute
   '/admin/slack': typeof HqAdminSlackRoute
@@ -1030,6 +1038,7 @@ export interface FileRoutesById {
   '/_hq/admin/apps': typeof HqAdminAppsRoute
   '/_hq/admin/company': typeof HqAdminCompanyRoute
   '/_hq/admin/departments': typeof HqAdminDepartmentsRoute
+  '/_hq/admin/health': typeof HqAdminHealthRoute
   '/_hq/admin/it': typeof HqAdminItRoute
   '/_hq/admin/org': typeof HqAdminOrgRoute
   '/_hq/admin/slack': typeof HqAdminSlackRoute
@@ -1148,6 +1157,7 @@ export interface FileRouteTypes {
     | '/admin/apps'
     | '/admin/company'
     | '/admin/departments'
+    | '/admin/health'
     | '/admin/it'
     | '/admin/org'
     | '/admin/slack'
@@ -1259,6 +1269,7 @@ export interface FileRouteTypes {
     | '/admin/apps'
     | '/admin/company'
     | '/admin/departments'
+    | '/admin/health'
     | '/admin/it'
     | '/admin/org'
     | '/admin/slack'
@@ -1376,6 +1387,7 @@ export interface FileRouteTypes {
     | '/_hq/admin/apps'
     | '/_hq/admin/company'
     | '/_hq/admin/departments'
+    | '/_hq/admin/health'
     | '/_hq/admin/it'
     | '/_hq/admin/org'
     | '/_hq/admin/slack'
@@ -2193,6 +2205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqAdminItRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/admin/health': {
+      id: '/_hq/admin/health'
+      path: '/admin/health'
+      fullPath: '/admin/health'
+      preLoaderRoute: typeof HqAdminHealthRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/admin/departments': {
       id: '/_hq/admin/departments'
       path: '/admin/departments'
@@ -2359,6 +2378,7 @@ interface HqRouteChildren {
   HqAdminAppsRoute: typeof HqAdminAppsRoute
   HqAdminCompanyRoute: typeof HqAdminCompanyRoute
   HqAdminDepartmentsRoute: typeof HqAdminDepartmentsRoute
+  HqAdminHealthRoute: typeof HqAdminHealthRoute
   HqAdminItRoute: typeof HqAdminItRoute
   HqAdminOrgRoute: typeof HqAdminOrgRoute
   HqAdminSlackRoute: typeof HqAdminSlackRoute
@@ -2438,6 +2458,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqAdminAppsRoute: HqAdminAppsRoute,
   HqAdminCompanyRoute: HqAdminCompanyRoute,
   HqAdminDepartmentsRoute: HqAdminDepartmentsRoute,
+  HqAdminHealthRoute: HqAdminHealthRoute,
   HqAdminItRoute: HqAdminItRoute,
   HqAdminOrgRoute: HqAdminOrgRoute,
   HqAdminSlackRoute: HqAdminSlackRoute,
