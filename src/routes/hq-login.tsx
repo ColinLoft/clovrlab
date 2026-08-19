@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { startSignIn, verifyPassword } from "@/lib/hq/signin.functions";
+import { startSignIn } from "@/lib/hq/signin.functions";
 import teamPhoto from "@/assets/hq-team.jpg";
 import { ArrowLeft, ArrowRight, Loader2, Mail, ShieldCheck } from "lucide-react";
 
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/hq-login")({
   }),
 });
 
-type Step = "email" | "password" | "code";
+type Step = "email" | "password";
 
 const field =
   "mt-1.5 w-full rounded-xl border border-border bg-background px-3.5 py-3 text-sm outline-none transition focus:border-primary/60 focus:ring-4 focus:ring-primary/10";
@@ -59,20 +59,16 @@ function HQLogin() {
     setError(null);
     setBusy(true);
     try {
-      const res = await verifyPassword({ data: { email: email.trim().toLowerCase(), password } });
-      if (!res.ok) {
-        setError(res.message);
-        return;
-      }
-      const { error: otpErr } = await supabase.auth.signInWithOtp({
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
-        options: { shouldCreateUser: false },
+        password,
       });
-      if (otpErr) throw otpErr;
-      setNotice(`We sent a 6-digit code to ${email.trim().toLowerCase()}.`);
-      setStep("code");
+      if (signInError) throw signInError;
+      await navigate({ to: "/workspaces" });
     } catch (err: any) {
-      setError(err?.message ?? "Could not send your verification code.");
+      setError(err?.message?.includes("Invalid login credentials")
+        ? "That email and password don't match."
+        : (err?.message ?? "Could not sign you in."));
     } finally {
       setBusy(false);
     }
@@ -94,23 +90,19 @@ function HQLogin() {
         <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-12">
           <div className="mb-7">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
-              {step === "email" ? "Welcome back" : step === "password" ? "One more step" : "Verify it's you"}
+              {step === "email" ? "Welcome back" : "Secure sign in"}
             </p>
             <h1 className="mt-3 text-[2rem] font-semibold leading-[1.1] tracking-tight">
               {step === "email"
                 ? "Sign in to the mission."
-                : step === "code"
-                  ? "Enter your 6-digit code."
-                  : greetName
+                : greetName
                     ? `Hi ${greetName.split(" ")[0]}, enter your password.`
                     : "Enter your password."}
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               {step === "email"
                 ? "Every detection, flight and decision runs through this workspace — and through the people signing into it. Yours matters."
-                : step === "password"
-                  ? "Passwords alone don't get you in. We'll email a code right after."
-                  : "The code expires in a few minutes. Didn't arrive? Check spam, then resend."}
+                : "Use your Clovr HQ credentials to continue to your workspaces."}
             </p>
           </div>
 
@@ -172,7 +164,7 @@ function HQLogin() {
                 />
               </div>
               <Feedback error={error} notice={notice} />
-              <Submit busy={busy} label="Send my code" />
+              <Submit busy={busy} label="Sign in" />
               <button
                 type="button"
                 onClick={() => { setStep("email"); setError(null); }}
@@ -183,17 +175,6 @@ function HQLogin() {
             </form>
           )}
 
-          {step === "code" && (
-            <CodeStep
-              email={email.trim().toLowerCase()}
-              error={error}
-              notice={notice}
-              setError={setError}
-              setNotice={setNotice}
-              onVerified={() => navigate({ to: "/workspaces" })}
-              onBack={() => { setStep("password"); setError(null); setNotice(null); }}
-            />
-          )}
         </div>
 
         <p className="text-center text-[11px] text-muted-foreground">
@@ -222,7 +203,7 @@ function HQLogin() {
             </p>
             <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
               <ShieldCheck className="h-4 w-4 text-primary" />
-              Two-step verification is required on every sign-in.
+              Access is protected by your individual Clovr HQ credentials.
             </div>
           </div>
         </div>
@@ -263,87 +244,3 @@ function Submit({ busy, label }: { busy: boolean; label: string }) {
   );
 }
 
-function CodeStep({
-  email, error, notice, setError, setNotice, onVerified, onBack,
-}: {
-  email: string;
-  error: string | null;
-  notice: string | null;
-  setError: (v: string | null) => void;
-  setNotice: (v: string | null) => void;
-  onVerified: () => void;
-  onBack: () => void;
-}) {
-  const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
-  const [busy, setBusy] = useState(false);
-  const refs = useRef<(HTMLInputElement | null)[]>([]);
-  const code = digits.join("");
-
-  const setAt = (i: number, v: string) => {
-    const clean = v.replace(/\D/g, "");
-    if (!clean) { setDigits((d) => d.map((x, k) => (k === i ? "" : x))); return; }
-    setDigits((d) => {
-      const next = [...d];
-      clean.split("").forEach((c, k) => { if (i + k < 6) next[i + k] = c; });
-      return next;
-    });
-    refs.current[Math.min(i + clean.length, 5)]?.focus();
-  };
-
-  const verify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (code.length !== 6) { setError("Enter all six digits."); return; }
-    setError(null);
-    setBusy(true);
-    try {
-      const { error: err } = await supabase.auth.verifyOtp({ email, token: code, type: "email" });
-      if (err) throw err;
-      onVerified();
-    } catch (err: any) {
-      setError(err?.message?.includes("expired") ? "That code expired. Send a new one." : (err?.message ?? "Invalid code."));
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const resend = async () => {
-    setBusy(true);
-    setError(null);
-    const { error: err } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
-    setBusy(false);
-    if (err) setError(err.message); else setNotice("New code sent.");
-  };
-
-  return (
-    <form onSubmit={verify} className="space-y-4">
-      <p className="text-sm text-muted-foreground">
-        Code sent to <span className="font-medium text-foreground">{email}</span>
-      </p>
-      <div className="flex gap-2">
-        {digits.map((d, i) => (
-          <input
-            key={i}
-            ref={(el) => { refs.current[i] = el; }}
-            aria-label={`Digit ${i + 1}`}
-            inputMode="numeric"
-            autoFocus={i === 0}
-            value={d}
-            onChange={(e) => setAt(i, e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Backspace" && !d && i > 0) refs.current[i - 1]?.focus(); }}
-            className="h-14 w-full rounded-xl border border-border bg-background text-center text-xl font-semibold outline-none transition focus:border-primary/60 focus:ring-4 focus:ring-primary/10"
-          />
-        ))}
-      </div>
-      <Feedback error={error} notice={notice} />
-      <Submit busy={busy} label="Verify and continue" />
-      <div className="flex items-center justify-between text-xs">
-        <button type="button" onClick={onBack} className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="h-3.5 w-3.5" /> Back
-        </button>
-        <button type="button" onClick={resend} className="text-primary hover:underline">
-          Resend code
-        </button>
-      </div>
-    </form>
-  );
-}
