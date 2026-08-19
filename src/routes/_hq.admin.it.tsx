@@ -25,8 +25,8 @@ function ITConsole() {
     if (!access.isAdmin) return;
     Promise.all([
       db.from("org_apps").select("id", { count: "exact", head: true }).eq("enabled", true),
-      db.from("dev_integrations").select("id", { count: "exact", head: true),
-      db.from("dev_infrastructure").select("id", { count: "exact", head: true),
+      db.from("dev_integrations").select("id", { count: "exact", head: true }),
+      db.from("dev_infrastructure").select("id", { count: "exact", head: true }),
       db.from("dev_security_logs").select("id", { count: "exact", head: true }).in("severity", ["high", "critical"]),
       db.from("dev_security_logs").select("id,event_type,severity,description,created_at").order("created_at", { ascending: false }).limit(8),
     ]).then(([apps, integrations, infrastructure, security, recent]) => {
