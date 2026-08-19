@@ -2,7 +2,6 @@ import * as React from 'react'
 
 import {
   Body,
-  Button,
   Container,
   Head,
   Heading,
@@ -16,21 +15,21 @@ interface SignupEmailProps {
   siteName: string
   siteUrl: string
   recipient: string
-  confirmationUrl: string
+  token: string
 }
 
 export const SignupEmail = ({
   siteName,
   siteUrl,
   recipient,
-  confirmationUrl,
+  token,
 }: SignupEmailProps) => (
   <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Confirm your email for {siteName}</Preview>
+    <Preview>Your six-digit verification code for {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Confirm your email</Heading>
+        <Heading style={h1}>Verify your work email</Heading>
         <Text style={text}>
           Thanks for signing up for{' '}
           <Link href={siteUrl} style={link}>
@@ -43,11 +42,9 @@ export const SignupEmail = ({
           <Link href={`mailto:${recipient}`} style={link}>
             {recipient}
           </Link>
-          ) by clicking the button below:
+          ) with the six-digit code below:
         </Text>
-        <Button style={button} href={confirmationUrl}>
-          Verify Email
-        </Button>
+        <Text style={code}>{token}</Text>
         <Text style={footer}>
           If you didn't create an account, you can safely ignore this email.
         </Text>
@@ -73,12 +70,16 @@ const text = {
   margin: '0 0 25px',
 }
 const link = { color: 'inherit', textDecoration: 'underline' }
-const button = {
-  backgroundColor: '#000000',
-  color: '#ffffff',
-  fontSize: '14px',
+const code = {
+  backgroundColor: '#f5f5f5',
+  border: '1px solid #e4e4e7',
   borderRadius: '8px',
-  padding: '12px 20px',
-  textDecoration: 'none',
+  color: '#18181b',
+  fontSize: '34px',
+  fontWeight: 'bold' as const,
+  letterSpacing: '10px',
+  margin: '8px 0 28px',
+  padding: '20px 22px',
+  textAlign: 'center' as const,
 }
 const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }

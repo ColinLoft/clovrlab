@@ -9,7 +9,7 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 // Configuration
-const SITE_NAME = "maker-spark-forge"
+const SITE_NAME = "Clovr HQ"
 const SENDER_DOMAIN = "internal.clovrlab.com"
 const ROOT_DOMAIN = "clovrlab.com"
 const FROM_DOMAIN = "clovrlab.com"
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                   siteName: SITE_NAME,
                   siteUrl: SITE_URL,
                   recipient: data.email,
-                  confirmationUrl: data.url,
+                  token: data.token ?? '',
                 }),
             },
             invite: {
@@ -47,11 +47,11 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
             },
             magiclink: {
-              subject: 'Your login link',
+              subject: 'Your Clovr HQ verification code',
               render: (data) =>
                 React.createElement(MagicLinkEmail, {
                   siteName: SITE_NAME,
-                  confirmationUrl: data.url,
+                  token: data.token ?? '',
                 }),
             },
             recovery: {
