@@ -7,6 +7,8 @@ import {
   FileSignature, CheckCircle2, Wrench,
 } from "lucide-react";
 import { UserMention } from "@/components/hq/UserMention";
+import { useCurrentApp } from "@/lib/hq/app-context";
+import { WorkspaceDashboard } from "@/components/hq/WorkspaceDashboard";
 
 export const Route = createFileRoute("/_hq/dashboard")({
   head: () => ({
@@ -51,6 +53,13 @@ const todayISO = () => new Date().toISOString().slice(0, 10);
 const money = (n: number) => `$${Math.round(n || 0).toLocaleString()}`;
 
 function DashboardPage() {
+  const { app, loading } = useCurrentApp();
+  if (loading || !app) return <div className="p-8 text-sm text-muted-foreground">Loading workspace…</div>;
+  if (app.slug !== "hq") return <WorkspaceDashboard app={app} />;
+  return <LegacyDashboardPage />;
+}
+
+function LegacyDashboardPage() {
   const [me, setMe] = useState<string | null>(null);
   const [profile, setProfile] = useState<any>(null);
   const [focus, setFocus] = useState<Focus[]>([]);
