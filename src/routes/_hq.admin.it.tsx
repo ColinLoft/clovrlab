@@ -69,10 +69,12 @@ function ITConsole() {
           </div>
         </div>
         <aside className="space-y-3">
-          <Link to="/admin/apps" className="block border border-border bg-card p-5 hover:border-primary/50"><Slack className="h-5 w-5 text-primary" /><h2 className="mt-5 text-sm font-semibold">Slack administration</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">Workspace mapping, team channels, bot access, and per-user connections.</p><span className="mt-4 flex items-center gap-1 text-xs font-medium text-primary">Configure <ArrowUpRight className="h-3.5 w-3.5" /></span></Link>
+          <Link to="/admin/health" className="block border border-border bg-card p-5 hover:border-primary/50"><Activity className="h-5 w-5 text-primary" /><h2 className="mt-5 text-sm font-semibold">Service health</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">Live uptime, database latency, integration status, and recent application errors.</p><span className="mt-4 flex items-center gap-1 text-xs font-medium text-primary">Open board <ArrowUpRight className="h-3.5 w-3.5" /></span></Link>
+          <Link to="/admin/slack" className="block border border-border bg-card p-5 hover:border-primary/50"><Slack className="h-5 w-5 text-primary" /><h2 className="mt-5 text-sm font-semibold">Slack administration</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">Create channels, invite members, and monitor bot activity.</p><span className="mt-4 flex items-center gap-1 text-xs font-medium text-primary">Configure <ArrowUpRight className="h-3.5 w-3.5" /></span></Link>
           <Link to="/admin/org" className="block border border-border bg-card p-5 hover:border-primary/50"><LockKeyhole className="h-5 w-5 text-primary" /><h2 className="mt-5 text-sm font-semibold">Identity & access</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">Teams, roles, page access, exceptions, and administrative oversight.</p></Link>
           <Link to="/admin/company" className="block border border-border bg-card p-5 hover:border-primary/50"><Database className="h-5 w-5 text-primary" /><h2 className="mt-5 text-sm font-semibold">Organization settings</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">Shared company configuration and internal service defaults.</p></Link>
         </aside>
+
       </section>
     </main>
   );

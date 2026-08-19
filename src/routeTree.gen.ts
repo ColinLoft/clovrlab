@@ -116,8 +116,10 @@ import { Route as HqTeamsSlugRouteImport } from './routes/_hq.teams.$slug'
 import { Route as HqQuotesIdRouteImport } from './routes/_hq.quotes.$id'
 import { Route as HqJobsIdRouteImport } from './routes/_hq.jobs.$id'
 import { Route as HqClientsIdRouteImport } from './routes/_hq.clients.$id'
+import { Route as HqAdminSlackRouteImport } from './routes/_hq.admin.slack'
 import { Route as HqAdminOrgRouteImport } from './routes/_hq.admin.org'
 import { Route as HqAdminItRouteImport } from './routes/_hq.admin.it'
+import { Route as HqAdminHealthRouteImport } from './routes/_hq.admin.health'
 import { Route as HqAdminDepartmentsRouteImport } from './routes/_hq.admin.departments'
 import { Route as HqAdminCompanyRouteImport } from './routes/_hq.admin.company'
 import { Route as HqAdminAppsRouteImport } from './routes/_hq.admin.apps'
@@ -658,6 +660,11 @@ const HqClientsIdRoute = HqClientsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => HqClientsRoute,
 } as any)
+const HqAdminSlackRoute = HqAdminSlackRouteImport.update({
+  id: '/admin/slack',
+  path: '/admin/slack',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqAdminOrgRoute = HqAdminOrgRouteImport.update({
   id: '/admin/org',
   path: '/admin/org',
@@ -666,6 +673,11 @@ const HqAdminOrgRoute = HqAdminOrgRouteImport.update({
 const HqAdminItRoute = HqAdminItRouteImport.update({
   id: '/admin/it',
   path: '/admin/it',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqAdminHealthRoute = HqAdminHealthRouteImport.update({
+  id: '/admin/health',
+  path: '/admin/health',
   getParentRoute: () => HqRoute,
 } as any)
 const HqAdminDepartmentsRoute = HqAdminDepartmentsRouteImport.update({
@@ -795,8 +807,10 @@ export interface FileRoutesByFullPath {
   '/admin/apps': typeof HqAdminAppsRoute
   '/admin/company': typeof HqAdminCompanyRoute
   '/admin/departments': typeof HqAdminDepartmentsRoute
+  '/admin/health': typeof HqAdminHealthRoute
   '/admin/it': typeof HqAdminItRoute
   '/admin/org': typeof HqAdminOrgRoute
+  '/admin/slack': typeof HqAdminSlackRoute
   '/clients/$id': typeof HqClientsIdRoute
   '/jobs/$id': typeof HqJobsIdRoute
   '/quotes/$id': typeof HqQuotesIdRoute
@@ -905,8 +919,10 @@ export interface FileRoutesByTo {
   '/admin/apps': typeof HqAdminAppsRoute
   '/admin/company': typeof HqAdminCompanyRoute
   '/admin/departments': typeof HqAdminDepartmentsRoute
+  '/admin/health': typeof HqAdminHealthRoute
   '/admin/it': typeof HqAdminItRoute
   '/admin/org': typeof HqAdminOrgRoute
+  '/admin/slack': typeof HqAdminSlackRoute
   '/clients/$id': typeof HqClientsIdRoute
   '/jobs/$id': typeof HqJobsIdRoute
   '/quotes/$id': typeof HqQuotesIdRoute
@@ -1022,8 +1038,10 @@ export interface FileRoutesById {
   '/_hq/admin/apps': typeof HqAdminAppsRoute
   '/_hq/admin/company': typeof HqAdminCompanyRoute
   '/_hq/admin/departments': typeof HqAdminDepartmentsRoute
+  '/_hq/admin/health': typeof HqAdminHealthRoute
   '/_hq/admin/it': typeof HqAdminItRoute
   '/_hq/admin/org': typeof HqAdminOrgRoute
+  '/_hq/admin/slack': typeof HqAdminSlackRoute
   '/_hq/clients/$id': typeof HqClientsIdRoute
   '/_hq/jobs/$id': typeof HqJobsIdRoute
   '/_hq/quotes/$id': typeof HqQuotesIdRoute
@@ -1139,8 +1157,10 @@ export interface FileRouteTypes {
     | '/admin/apps'
     | '/admin/company'
     | '/admin/departments'
+    | '/admin/health'
     | '/admin/it'
     | '/admin/org'
+    | '/admin/slack'
     | '/clients/$id'
     | '/jobs/$id'
     | '/quotes/$id'
@@ -1249,8 +1269,10 @@ export interface FileRouteTypes {
     | '/admin/apps'
     | '/admin/company'
     | '/admin/departments'
+    | '/admin/health'
     | '/admin/it'
     | '/admin/org'
+    | '/admin/slack'
     | '/clients/$id'
     | '/jobs/$id'
     | '/quotes/$id'
@@ -1365,8 +1387,10 @@ export interface FileRouteTypes {
     | '/_hq/admin/apps'
     | '/_hq/admin/company'
     | '/_hq/admin/departments'
+    | '/_hq/admin/health'
     | '/_hq/admin/it'
     | '/_hq/admin/org'
+    | '/_hq/admin/slack'
     | '/_hq/clients/$id'
     | '/_hq/jobs/$id'
     | '/_hq/quotes/$id'
@@ -2160,6 +2184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqClientsIdRouteImport
       parentRoute: typeof HqClientsRoute
     }
+    '/_hq/admin/slack': {
+      id: '/_hq/admin/slack'
+      path: '/admin/slack'
+      fullPath: '/admin/slack'
+      preLoaderRoute: typeof HqAdminSlackRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/admin/org': {
       id: '/_hq/admin/org'
       path: '/admin/org'
@@ -2172,6 +2203,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/it'
       fullPath: '/admin/it'
       preLoaderRoute: typeof HqAdminItRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/admin/health': {
+      id: '/_hq/admin/health'
+      path: '/admin/health'
+      fullPath: '/admin/health'
+      preLoaderRoute: typeof HqAdminHealthRouteImport
       parentRoute: typeof HqRoute
     }
     '/_hq/admin/departments': {
@@ -2340,8 +2378,10 @@ interface HqRouteChildren {
   HqAdminAppsRoute: typeof HqAdminAppsRoute
   HqAdminCompanyRoute: typeof HqAdminCompanyRoute
   HqAdminDepartmentsRoute: typeof HqAdminDepartmentsRoute
+  HqAdminHealthRoute: typeof HqAdminHealthRoute
   HqAdminItRoute: typeof HqAdminItRoute
   HqAdminOrgRoute: typeof HqAdminOrgRoute
+  HqAdminSlackRoute: typeof HqAdminSlackRoute
 }
 
 const HqRouteChildren: HqRouteChildren = {
@@ -2418,8 +2458,10 @@ const HqRouteChildren: HqRouteChildren = {
   HqAdminAppsRoute: HqAdminAppsRoute,
   HqAdminCompanyRoute: HqAdminCompanyRoute,
   HqAdminDepartmentsRoute: HqAdminDepartmentsRoute,
+  HqAdminHealthRoute: HqAdminHealthRoute,
   HqAdminItRoute: HqAdminItRoute,
   HqAdminOrgRoute: HqAdminOrgRoute,
+  HqAdminSlackRoute: HqAdminSlackRoute,
 }
 
 const HqRouteWithChildren = HqRoute._addFileChildren(HqRouteChildren)
