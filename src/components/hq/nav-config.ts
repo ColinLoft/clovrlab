@@ -6,7 +6,7 @@ import {
   Users2, LifeBuoy, MessageCircle, Timer, BookOpen,
   Coins, FileSpreadsheet, GitPullRequestArrow, Landmark, Receipt, FileBarChart, Filter,
   IdCard, UserSearch, FileText, GraduationCap, Award, Star, Network, CalendarDays,
-  Building2, BarChart3, CalendarRange, Compass, Cpu, Plane, Radar, FlaskConical, Grip,
+  Building2, BarChart3, CalendarRange, Compass, Cpu, Plane, Radar, FlaskConical, Grip, ServerCog,
 } from "lucide-react";
 
 export type NavItem = {
@@ -151,6 +151,7 @@ export const navGroups: NavGroup[] = [
       { label: "Fleet Logistics", to: "/equipment", icon: Truck },
       { label: "Organization", to: "/admin/org", icon: Network, badge: "Admin" },
       { label: "Team Apps", to: "/admin/apps", icon: Grip, badge: "Admin" },
+      { label: "Enterprise Systems", to: "/admin/it", icon: ServerCog, badge: "Admin" },
       { label: "Org Settings", to: "/admin/company", icon: Settings, badge: "Admin" },
     ],
   },
