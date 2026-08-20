@@ -421,3 +421,34 @@ export function RecordDialog({
 export function NewButton({ label, onClick }: { label: string; onClick: () => void }) {
   return <Btn variant="primary" onClick={onClick}><Plus className="h-3.5 w-3.5" />{label}</Btn>;
 }
+
+/* ------------------------------------------------- cross-team hand-offs */
+
+export type TeamRequest = {
+  from_team: string;
+  to_team: string;
+  subject: string;
+  details?: string;
+  priority?: "low" | "normal" | "high" | "urgent";
+  entity_type?: string;
+  entity_id?: string;
+  assignee_id?: string | null;
+  due_date?: string | null;
+};
+
+/** Raise a request against another workspace. Returns true when it lands. */
+export async function raiseRequest(req: TeamRequest) {
+  const { data: auth } = await supabase.auth.getUser();
+  const { error } = await db.from("team_requests").insert({
+    priority: "normal",
+    ...req,
+    status: "open",
+    requested_by: auth.user?.id ?? null,
+  });
+  if (error) {
+    alert(error.message);
+    return false;
+  }
+  return true;
+}
+
