@@ -78,7 +78,16 @@ function WorkspacePicker() {
   const hour = new Date().getHours();
   const partOfDay = hour < 5 ? "Late night" : hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
+  if (soloTarget) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center bg-background text-sm text-muted-foreground">
+        Opening {soloTarget.label}…
+      </div>
+    );
+  }
+
   return (
+
     <div className="relative min-h-dvh overflow-hidden bg-background text-foreground">
       <div
         aria-hidden
