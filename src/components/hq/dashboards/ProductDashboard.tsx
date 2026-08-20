@@ -44,7 +44,7 @@ export function ProductDashboard() {
                   <div className="space-y-2 p-2">
                     {items.length === 0 && <p className="p-4 text-center text-xs text-muted-foreground">Empty</p>}
                     {items.map((p: any) => (
-                      <Link key={p.id} to="/eng-projects" className="block rounded-md border border-border bg-card p-3 transition hover:border-primary/60">
+                      <Link key={p.id} to="/product/roadmap" className="block rounded-md border border-border bg-card p-3 transition hover:border-primary/60">
                         <p className="truncate text-sm font-medium">{p.name}</p>
                         <p className="mt-0.5 text-[11px] text-muted-foreground">{p.status ?? "—"} · {p.target_date ?? "no target"}</p>
                         <div className="mt-2"><Bar value={Number(p.progress ?? 0)} max={100} /></div>
@@ -72,9 +72,9 @@ export function ProductDashboard() {
             </div>
             <aside className="space-y-3">
               {[
-                { label: "Open issues", value: data.issues, to: "/eng-projects" },
-                { label: "Reviews pending", value: data.reviews, to: "/eng-projects" },
-                { label: "Open changes", value: data.ecos, to: "/eng-projects" },
+                { label: "Open issues", value: data.issues, to: "/eng/issues" },
+                { label: "Reviews pending", value: data.reviews, to: "/eng/issues" },
+                { label: "Open changes", value: data.ecos, to: "/eng/issues" },
                               ].slice(0, 3).map((s) => (
                 <Link key={s.label} to={s.to as never} className="block rounded-lg border border-border bg-card p-4 hover:border-primary/60">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">{s.label}</p>
