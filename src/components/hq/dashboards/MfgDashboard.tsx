@@ -8,7 +8,7 @@ async function load() {
     rows("mfg_inspections", "id,status,defect_count,inspected_at", (q: any) => q.order("inspected_at", { ascending: false }), 8),
     count("mfg_suppliers"),
     rows("mfg_purchase_orders", "id,po_number,status,total,expected_date", (q: any) => q.neq("status", "received").order("expected_date", { nullsFirst: false }), 6),
-    rows("con_equipment", "id,name,status,next_service_date", (q: any) => q.order("next_service_date", { nullsFirst: false }), 8),
+    rows("fleet_aircraft", "id,tail_number,model,status,next_service_date", (q: any) => q.order("next_service_date", { nullsFirst: false }), 8),
   ]);
   return { orders, inventory, inspections, suppliers, pos, assets };
 }
@@ -28,7 +28,7 @@ export function MfgDashboard() {
           <section className="mt-7 overflow-hidden rounded-lg border border-border bg-card">
             <div className="flex items-center justify-between border-b border-border px-4 py-3">
               <h2 className="text-xs font-semibold uppercase tracking-[0.16em]">Work order queue</h2>
-              <Link to="/inventory" className="text-xs text-primary hover:underline">Inventory</Link>
+              <Link to="/mfg/stock" className="text-xs text-primary hover:underline">Inventory</Link>
             </div>
             <table className="w-full text-sm">
               <thead className="bg-muted/50 text-[11px] uppercase tracking-wide text-muted-foreground">
@@ -78,17 +78,17 @@ export function MfgDashboard() {
               <div className="divide-y divide-border">
                 {data.inspections.length === 0 && <Empty>No inspections recorded.</Empty>}
                 {data.inspections.slice(0, 6).map((x: any) => (
-                  <RowLink key={x.id} to="/inspections" title={x.status ?? "Inspection"} meta={`${x.defect_count ?? 0} defects · ${x.inspected_at ? new Date(x.inspected_at).toLocaleDateString() : "undated"}`} tone={Number(x.defect_count ?? 0) > 0 ? "risk" : "good"} />
+                  <RowLink key={x.id} to="/mfg/quality" title={x.status ?? "Inspection"} meta={`${x.defect_count ?? 0} defects · ${x.inspected_at ? new Date(x.inspected_at).toLocaleDateString() : "undated"}`} tone={Number(x.defect_count ?? 0) > 0 ? "risk" : "good"} />
                 ))}
               </div>
             </Panel>
             <Panel title="Inbound & airframes" hint="Purchasing and asset readiness">
               <div className="divide-y divide-border">
                 {data.pos.map((p: any) => (
-                  <RowLink key={p.id} to="/purchase-orders" title={p.po_number ?? "Purchase order"} meta={`${p.status ?? "open"} · ETA ${p.expected_date ?? "TBD"}`} badge="po" />
+                  <RowLink key={p.id} to="/mfg/supply" title={p.po_number ?? "Purchase order"} meta={`${p.status ?? "open"} · ETA ${p.expected_date ?? "TBD"}`} badge="po" />
                 ))}
                 {data.assets.slice(0, 5).map((a: any) => (
-                  <RowLink key={a.id} to="/equipment" title={a.name} meta={`${a.status ?? "unknown"} · service ${a.next_service_date ?? "n/a"}`} tone={a.status === "available" ? "good" : "warn"} />
+                  <RowLink key={a.id} to="/ops/readiness" title={a.tail_number ?? a.model ?? "Airframe"} meta={`${a.status ?? "unknown"} · service ${a.next_service_date ?? "n/a"}`} tone={a.status === "available" ? "good" : "warn"} />
                 ))}
                 {data.pos.length === 0 && data.assets.length === 0 && <Empty>Nothing inbound.</Empty>}
               </div>

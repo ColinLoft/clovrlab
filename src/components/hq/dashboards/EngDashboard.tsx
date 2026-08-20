@@ -34,7 +34,7 @@ export function EngDashboard() {
             <div className="rounded-lg border border-border bg-card p-4 lg:col-span-2">
               <div className="flex items-baseline justify-between">
                 <h2 className="text-sm font-semibold">Program burn-down</h2>
-                <Link to="/eng-projects" className="text-xs text-primary hover:underline">All projects</Link>
+                <Link to="/eng/programs" className="text-xs text-primary hover:underline">All projects</Link>
               </div>
               <div className="mt-4 space-y-4">
                 {data.projects.length === 0 && <Empty>No active projects.</Empty>}
@@ -73,7 +73,7 @@ export function EngDashboard() {
               <div className="divide-y divide-border">
                 {data.issues.length === 0 && <Empty>Backlog clear.</Empty>}
                 {data.issues.slice(0, 6).map((i: any) => (
-                  <RowLink key={i.id} to="/eng-projects" title={i.title} meta={`${i.severity ?? "medium"} · ${i.status ?? "open"}`} tone={(i.severity ?? "").toLowerCase() === "critical" ? "risk" : undefined} />
+                  <RowLink key={i.id} to="/eng/issues" title={i.title} meta={`${i.severity ?? "medium"} · ${i.status ?? "open"}`} tone={(i.severity ?? "").toLowerCase() === "critical" ? "risk" : undefined} />
                 ))}
               </div>
             </Panel>
@@ -81,17 +81,17 @@ export function EngDashboard() {
               <div className="divide-y divide-border">
                 {[...data.milestones, ...data.reviews].length === 0 && <Empty>Nothing scheduled.</Empty>}
                 {data.milestones.map((m: any) => (
-                  <RowLink key={m.id} to="/eng-projects" title={m.title} meta={`Milestone · ${m.due_date ?? "unscheduled"}`} badge="gate" />
+                  <RowLink key={m.id} to="/eng/programs" title={m.title} meta={`Milestone · ${m.due_date ?? "unscheduled"}`} badge="gate" />
                 ))}
                 {data.reviews.map((r: any) => (
-                  <RowLink key={r.id} to="/eng-projects" title={r.title} meta={`Review · ${r.review_date ?? "unscheduled"}`} badge="review" />
+                  <RowLink key={r.id} to="/eng/programs" title={r.title} meta={`Review · ${r.review_date ?? "unscheduled"}`} badge="review" />
                 ))}
               </div>
             </Panel>
             <Panel title="Change control" hint="ECOs and engineering tasks">
               <div className="divide-y divide-border">
                 {data.ecos.map((e: any) => (
-                  <RowLink key={e.id} to="/eng-projects" title={e.title} meta={`ECO · ${e.status ?? "open"}`} badge="eco" />
+                  <RowLink key={e.id} to="/eng/changes" title={e.title} meta={`ECO · ${e.status ?? "open"}`} badge="eco" />
                 ))}
                 {data.tasks.slice(0, 5).map((t: any) => (
                   <RowLink key={t.id} to="/tasks" title={t.title} meta={`${t.priority ?? "normal"} · ${t.due_date ?? "no due date"}`} />

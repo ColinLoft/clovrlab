@@ -1,31 +1,29 @@
 import { Link } from "@tanstack/react-router";
-import { count, rows, useDash, DashShell, Loading, ErrorNote, Panel, Empty, RowLink, Bar, money, today } from "./kit";
+import { count, rows, useDash, DashShell, Loading, ErrorNote, Panel, Empty, RowLink, Bar, money } from "./kit";
 
-const STAGES = ["prospect", "qualified", "proposal", "negotiation", "closed_won"];
+const STAGES = ["researching", "drafting", "submitted", "awarded", "declined"];
 
 async function load() {
-  const [deals, contacts, proposals, invoices, expenses, contracts] = await Promise.all([
-    rows("sales_deals", "id,title,stage,value,expected_close", (q: any) => q.order("expected_close", { nullsFirst: false }), 60),
-    count("sales_contacts"),
-    rows("con_estimates", "id,title,status,total,valid_until", (q: any) => q.in("status", ["draft", "sent", "pending"]).order("valid_until", { nullsFirst: false }), 6),
-    rows("fin_invoices", "id,invoice_number,total,status,due_date", (q: any) => q.neq("status", "paid").order("due_date", { nullsFirst: false }), 8),
-    rows("fin_expenses", "id,purpose,amount,spent_at", (q: any) => q.order("spent_at", { ascending: false }), 5),
-    count("sales_contracts"),
+  const [grants, donors, donations, partners] = await Promise.all([
+    rows("fund_grants", "id,title,funder,amount,stage,submitted_on,decision_on,program", (q: any) => q.order("decision_on", { nullsFirst: false }), 120),
+    rows("fund_donors", "id,name,kind,tier,lifetime_amount,last_gift_on", (q: any) => q.order("lifetime_amount", { ascending: false }), 8),
+    rows("fund_donations", "id,amount,received_on,campaign,restriction", (q: any) => q.order("received_on", { ascending: false }), 200),
+    count("fund_donors"),
   ]);
-  const pipeline = deals.reduce((s: number, d: any) => s + Number(d.value || 0), 0);
-  const won = deals.filter((d: any) => d.stage === "closed_won").reduce((s: number, d: any) => s + Number(d.value || 0), 0);
-  const outstanding = invoices.reduce((s: number, i: any) => s + Number(i.total || 0), 0);
-  const overdue = invoices.filter((i: any) => i.due_date && i.due_date < today());
-  return { deals, contacts, proposals, invoices, expenses, contracts, pipeline, won, outstanding, overdue };
+  const pipeline = grants.filter((g: any) => !["awarded", "declined"].includes(g.stage)).reduce((s: number, g: any) => s + Number(g.amount || 0), 0);
+  const awarded = grants.filter((g: any) => g.stage === "awarded").reduce((s: number, g: any) => s + Number(g.amount || 0), 0);
+  const given = donations.reduce((s: number, d: any) => s + Number(d.amount || 0), 0);
+  const restricted = donations.filter((d: any) => d.restriction && d.restriction !== "unrestricted").reduce((s: number, d: any) => s + Number(d.amount || 0), 0);
+  return { grants, donors, donations, partners, pipeline, awarded, given, restricted };
 }
 
 export function CommercialDashboard() {
   const { data, error } = useDash("commercial", load);
   return (
     <DashShell
-      eyebrow="Funding & partnerships"
-      title="Revenue for impact"
-      summary="Funding funnel by stage, proposals in flight, collections exposure and partner relationship depth."
+      eyebrow="Funding & partners"
+      title="Fuel for the mission"
+      summary="Grant pipeline by stage, top donor relationships and every gift landing in the ledger."
     >
       {error && <ErrorNote message={error} />}
       {!data && !error && <Loading />}
@@ -34,26 +32,26 @@ export function CommercialDashboard() {
           <section className="mt-7 rounded-xl border border-border bg-card p-5">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">Total pipeline</p>
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">Grant pipeline</p>
                 <p className="mt-1 text-4xl font-semibold tabular-nums">{money(data.pipeline)}</p>
               </div>
-              <div className="flex gap-8 text-sm">
-                <div><p className="text-xs uppercase text-muted-foreground">Committed</p><p className="mt-1 text-xl font-semibold tabular-nums">{money(data.won)}</p></div>
-                <div><p className="text-xs uppercase text-muted-foreground">Receivable</p><p className="mt-1 text-xl font-semibold tabular-nums">{money(data.outstanding)}</p></div>
-                <div><p className="text-xs uppercase text-muted-foreground">Partners</p><p className="mt-1 text-xl font-semibold tabular-nums">{data.contacts}</p></div>
-                <div><p className="text-xs uppercase text-muted-foreground">Agreements</p><p className="mt-1 text-xl font-semibold tabular-nums">{data.contracts}</p></div>
+              <div className="flex flex-wrap gap-8 text-sm">
+                <div><p className="text-xs uppercase text-muted-foreground">Awarded</p><p className="mt-1 text-xl font-semibold tabular-nums">{money(data.awarded)}</p></div>
+                <div><p className="text-xs uppercase text-muted-foreground">Gifts received</p><p className="mt-1 text-xl font-semibold tabular-nums">{money(data.given)}</p></div>
+                <div><p className="text-xs uppercase text-muted-foreground">Restricted</p><p className="mt-1 text-xl font-semibold tabular-nums">{money(data.restricted)}</p></div>
+                <div><p className="text-xs uppercase text-muted-foreground">Donors</p><p className="mt-1 text-xl font-semibold tabular-nums">{data.partners}</p></div>
               </div>
             </div>
             <div className="mt-6 grid gap-3 sm:grid-cols-5">
               {STAGES.map((stage) => {
-                const inStage = data.deals.filter((d: any) => (d.stage ?? "prospect") === stage);
-                const value = inStage.reduce((s: number, d: any) => s + Number(d.value || 0), 0);
+                const inStage = data.grants.filter((g: any) => (g.stage ?? "researching") === stage);
+                const value = inStage.reduce((s: number, g: any) => s + Number(g.amount || 0), 0);
                 return (
-                  <Link key={stage} to="/pipeline" className="rounded-lg border border-border p-3 transition hover:border-primary/60">
-                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{stage.replace("_", " ")}</p>
+                  <Link key={stage} to="/fund/grants" className="rounded-lg border border-border p-3 transition hover:border-primary/60">
+                    <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{stage}</p>
                     <p className="mt-1 text-lg font-semibold tabular-nums">{money(value)}</p>
-                    <p className="text-xs text-muted-foreground">{inStage.length} opportunities</p>
-                    <div className="mt-2"><Bar value={value} max={Math.max(data.pipeline, 1)} /></div>
+                    <p className="text-xs text-muted-foreground">{inStage.length} applications</p>
+                    <div className="mt-2"><Bar value={value} max={Math.max(data.pipeline + data.awarded, 1)} tone={stage === "declined" ? "muted" : "primary"} /></div>
                   </Link>
                 );
               })}
@@ -61,27 +59,27 @@ export function CommercialDashboard() {
           </section>
 
           <section className="mt-5 grid gap-5 lg:grid-cols-3">
-            <Panel title="Proposals in flight">
+            <Panel title="Awaiting decision">
               <div className="divide-y divide-border">
-                {data.proposals.length === 0 && <Empty>No open proposals.</Empty>}
-                {data.proposals.map((p: any) => (
-                  <RowLink key={p.id} to="/proposals" title={p.title} meta={`${p.status ?? "draft"} · ${money(Number(p.total || 0))} · valid to ${p.valid_until ?? "n/a"}`} />
+                {data.grants.filter((g: any) => g.stage === "submitted").length === 0 && <Empty>Nothing submitted.</Empty>}
+                {data.grants.filter((g: any) => g.stage === "submitted").slice(0, 6).map((g: any) => (
+                  <RowLink key={g.id} to="/fund/grants" title={g.title} meta={`${g.funder ?? "Funder"} · ${money(Number(g.amount || 0))} · decision ${g.decision_on ?? "TBD"}`} />
                 ))}
               </div>
             </Panel>
-            <Panel title="Collections" hint={`${data.overdue.length} overdue`}>
+            <Panel title="Top donors" hint="By lifetime giving">
               <div className="divide-y divide-border">
-                {data.invoices.length === 0 && <Empty>Nothing outstanding.</Empty>}
-                {data.invoices.map((i: any) => (
-                  <RowLink key={i.id} to="/invoices" title={i.invoice_number ?? "Invoice"} meta={`${money(Number(i.total || 0))} · due ${i.due_date ?? "n/a"}`} tone={i.due_date && i.due_date < today() ? "risk" : undefined} />
+                {data.donors.length === 0 && <Empty>No donors on record.</Empty>}
+                {data.donors.map((d: any) => (
+                  <RowLink key={d.id} to="/fund/donors" title={d.name} meta={`${money(Number(d.lifetime_amount || 0))} lifetime · last gift ${d.last_gift_on ?? "n/a"}`} badge={d.tier ?? d.kind ?? undefined} />
                 ))}
               </div>
             </Panel>
-            <Panel title="Recent spend">
+            <Panel title="Recent gifts">
               <div className="divide-y divide-border">
-                {data.expenses.length === 0 && <Empty>No expenses recorded.</Empty>}
-                {data.expenses.map((e: any) => (
-                  <RowLink key={e.id} to="/expenses" title={e.purpose ?? "Expense"} meta={`${money(Number(e.amount || 0))} · ${e.spent_at ?? ""}`} />
+                {data.donations.length === 0 && <Empty>No gifts recorded.</Empty>}
+                {data.donations.slice(0, 6).map((g: any) => (
+                  <RowLink key={g.id} to="/fund/donations" title={money(Number(g.amount || 0))} meta={`${g.campaign ?? "General"} · ${g.received_on ?? ""}`} tone="good" />
                 ))}
               </div>
             </Panel>

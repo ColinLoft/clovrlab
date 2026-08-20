@@ -2,7 +2,47 @@ import { createFileRoute } from "@tanstack/react-router";
 import { UserSearch, ClipboardCheck } from "lucide-react";
 import { ResourcePage, StatusBadge, DateCell, UserCell, type ResourceConfig } from "@/components/hq/ResourcePage";
 import { useState } from "react";
-import { applicantsCfg } from "./_hq.applicants";
+
+
+
+const applicantsCfg: ResourceConfig<any> = {
+  table: "hr_applicants",
+  title: "Applicants",
+  eyebrow: "People",
+  icon: UserSearch,
+  itemName: "applicant",
+  orderBy: { column: "created_at", ascending: false },
+  searchable: ["name", "email", "role", "department"],
+  defaults: { stage: "applied" },
+  kpis: (rows) => [
+    { label: "Applicants", value: rows.length, icon: UserSearch },
+    { label: "Interviewing", value: rows.filter((r) => r.stage === "interview").length, icon: UserSearch },
+    { label: "Offers out", value: rows.filter((r) => r.stage === "offer").length, icon: UserSearch },
+    { label: "Hired", value: rows.filter((r) => r.stage === "hired").length, icon: UserSearch },
+  ],
+  columns: [
+    { key: "name", label: "Candidate", render: (r) => <span className="font-medium">{r.name}</span> },
+    { key: "role", label: "Role" },
+    { key: "department", label: "Team" },
+    { key: "stage", label: "Stage", render: (r) => <StatusBadge value={r.stage} /> },
+    { key: "interviewer_id", label: "Interviewer", render: (r, ctx) => <UserCell userId={r.interviewer_id} profiles={ctx.profiles} /> },
+    { key: "interview_date", label: "Interview", render: (r) => <DateCell date={r.interview_date} /> },
+    { key: "source", label: "Source" },
+  ],
+  fields: [
+    { key: "name", label: "Full name", type: "text", required: true },
+    { key: "email", label: "Email", type: "text" },
+    { key: "phone", label: "Phone", type: "text" },
+    { key: "role", label: "Role applied for", type: "text" },
+    { key: "department", label: "Team", type: "text" },
+    { key: "stage", label: "Stage", type: "select", required: true, options: ["applied", "screening", "interview", "offer", "hired", "rejected"].map((v) => ({ value: v, label: v })) },
+    { key: "source", label: "Source", type: "text" },
+    { key: "interviewer_id", label: "Interviewer", type: "user" },
+    { key: "interview_date", label: "Interview date", type: "date" },
+    { key: "resume_url", label: "Resume link", type: "text", full: true },
+    { key: "notes", label: "Notes", type: "textarea", full: true },
+  ],
+};
 
 const onboardingCfg: ResourceConfig<any> = {
   table: "hr_onboarding",
