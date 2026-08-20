@@ -87,6 +87,8 @@ import { Route as HqExecDecisionsRouteImport } from './routes/_hq.exec.decisions
 import { Route as HqExecBriefingRouteImport } from './routes/_hq.exec.briefing'
 import { Route as HqEngProgramsRouteImport } from './routes/_hq.eng.programs'
 import { Route as HqEngIssuesRouteImport } from './routes/_hq.eng.issues'
+import { Route as HqEngHardwareRouteImport } from './routes/_hq.eng.hardware'
+import { Route as HqEngFirmwareRouteImport } from './routes/_hq.eng.firmware'
 import { Route as HqEngChangesRouteImport } from './routes/_hq.eng.changes'
 import { Route as HqAdminSlackRouteImport } from './routes/_hq.admin.slack'
 import { Route as HqAdminOrgRouteImport } from './routes/_hq.admin.org'
@@ -487,6 +489,16 @@ const HqEngIssuesRoute = HqEngIssuesRouteImport.update({
   path: '/eng/issues',
   getParentRoute: () => HqRoute,
 } as any)
+const HqEngHardwareRoute = HqEngHardwareRouteImport.update({
+  id: '/eng/hardware',
+  path: '/eng/hardware',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqEngFirmwareRoute = HqEngFirmwareRouteImport.update({
+  id: '/eng/firmware',
+  path: '/eng/firmware',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqEngChangesRoute = HqEngChangesRouteImport.update({
   id: '/eng/changes',
   path: '/eng/changes',
@@ -599,6 +611,8 @@ export interface FileRoutesByFullPath {
   '/admin/org': typeof HqAdminOrgRoute
   '/admin/slack': typeof HqAdminSlackRoute
   '/eng/changes': typeof HqEngChangesRoute
+  '/eng/firmware': typeof HqEngFirmwareRoute
+  '/eng/hardware': typeof HqEngHardwareRoute
   '/eng/issues': typeof HqEngIssuesRoute
   '/eng/programs': typeof HqEngProgramsRoute
   '/exec/briefing': typeof HqExecBriefingRoute
@@ -687,6 +701,8 @@ export interface FileRoutesByTo {
   '/admin/org': typeof HqAdminOrgRoute
   '/admin/slack': typeof HqAdminSlackRoute
   '/eng/changes': typeof HqEngChangesRoute
+  '/eng/firmware': typeof HqEngFirmwareRoute
+  '/eng/hardware': typeof HqEngHardwareRoute
   '/eng/issues': typeof HqEngIssuesRoute
   '/eng/programs': typeof HqEngProgramsRoute
   '/exec/briefing': typeof HqExecBriefingRoute
@@ -778,6 +794,8 @@ export interface FileRoutesById {
   '/_hq/admin/org': typeof HqAdminOrgRoute
   '/_hq/admin/slack': typeof HqAdminSlackRoute
   '/_hq/eng/changes': typeof HqEngChangesRoute
+  '/_hq/eng/firmware': typeof HqEngFirmwareRoute
+  '/_hq/eng/hardware': typeof HqEngHardwareRoute
   '/_hq/eng/issues': typeof HqEngIssuesRoute
   '/_hq/eng/programs': typeof HqEngProgramsRoute
   '/_hq/exec/briefing': typeof HqExecBriefingRoute
@@ -869,6 +887,8 @@ export interface FileRouteTypes {
     | '/admin/org'
     | '/admin/slack'
     | '/eng/changes'
+    | '/eng/firmware'
+    | '/eng/hardware'
     | '/eng/issues'
     | '/eng/programs'
     | '/exec/briefing'
@@ -957,6 +977,8 @@ export interface FileRouteTypes {
     | '/admin/org'
     | '/admin/slack'
     | '/eng/changes'
+    | '/eng/firmware'
+    | '/eng/hardware'
     | '/eng/issues'
     | '/eng/programs'
     | '/exec/briefing'
@@ -1047,6 +1069,8 @@ export interface FileRouteTypes {
     | '/_hq/admin/org'
     | '/_hq/admin/slack'
     | '/_hq/eng/changes'
+    | '/_hq/eng/firmware'
+    | '/_hq/eng/hardware'
     | '/_hq/eng/issues'
     | '/_hq/eng/programs'
     | '/_hq/exec/briefing'
@@ -1650,6 +1674,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqEngIssuesRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/eng/hardware': {
+      id: '/_hq/eng/hardware'
+      path: '/eng/hardware'
+      fullPath: '/eng/hardware'
+      preLoaderRoute: typeof HqEngHardwareRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/eng/firmware': {
+      id: '/_hq/eng/firmware'
+      path: '/eng/firmware'
+      fullPath: '/eng/firmware'
+      preLoaderRoute: typeof HqEngFirmwareRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/eng/changes': {
       id: '/_hq/eng/changes'
       path: '/eng/changes'
@@ -1777,6 +1815,8 @@ interface HqRouteChildren {
   HqAdminOrgRoute: typeof HqAdminOrgRoute
   HqAdminSlackRoute: typeof HqAdminSlackRoute
   HqEngChangesRoute: typeof HqEngChangesRoute
+  HqEngFirmwareRoute: typeof HqEngFirmwareRoute
+  HqEngHardwareRoute: typeof HqEngHardwareRoute
   HqEngIssuesRoute: typeof HqEngIssuesRoute
   HqEngProgramsRoute: typeof HqEngProgramsRoute
   HqExecBriefingRoute: typeof HqExecBriefingRoute
@@ -1843,6 +1883,8 @@ const HqRouteChildren: HqRouteChildren = {
   HqAdminOrgRoute: HqAdminOrgRoute,
   HqAdminSlackRoute: HqAdminSlackRoute,
   HqEngChangesRoute: HqEngChangesRoute,
+  HqEngFirmwareRoute: HqEngFirmwareRoute,
+  HqEngHardwareRoute: HqEngHardwareRoute,
   HqEngIssuesRoute: HqEngIssuesRoute,
   HqEngProgramsRoute: HqEngProgramsRoute,
   HqExecBriefingRoute: HqExecBriefingRoute,
