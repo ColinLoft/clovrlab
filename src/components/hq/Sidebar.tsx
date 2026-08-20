@@ -29,16 +29,17 @@ export function Sidebar({ onNavigate, onCollapse }: { onNavigate?: () => void; o
   const permittedGroups = useMemo(() => {
     // 1. Each workspace ships its own purpose-built navigation.
     const custom = navForApp(app?.slug);
-    const inApp = custom
+    const inApp: AppNavGroup[] = custom
       ? custom
       : app && app.nav_groups.length > 0
-        ? navGroups.filter((g) => app.nav_groups.includes(g.label))
-        : navGroups;
+        ? (navGroups.filter((g) => app.nav_groups.includes(g.label)) as AppNavGroup[])
+        : (navGroups as AppNavGroup[]);
     // 2. Then the person's own page permissions.
     if (access.isAdmin || access.allowed === null) return inApp;
     return inApp
       .map((g) => ({ ...g, items: g.items.filter((i) => ALWAYS_VISIBLE.has(i.to) || access.allowed!.has(i.to)) }))
       .filter((g) => g.items.length > 0);
+
   }, [access, app]);
 
 
