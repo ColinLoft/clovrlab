@@ -63,7 +63,6 @@ import { Route as HqAttendanceRouteImport } from './routes/_hq.attendance'
 import { Route as HqAnalyticsRouteImport } from './routes/_hq.analytics'
 import { Route as HqAccountingRouteImport } from './routes/_hq.accounting'
 import { Route as HqTeamsIndexRouteImport } from './routes/_hq.teams.index'
-import { Route as ApiHqAssistantRouteImport } from './routes/api/hq/assistant'
 import { Route as HqTeamsSlugRouteImport } from './routes/_hq.teams.$slug'
 import { Route as HqProductRoadmapRouteImport } from './routes/_hq.product.roadmap'
 import { Route as HqProductReleasesRouteImport } from './routes/_hq.product.releases'
@@ -355,11 +354,6 @@ const HqTeamsIndexRoute = HqTeamsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => HqTeamsRoute,
 } as any)
-const ApiHqAssistantRoute = ApiHqAssistantRouteImport.update({
-  id: '/api/hq/assistant',
-  path: '/api/hq/assistant',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const HqTeamsSlugRoute = HqTeamsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -538,7 +532,6 @@ export interface FileRoutesByFullPath {
   '/product/releases': typeof HqProductReleasesRoute
   '/product/roadmap': typeof HqProductRoadmapRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
-  '/api/hq/assistant': typeof ApiHqAssistantRoute
   '/teams/': typeof HqTeamsIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -614,7 +607,6 @@ export interface FileRoutesByTo {
   '/product/releases': typeof HqProductReleasesRoute
   '/product/roadmap': typeof HqProductRoadmapRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
-  '/api/hq/assistant': typeof ApiHqAssistantRoute
   '/teams': typeof HqTeamsIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -693,7 +685,6 @@ export interface FileRoutesById {
   '/_hq/product/releases': typeof HqProductReleasesRoute
   '/_hq/product/roadmap': typeof HqProductRoadmapRoute
   '/_hq/teams/$slug': typeof HqTeamsSlugRoute
-  '/api/hq/assistant': typeof ApiHqAssistantRoute
   '/_hq/teams/': typeof HqTeamsIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -772,7 +763,6 @@ export interface FileRouteTypes {
     | '/product/releases'
     | '/product/roadmap'
     | '/teams/$slug'
-    | '/api/hq/assistant'
     | '/teams/'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -848,7 +838,6 @@ export interface FileRouteTypes {
     | '/product/releases'
     | '/product/roadmap'
     | '/teams/$slug'
-    | '/api/hq/assistant'
     | '/teams'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -926,7 +915,6 @@ export interface FileRouteTypes {
     | '/_hq/product/releases'
     | '/_hq/product/roadmap'
     | '/_hq/teams/$slug'
-    | '/api/hq/assistant'
     | '/_hq/teams/'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -954,7 +942,6 @@ export interface RootRouteChildren {
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   MeetingIdRoute: typeof MeetingIdRoute
-  ApiHqAssistantRoute: typeof ApiHqAssistantRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
 }
@@ -1339,13 +1326,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqTeamsIndexRouteImport
       parentRoute: typeof HqTeamsRoute
     }
-    '/api/hq/assistant': {
-      id: '/api/hq/assistant'
-      path: '/api/hq/assistant'
-      fullPath: '/api/hq/assistant'
-      preLoaderRoute: typeof ApiHqAssistantRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_hq/teams/$slug': {
       id: '/_hq/teams/$slug'
       path: '/$slug'
@@ -1639,7 +1619,6 @@ const rootRouteChildren: RootRouteChildren = {
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   MeetingIdRoute: MeetingIdRoute,
-  ApiHqAssistantRoute: ApiHqAssistantRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
 }
