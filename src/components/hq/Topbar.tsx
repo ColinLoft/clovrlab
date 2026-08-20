@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, Menu, Phone, PhoneOff, Mic, MicOff, Grip, LayoutDashboard, Mail, Calendar as CalendarIcon, FolderOpen, MessagesSquare, Users, Bot, Sun, Moon } from "lucide-react";
+import { Bell, Menu, Phone, PhoneOff, Mic, MicOff, Grip, LayoutDashboard, Mail, Calendar as CalendarIcon, FolderOpen, MessagesSquare, Users, Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { RecordTabs } from "./RecordTabs";
@@ -23,7 +23,6 @@ const APPS = [
   { to: "/calendar", label: "Calendar", icon: CalendarIcon },
   { to: "/drive", label: "Drive", icon: FolderOpen },
   { to: "/employees", label: "People", icon: Users },
-  { to: "/assistant", label: "Assistant", icon: Bot },
 ] as const;
 
 export function Topbar({ onMenuClick }: { onMenuClick: () => void }) {

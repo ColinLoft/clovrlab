@@ -11,7 +11,7 @@ import { useCurrentApp } from "@/lib/hq/app-context";
 const STORAGE_KEY = "hq.sidebar.collapsed";
 
 const ALWAYS_VISIBLE = new Set<string>([
-  "/dashboard", "/assistant", "/settings", "/profile", "/notifications", "/search", "/teams",
+  "/dashboard", "/settings", "/profile", "/notifications", "/search", "/teams",
 ]);
 
 
