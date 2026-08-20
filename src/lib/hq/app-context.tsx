@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { fetchApps, resolveAppSlug, type OrgApp } from "./apps";
+import { fetchApps, resolveAppSlug, hasExplicitAppSelection, rememberApp, type OrgApp } from "./apps";
 import { applyAppTheme } from "./app-theme";
 import { useRouteAccess } from "./route-access";
+
 
 
 type AppState = {
