@@ -14,8 +14,6 @@ export type FieldType =
   | "select"
   | "user"
   | "project"
-  | "job"
-  | "client"
   | "supplier"
   | "workorder"
   | "account"
