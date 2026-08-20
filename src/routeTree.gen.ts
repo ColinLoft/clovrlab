@@ -114,6 +114,7 @@ import { Route as HqClientsIndexRouteImport } from './routes/_hq.clients.index'
 import { Route as ApiHqAssistantRouteImport } from './routes/api/hq/assistant'
 import { Route as HqTeamsSlugRouteImport } from './routes/_hq.teams.$slug'
 import { Route as HqQuotesIdRouteImport } from './routes/_hq.quotes.$id'
+import { Route as HqOpsFlightsRouteImport } from './routes/_hq.ops.flights'
 import { Route as HqOpsDetectionsRouteImport } from './routes/_hq.ops.detections'
 import { Route as HqOpsControlRouteImport } from './routes/_hq.ops.control'
 import { Route as HqJobsIdRouteImport } from './routes/_hq.jobs.$id'
@@ -652,6 +653,11 @@ const HqQuotesIdRoute = HqQuotesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => HqQuotesRoute,
 } as any)
+const HqOpsFlightsRoute = HqOpsFlightsRouteImport.update({
+  id: '/ops/flights',
+  path: '/ops/flights',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqOpsDetectionsRoute = HqOpsDetectionsRouteImport.update({
   id: '/ops/detections',
   path: '/ops/detections',
@@ -827,6 +833,7 @@ export interface FileRoutesByFullPath {
   '/jobs/$id': typeof HqJobsIdRoute
   '/ops/control': typeof HqOpsControlRoute
   '/ops/detections': typeof HqOpsDetectionsRoute
+  '/ops/flights': typeof HqOpsFlightsRoute
   '/quotes/$id': typeof HqQuotesIdRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/api/hq/assistant': typeof ApiHqAssistantRoute
@@ -941,6 +948,7 @@ export interface FileRoutesByTo {
   '/jobs/$id': typeof HqJobsIdRoute
   '/ops/control': typeof HqOpsControlRoute
   '/ops/detections': typeof HqOpsDetectionsRoute
+  '/ops/flights': typeof HqOpsFlightsRoute
   '/quotes/$id': typeof HqQuotesIdRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/api/hq/assistant': typeof ApiHqAssistantRoute
@@ -1062,6 +1070,7 @@ export interface FileRoutesById {
   '/_hq/jobs/$id': typeof HqJobsIdRoute
   '/_hq/ops/control': typeof HqOpsControlRoute
   '/_hq/ops/detections': typeof HqOpsDetectionsRoute
+  '/_hq/ops/flights': typeof HqOpsFlightsRoute
   '/_hq/quotes/$id': typeof HqQuotesIdRoute
   '/_hq/teams/$slug': typeof HqTeamsSlugRoute
   '/api/hq/assistant': typeof ApiHqAssistantRoute
@@ -1183,6 +1192,7 @@ export interface FileRouteTypes {
     | '/jobs/$id'
     | '/ops/control'
     | '/ops/detections'
+    | '/ops/flights'
     | '/quotes/$id'
     | '/teams/$slug'
     | '/api/hq/assistant'
@@ -1297,6 +1307,7 @@ export interface FileRouteTypes {
     | '/jobs/$id'
     | '/ops/control'
     | '/ops/detections'
+    | '/ops/flights'
     | '/quotes/$id'
     | '/teams/$slug'
     | '/api/hq/assistant'
@@ -1417,6 +1428,7 @@ export interface FileRouteTypes {
     | '/_hq/jobs/$id'
     | '/_hq/ops/control'
     | '/_hq/ops/detections'
+    | '/_hq/ops/flights'
     | '/_hq/quotes/$id'
     | '/_hq/teams/$slug'
     | '/api/hq/assistant'
@@ -2194,6 +2206,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqQuotesIdRouteImport
       parentRoute: typeof HqQuotesRoute
     }
+    '/_hq/ops/flights': {
+      id: '/_hq/ops/flights'
+      path: '/ops/flights'
+      fullPath: '/ops/flights'
+      preLoaderRoute: typeof HqOpsFlightsRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/ops/detections': {
       id: '/_hq/ops/detections'
       path: '/ops/detections'
@@ -2422,6 +2441,7 @@ interface HqRouteChildren {
   HqAdminSlackRoute: typeof HqAdminSlackRoute
   HqOpsControlRoute: typeof HqOpsControlRoute
   HqOpsDetectionsRoute: typeof HqOpsDetectionsRoute
+  HqOpsFlightsRoute: typeof HqOpsFlightsRoute
 }
 
 const HqRouteChildren: HqRouteChildren = {
@@ -2504,6 +2524,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqAdminSlackRoute: HqAdminSlackRoute,
   HqOpsControlRoute: HqOpsControlRoute,
   HqOpsDetectionsRoute: HqOpsDetectionsRoute,
+  HqOpsFlightsRoute: HqOpsFlightsRoute,
 }
 
 const HqRouteWithChildren = HqRoute._addFileChildren(HqRouteChildren)
