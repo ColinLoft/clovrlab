@@ -3633,6 +3633,125 @@ export type Database = {
           },
         ]
       }
+      exec_decisions: {
+        Row: {
+          context: string | null
+          created_at: string
+          decided_on: string | null
+          decision: string | null
+          id: string
+          owner_team: string | null
+          review_on: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          context?: string | null
+          created_at?: string
+          decided_on?: string | null
+          decision?: string | null
+          id?: string
+          owner_team?: string | null
+          review_on?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          context?: string | null
+          created_at?: string
+          decided_on?: string | null
+          decision?: string | null
+          id?: string
+          owner_team?: string | null
+          review_on?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      exec_key_results: {
+        Row: {
+          created_at: string
+          current_value: number
+          id: string
+          metric: string | null
+          objective_id: string | null
+          status: string
+          target_value: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_value?: number
+          id?: string
+          metric?: string | null
+          objective_id?: string | null
+          status?: string
+          target_value?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_value?: number
+          id?: string
+          metric?: string | null
+          objective_id?: string | null
+          status?: string
+          target_value?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exec_key_results_objective_id_fkey"
+            columns: ["objective_id"]
+            isOneToOne: false
+            referencedRelation: "exec_objectives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exec_objectives: {
+        Row: {
+          created_at: string
+          id: string
+          narrative: string | null
+          owner_team: string | null
+          progress: number
+          quarter: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          narrative?: string | null
+          owner_team?: string | null
+          progress?: number
+          quarter: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          narrative?: string | null
+          owner_team?: string | null
+          progress?: number
+          quarter?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       fin_accounts: {
         Row: {
           active: boolean
@@ -3925,6 +4044,244 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      fleet_aircraft: {
+        Row: {
+          base: string | null
+          created_at: string
+          cycles: number
+          flight_hours: number
+          id: string
+          model: string | null
+          next_service_date: string | null
+          next_service_hours: number | null
+          notes: string | null
+          status: string
+          tail_number: string
+          updated_at: string
+        }
+        Insert: {
+          base?: string | null
+          created_at?: string
+          cycles?: number
+          flight_hours?: number
+          id?: string
+          model?: string | null
+          next_service_date?: string | null
+          next_service_hours?: number | null
+          notes?: string | null
+          status?: string
+          tail_number: string
+          updated_at?: string
+        }
+        Update: {
+          base?: string | null
+          created_at?: string
+          cycles?: number
+          flight_hours?: number
+          id?: string
+          model?: string | null
+          next_service_date?: string | null
+          next_service_hours?: number | null
+          notes?: string | null
+          status?: string
+          tail_number?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      fleet_maintenance: {
+        Row: {
+          aircraft_id: string | null
+          assignee_id: string | null
+          closed_on: string | null
+          created_at: string
+          grounding: boolean
+          id: string
+          kind: string
+          notes: string | null
+          opened_on: string
+          severity: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          aircraft_id?: string | null
+          assignee_id?: string | null
+          closed_on?: string | null
+          created_at?: string
+          grounding?: boolean
+          id?: string
+          kind?: string
+          notes?: string | null
+          opened_on?: string
+          severity?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          aircraft_id?: string | null
+          assignee_id?: string | null
+          closed_on?: string | null
+          created_at?: string
+          grounding?: boolean
+          id?: string
+          kind?: string
+          notes?: string | null
+          opened_on?: string
+          severity?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fleet_maintenance_aircraft_id_fkey"
+            columns: ["aircraft_id"]
+            isOneToOne: false
+            referencedRelation: "fleet_aircraft"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fund_donations: {
+        Row: {
+          amount: number
+          campaign: string | null
+          created_at: string
+          donor_id: string | null
+          id: string
+          method: string | null
+          notes: string | null
+          received_on: string
+          restriction: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          campaign?: string | null
+          created_at?: string
+          donor_id?: string | null
+          id?: string
+          method?: string | null
+          notes?: string | null
+          received_on?: string
+          restriction?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          campaign?: string | null
+          created_at?: string
+          donor_id?: string | null
+          id?: string
+          method?: string | null
+          notes?: string | null
+          received_on?: string
+          restriction?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_donations_donor_id_fkey"
+            columns: ["donor_id"]
+            isOneToOne: false
+            referencedRelation: "fund_donors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fund_donors: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          kind: string
+          last_gift_on: string | null
+          lifetime_amount: number
+          name: string
+          notes: string | null
+          phone: string | null
+          steward_id: string | null
+          tier: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          kind?: string
+          last_gift_on?: string | null
+          lifetime_amount?: number
+          name: string
+          notes?: string | null
+          phone?: string | null
+          steward_id?: string | null
+          tier?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          kind?: string
+          last_gift_on?: string | null
+          lifetime_amount?: number
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          steward_id?: string | null
+          tier?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      fund_grants: {
+        Row: {
+          amount: number
+          created_at: string
+          decision_on: string | null
+          funder: string
+          id: string
+          notes: string | null
+          owner_id: string | null
+          program: string | null
+          stage: string
+          submitted_on: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          decision_on?: string | null
+          funder: string
+          id?: string
+          notes?: string | null
+          owner_id?: string | null
+          program?: string | null
+          stage?: string
+          submitted_on?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          decision_on?: string | null
+          funder?: string
+          id?: string
+          notes?: string | null
+          owner_id?: string | null
+          program?: string | null
+          stage?: string
+          submitted_on?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       guides: {
         Row: {
@@ -5133,6 +5490,54 @@ export type Database = {
         }
         Relationships: []
       }
+      it_requests: {
+        Row: {
+          assignee_id: string | null
+          category: string
+          created_at: string
+          details: string | null
+          id: string
+          requester_id: string | null
+          requester_team: string | null
+          resolution: string | null
+          status: string
+          system: string | null
+          title: string
+          updated_at: string
+          urgency: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          category?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          requester_id?: string | null
+          requester_team?: string | null
+          resolution?: string | null
+          status?: string
+          system?: string | null
+          title: string
+          updated_at?: string
+          urgency?: string
+        }
+        Update: {
+          assignee_id?: string | null
+          category?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          requester_id?: string | null
+          requester_team?: string | null
+          resolution?: string | null
+          status?: string
+          system?: string | null
+          title?: string
+          updated_at?: string
+          urgency?: string
+        }
+        Relationships: []
+      }
       meeting_external_invites: {
         Row: {
           created_at: string
@@ -5630,6 +6035,188 @@ export type Database = {
         }
         Relationships: []
       }
+      ops_authorizations: {
+        Row: {
+          authority: string
+          ceiling_ft: number | null
+          created_at: string
+          ends_at: string | null
+          flight_id: string | null
+          id: string
+          kind: string
+          notes: string | null
+          reference: string
+          region: string | null
+          starts_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          authority?: string
+          ceiling_ft?: number | null
+          created_at?: string
+          ends_at?: string | null
+          flight_id?: string | null
+          id?: string
+          kind?: string
+          notes?: string | null
+          reference: string
+          region?: string | null
+          starts_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          authority?: string
+          ceiling_ft?: number | null
+          created_at?: string
+          ends_at?: string | null
+          flight_id?: string | null
+          id?: string
+          kind?: string
+          notes?: string | null
+          reference?: string
+          region?: string | null
+          starts_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ops_authorizations_flight_id_fkey"
+            columns: ["flight_id"]
+            isOneToOne: false
+            referencedRelation: "ops_flights"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ops_detections: {
+        Row: {
+          confidence: number | null
+          confirmed_at: string | null
+          confirmed_by: string | null
+          created_at: string
+          detected_at: string
+          id: string
+          latitude: number | null
+          longitude: number | null
+          name: string
+          notes: string | null
+          region: string | null
+          severity: string
+          source: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          confidence?: number | null
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string
+          detected_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          notes?: string | null
+          region?: string | null
+          severity?: string
+          source?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          confidence?: number | null
+          confirmed_at?: string | null
+          confirmed_by?: string | null
+          created_at?: string
+          detected_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          notes?: string | null
+          region?: string | null
+          severity?: string
+          source?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ops_flights: {
+        Row: {
+          aircraft_id: string | null
+          authorized_at: string | null
+          authorized_by: string | null
+          callsign: string
+          created_at: string
+          departs_at: string | null
+          detection_id: string | null
+          id: string
+          notes: string | null
+          objective: string | null
+          outcome: string | null
+          payload_released: boolean
+          pilot_id: string | null
+          returns_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          aircraft_id?: string | null
+          authorized_at?: string | null
+          authorized_by?: string | null
+          callsign: string
+          created_at?: string
+          departs_at?: string | null
+          detection_id?: string | null
+          id?: string
+          notes?: string | null
+          objective?: string | null
+          outcome?: string | null
+          payload_released?: boolean
+          pilot_id?: string | null
+          returns_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          aircraft_id?: string | null
+          authorized_at?: string | null
+          authorized_by?: string | null
+          callsign?: string
+          created_at?: string
+          departs_at?: string | null
+          detection_id?: string | null
+          id?: string
+          notes?: string | null
+          objective?: string | null
+          outcome?: string | null
+          payload_released?: boolean
+          pilot_id?: string | null
+          returns_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ops_flights_aircraft_id_fkey"
+            columns: ["aircraft_id"]
+            isOneToOne: false
+            referencedRelation: "fleet_aircraft"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ops_flights_detection_id_fkey"
+            columns: ["detection_id"]
+            isOneToOne: false
+            referencedRelation: "ops_detections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           cart: Json
@@ -5877,6 +6464,136 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      prod_features: {
+        Row: {
+          area: string
+          created_at: string
+          id: string
+          owner_team: string | null
+          priority: string
+          problem: string | null
+          progress: number
+          release_id: string | null
+          stage: string
+          success_metric: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          area?: string
+          created_at?: string
+          id?: string
+          owner_team?: string | null
+          priority?: string
+          problem?: string | null
+          progress?: number
+          release_id?: string | null
+          stage?: string
+          success_metric?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          area?: string
+          created_at?: string
+          id?: string
+          owner_team?: string | null
+          priority?: string
+          problem?: string | null
+          progress?: number
+          release_id?: string | null
+          stage?: string
+          success_metric?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prod_features_release_id_fkey"
+            columns: ["release_id"]
+            isOneToOne: false
+            referencedRelation: "prod_releases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prod_feedback: {
+        Row: {
+          created_at: string
+          details: string | null
+          feature_id: string | null
+          id: string
+          impact: string
+          source_team: string | null
+          status: string
+          summary: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          feature_id?: string | null
+          id?: string
+          impact?: string
+          source_team?: string | null
+          status?: string
+          summary: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          feature_id?: string | null
+          id?: string
+          impact?: string
+          source_team?: string | null
+          status?: string
+          summary?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prod_feedback_feature_id_fkey"
+            columns: ["feature_id"]
+            isOneToOne: false
+            referencedRelation: "prod_features"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prod_releases: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          notes: string | null
+          status: string
+          target_date: string | null
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          notes?: string | null
+          status?: string
+          target_date?: string | null
+          updated_at?: string
+          version: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          notes?: string | null
+          status?: string
+          target_date?: string | null
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
       }
       products: {
         Row: {
@@ -6419,6 +7136,60 @@ export type Database = {
           service?: string
           stack?: string | null
           status?: number | null
+        }
+        Relationships: []
+      }
+      team_requests: {
+        Row: {
+          assignee_id: string | null
+          created_at: string
+          details: string | null
+          due_date: string | null
+          entity_id: string | null
+          entity_type: string | null
+          from_team: string
+          id: string
+          priority: string
+          requested_by: string | null
+          resolution: string | null
+          status: string
+          subject: string
+          to_team: string
+          updated_at: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          created_at?: string
+          details?: string | null
+          due_date?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          from_team: string
+          id?: string
+          priority?: string
+          requested_by?: string | null
+          resolution?: string | null
+          status?: string
+          subject: string
+          to_team: string
+          updated_at?: string
+        }
+        Update: {
+          assignee_id?: string | null
+          created_at?: string
+          details?: string | null
+          due_date?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          from_team?: string
+          id?: string
+          priority?: string
+          requested_by?: string | null
+          resolution?: string | null
+          status?: string
+          subject?: string
+          to_team?: string
+          updated_at?: string
         }
         Relationships: []
       }
