@@ -46,7 +46,7 @@ function Grants() {
         <Stat label="Live applications" value={rows.filter((r) => !["awarded", "declined"].includes(r.stage)).length} icon={FileSignature} />
         <Stat label="In pipeline" value={money(pipeline)} />
         <Stat label="Awarded" value={money(won)} tone="good" />
-        <Stat label="Declined" value={rows.filter((r) => r.stage === "declined").length} tone="muted" as any />
+        <Stat label="Declined" value={rows.filter((r) => r.stage === "declined").length} />
       </StatRow>
 
       {loading ? <Loading /> : (

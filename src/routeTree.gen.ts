@@ -79,6 +79,9 @@ import { Route as HqMfgSupplyRouteImport } from './routes/_hq.mfg.supply'
 import { Route as HqMfgStockRouteImport } from './routes/_hq.mfg.stock'
 import { Route as HqMfgQualityRouteImport } from './routes/_hq.mfg.quality'
 import { Route as HqMfgLineRouteImport } from './routes/_hq.mfg.line'
+import { Route as HqFundGrantsRouteImport } from './routes/_hq.fund.grants'
+import { Route as HqFundDonorsRouteImport } from './routes/_hq.fund.donors'
+import { Route as HqFundDonationsRouteImport } from './routes/_hq.fund.donations'
 import { Route as HqEngProgramsRouteImport } from './routes/_hq.eng.programs'
 import { Route as HqEngIssuesRouteImport } from './routes/_hq.eng.issues'
 import { Route as HqEngChangesRouteImport } from './routes/_hq.eng.changes'
@@ -441,6 +444,21 @@ const HqMfgLineRoute = HqMfgLineRouteImport.update({
   path: '/mfg/line',
   getParentRoute: () => HqRoute,
 } as any)
+const HqFundGrantsRoute = HqFundGrantsRouteImport.update({
+  id: '/fund/grants',
+  path: '/fund/grants',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqFundDonorsRoute = HqFundDonorsRouteImport.update({
+  id: '/fund/donors',
+  path: '/fund/donors',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqFundDonationsRoute = HqFundDonationsRouteImport.update({
+  id: '/fund/donations',
+  path: '/fund/donations',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqEngProgramsRoute = HqEngProgramsRouteImport.update({
   id: '/eng/programs',
   path: '/eng/programs',
@@ -565,6 +583,9 @@ export interface FileRoutesByFullPath {
   '/eng/changes': typeof HqEngChangesRoute
   '/eng/issues': typeof HqEngIssuesRoute
   '/eng/programs': typeof HqEngProgramsRoute
+  '/fund/donations': typeof HqFundDonationsRoute
+  '/fund/donors': typeof HqFundDonorsRoute
+  '/fund/grants': typeof HqFundGrantsRoute
   '/mfg/line': typeof HqMfgLineRoute
   '/mfg/quality': typeof HqMfgQualityRoute
   '/mfg/stock': typeof HqMfgStockRoute
@@ -647,6 +668,9 @@ export interface FileRoutesByTo {
   '/eng/changes': typeof HqEngChangesRoute
   '/eng/issues': typeof HqEngIssuesRoute
   '/eng/programs': typeof HqEngProgramsRoute
+  '/fund/donations': typeof HqFundDonationsRoute
+  '/fund/donors': typeof HqFundDonorsRoute
+  '/fund/grants': typeof HqFundGrantsRoute
   '/mfg/line': typeof HqMfgLineRoute
   '/mfg/quality': typeof HqMfgQualityRoute
   '/mfg/stock': typeof HqMfgStockRoute
@@ -732,6 +756,9 @@ export interface FileRoutesById {
   '/_hq/eng/changes': typeof HqEngChangesRoute
   '/_hq/eng/issues': typeof HqEngIssuesRoute
   '/_hq/eng/programs': typeof HqEngProgramsRoute
+  '/_hq/fund/donations': typeof HqFundDonationsRoute
+  '/_hq/fund/donors': typeof HqFundDonorsRoute
+  '/_hq/fund/grants': typeof HqFundGrantsRoute
   '/_hq/mfg/line': typeof HqMfgLineRoute
   '/_hq/mfg/quality': typeof HqMfgQualityRoute
   '/_hq/mfg/stock': typeof HqMfgStockRoute
@@ -817,6 +844,9 @@ export interface FileRouteTypes {
     | '/eng/changes'
     | '/eng/issues'
     | '/eng/programs'
+    | '/fund/donations'
+    | '/fund/donors'
+    | '/fund/grants'
     | '/mfg/line'
     | '/mfg/quality'
     | '/mfg/stock'
@@ -899,6 +929,9 @@ export interface FileRouteTypes {
     | '/eng/changes'
     | '/eng/issues'
     | '/eng/programs'
+    | '/fund/donations'
+    | '/fund/donors'
+    | '/fund/grants'
     | '/mfg/line'
     | '/mfg/quality'
     | '/mfg/stock'
@@ -983,6 +1016,9 @@ export interface FileRouteTypes {
     | '/_hq/eng/changes'
     | '/_hq/eng/issues'
     | '/_hq/eng/programs'
+    | '/_hq/fund/donations'
+    | '/_hq/fund/donors'
+    | '/_hq/fund/grants'
     | '/_hq/mfg/line'
     | '/_hq/mfg/quality'
     | '/_hq/mfg/stock'
@@ -1522,6 +1558,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqMfgLineRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/fund/grants': {
+      id: '/_hq/fund/grants'
+      path: '/fund/grants'
+      fullPath: '/fund/grants'
+      preLoaderRoute: typeof HqFundGrantsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/fund/donors': {
+      id: '/_hq/fund/donors'
+      path: '/fund/donors'
+      fullPath: '/fund/donors'
+      preLoaderRoute: typeof HqFundDonorsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/fund/donations': {
+      id: '/_hq/fund/donations'
+      path: '/fund/donations'
+      fullPath: '/fund/donations'
+      preLoaderRoute: typeof HqFundDonationsRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/eng/programs': {
       id: '/_hq/eng/programs'
       path: '/eng/programs'
@@ -1665,6 +1722,9 @@ interface HqRouteChildren {
   HqEngChangesRoute: typeof HqEngChangesRoute
   HqEngIssuesRoute: typeof HqEngIssuesRoute
   HqEngProgramsRoute: typeof HqEngProgramsRoute
+  HqFundDonationsRoute: typeof HqFundDonationsRoute
+  HqFundDonorsRoute: typeof HqFundDonorsRoute
+  HqFundGrantsRoute: typeof HqFundGrantsRoute
   HqMfgLineRoute: typeof HqMfgLineRoute
   HqMfgQualityRoute: typeof HqMfgQualityRoute
   HqMfgStockRoute: typeof HqMfgStockRoute
@@ -1725,6 +1785,9 @@ const HqRouteChildren: HqRouteChildren = {
   HqEngChangesRoute: HqEngChangesRoute,
   HqEngIssuesRoute: HqEngIssuesRoute,
   HqEngProgramsRoute: HqEngProgramsRoute,
+  HqFundDonationsRoute: HqFundDonationsRoute,
+  HqFundDonorsRoute: HqFundDonorsRoute,
+  HqFundGrantsRoute: HqFundGrantsRoute,
   HqMfgLineRoute: HqMfgLineRoute,
   HqMfgQualityRoute: HqMfgQualityRoute,
   HqMfgStockRoute: HqMfgStockRoute,
