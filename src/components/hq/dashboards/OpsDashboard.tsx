@@ -2,17 +2,16 @@ import { Link } from "@tanstack/react-router";
 import { count, rows, useDash, DashShell, Loading, ErrorNote, Panel, Empty, RowLink, Bar, pct } from "./kit";
 
 async function load() {
-  const [active, deployments, safety, ready, total, logs, tasks, crews] = await Promise.all([
-    rows("con_jobs", "id,name,job_number,status,stage,percent_complete,target_end_date", (q: any) => q.eq("status", "active").order("target_end_date", { nullsFirst: false }), 6),
-    rows("con_schedule_blocks", "id,title,scheduled_date,phase,status", (q: any) => q.neq("status", "complete").order("scheduled_date", { nullsFirst: false }), 6),
-    rows("con_safety_incidents", "id,incident_type,severity,incident_date,status", (q: any) => q.neq("status", "closed").order("incident_date", { ascending: false }), 5),
-    count("con_equipment", (q: any) => q.eq("status", "available")),
-    count("con_equipment"),
-    rows("con_daily_logs", "id,log_date,status,weather,work_performed", (q: any) => q.order("log_date", { ascending: false }), 5),
-    rows("con_tasks", "id,title,status,priority,due_date", (q: any) => q.neq("status", "complete").order("due_date", { nullsFirst: false }), 8),
-    count("con_crews"),
+  const [detections, flights, authorizations, ready, fleet, grounded, handoffs] = await Promise.all([
+    rows("ops_detections", "id,name,region,severity,status,confidence,detected_at", (q: any) => q.neq("status", "closed").order("detected_at", { ascending: false }), 8),
+    rows("ops_flights", "id,callsign,objective,status,departs_at,outcome", (q: any) => q.order("departs_at", { ascending: false }), 8),
+    rows("ops_authorizations", "id,reference,authority,region,status,ends_at", (q: any) => q.order("ends_at", { nullsFirst: false }), 6),
+    count("fleet_aircraft", (q: any) => q.eq("status", "available")),
+    count("fleet_aircraft"),
+    rows("fleet_maintenance", "id,title,severity,grounding,status", (q: any) => q.eq("grounding", true).neq("status", "closed"), 5),
+    rows("team_requests", "id,subject,from_team,priority,status,due_date", (q: any) => q.eq("to_team", "Operations").neq("status", "closed").order("created_at", { ascending: false }), 5),
   ]);
-  return { active, deployments, safety, ready, total, logs, tasks, crews };
+  return { detections, flights, authorizations, ready, fleet, grounded, handoffs };
 }
 
 export function OpsDashboard() {
@@ -21,41 +20,43 @@ export function OpsDashboard() {
     <DashShell
       eyebrow="Mission operations"
       title="Live operational picture"
-      summary="Incident command, deployment windows, crew coverage, fleet availability and safety exceptions in one console."
+      summary="Active detections, aircraft in the air, airspace approvals and anything grounding the fleet."
     >
       {error && <ErrorNote message={error} />}
       {!data && !error && <Loading />}
       {data && (
         <>
           <section className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {data.active.slice(0, 4).map((j: any) => (
-              <Link key={j.id} to="/jobs" className="rounded-lg border border-primary/30 bg-primary/5 p-4 transition hover:border-primary">
-                <p className="font-mono text-[11px] uppercase tracking-widest text-primary">{j.job_number ?? "INCIDENT"}</p>
-                <p className="mt-2 truncate text-base font-semibold">{j.name}</p>
-                <p className="mt-1 text-xs text-muted-foreground">{j.stage ?? "active"} · target {j.target_end_date ?? "TBD"}</p>
-                <div className="mt-3"><Bar value={Number(j.percent_complete ?? 0)} max={100} /></div>
+            {data.detections.slice(0, 4).map((dtn: any) => (
+              <Link key={dtn.id} to="/ops/detections" className="rounded-lg border border-primary/30 bg-primary/5 p-4 transition hover:border-primary">
+                <p className="font-mono text-[11px] uppercase tracking-widest text-primary">{dtn.region ?? "UNKNOWN SECTOR"}</p>
+                <p className="mt-2 truncate text-base font-semibold">{dtn.name ?? "Unnamed detection"}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{dtn.severity ?? "review"} · {dtn.status ?? "new"}</p>
+                <div className="mt-3"><Bar value={Math.round(Number(dtn.confidence ?? 0) * (Number(dtn.confidence ?? 0) <= 1 ? 100 : 1))} max={100} /></div>
               </Link>
             ))}
-            {data.active.length === 0 && (
-              <div className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground sm:col-span-2 xl:col-span-4">No active incidents. Standing by.</div>
+            {data.detections.length === 0 && (
+              <div className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground sm:col-span-2 xl:col-span-4">
+                No open detections. Sensors are quiet.
+              </div>
             )}
           </section>
 
           <section className="mt-5 grid gap-5 lg:grid-cols-[1fr_1fr_320px]">
-            <Panel title="Deployment windows" hint="Scheduled and in-flight blocks">
+            <Panel title="Flight log" hint="Most recent sorties">
               <div className="divide-y divide-border">
-                {data.deployments.length === 0 && <Empty>No deployments scheduled.</Empty>}
-                {data.deployments.map((d: any) => (
-                  <RowLink key={d.id} to="/scheduling" title={d.title ?? "Deployment"} meta={`${d.scheduled_date ?? "TBD"} · ${d.phase ?? "field"}`} badge={d.status ?? "planned"} />
+                {data.flights.length === 0 && <Empty>No flights recorded.</Empty>}
+                {data.flights.map((f: any) => (
+                  <RowLink key={f.id} to="/ops/flights" title={f.callsign ?? "Sortie"} meta={`${f.objective ?? "Patrol"} · ${f.departs_at?.slice(0, 16).replace("T", " ") ?? "unscheduled"}`} badge={f.status ?? "planned"} />
                 ))}
               </div>
             </Panel>
 
-            <Panel title="Response queue" hint="Next actions across missions">
+            <Panel title="Airspace approvals" hint="Authorizations in force">
               <div className="divide-y divide-border">
-                {data.tasks.length === 0 && <Empty>Queue is clear.</Empty>}
-                {data.tasks.slice(0, 6).map((t: any) => (
-                  <RowLink key={t.id} to="/company-tasks" title={t.title} meta={`${t.priority ?? "normal"} · ${t.due_date ?? "no due date"}`} tone={(t.priority ?? "").toLowerCase() === "high" ? "risk" : undefined} />
+                {data.authorizations.length === 0 && <Empty>Nothing on file.</Empty>}
+                {data.authorizations.map((a: any) => (
+                  <RowLink key={a.id} to="/ops/airspace" title={a.reference ?? "Authorization"} meta={`${a.authority ?? "authority"} · ${a.region ?? "region"}`} badge={a.status ?? "pending"} />
                 ))}
               </div>
             </Panel>
@@ -63,23 +64,23 @@ export function OpsDashboard() {
             <aside className="space-y-5">
               <div className="rounded-lg border border-border bg-card p-4">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Fleet availability</p>
-                <p className="mt-2 text-3xl font-semibold tabular-nums">{data.ready}<span className="text-base text-muted-foreground">/{data.total}</span></p>
-                <div className="mt-2"><Bar value={data.ready} max={Math.max(data.total, 1)} /></div>
-                <p className="mt-2 text-xs text-muted-foreground">{pct(data.ready, data.total)}% mission capable · {data.crews} crews</p>
+                <p className="mt-2 text-3xl font-semibold tabular-nums">{data.ready}<span className="text-base text-muted-foreground">/{data.fleet}</span></p>
+                <div className="mt-2"><Bar value={data.ready} max={Math.max(data.fleet, 1)} /></div>
+                <p className="mt-2 text-xs text-muted-foreground">{pct(data.ready, data.fleet)}% mission capable</p>
               </div>
-              <Panel title="Safety exceptions">
+              <Panel title="Grounding faults">
                 <div className="divide-y divide-border">
-                  {data.safety.length === 0 && <Empty>No open exceptions.</Empty>}
-                  {data.safety.map((s: any) => (
-                    <RowLink key={s.id} to="/safety" title={s.incident_type ?? "Safety event"} meta={`${s.severity ?? "review"} · ${s.incident_date ?? "undated"}`} tone="risk" />
+                  {data.grounded.length === 0 && <Empty>Nothing grounded.</Empty>}
+                  {data.grounded.map((m: any) => (
+                    <RowLink key={m.id} to="/ops/readiness" title={m.title} meta={`${m.severity ?? "review"} · ${m.status ?? "open"}`} tone="risk" />
                   ))}
                 </div>
               </Panel>
-              <Panel title="Situation reports">
+              <Panel title="Asks from other teams">
                 <div className="divide-y divide-border">
-                  {data.logs.length === 0 && <Empty>No reports filed.</Empty>}
-                  {data.logs.map((l: any) => (
-                    <RowLink key={l.id} to="/daily-logs" title={l.log_date ?? "Log"} meta={l.work_performed ?? l.weather ?? l.status ?? "Filed"} />
+                  {data.handoffs.length === 0 && <Empty>Nothing waiting on Operations.</Empty>}
+                  {data.handoffs.map((r: any) => (
+                    <RowLink key={r.id} to="/requests" title={r.subject} meta={`${r.from_team} · ${r.priority ?? "normal"}`} />
                   ))}
                 </div>
               </Panel>
