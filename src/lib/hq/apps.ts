@@ -67,6 +67,27 @@ export function resolveAppSlug(): string {
   return "hq";
 }
 
+/**
+ * True when the person actually picked a workspace (query param, this tab's
+ * memory, or a legacy team subdomain). When false we are free to send them
+ * straight to the one workspace they belong to.
+ */
+export function hasExplicitAppSelection(): boolean {
+  if (typeof window === "undefined") return false;
+  const { hostname, search } = window.location;
+  if (new URLSearchParams(search).get("app")) return true;
+  try { if (sessionStorage.getItem(APP_OVERRIDE_KEY)) return true; } catch {}
+  if (NEUTRAL_HOSTS.some((re) => re.test(hostname))) return false;
+  const parts = hostname.split(".");
+  return parts.length >= 3 && !["www", "hq"].includes(parts[0].toLowerCase());
+}
+
+/** Remember a workspace for this browser tab. */
+export function rememberApp(subdomain: string) {
+  try { sessionStorage.setItem(APP_OVERRIDE_KEY, subdomain); } catch {}
+}
+
+
 /** Root domain used to build cross-app links (clovrlab.com). */
 export function rootDomain(): string | null {
   if (typeof window === "undefined") return null;
