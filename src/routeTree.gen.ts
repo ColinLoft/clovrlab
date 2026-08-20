@@ -64,6 +64,9 @@ import { Route as HqAnalyticsRouteImport } from './routes/_hq.analytics'
 import { Route as HqAccountingRouteImport } from './routes/_hq.accounting'
 import { Route as HqTeamsIndexRouteImport } from './routes/_hq.teams.index'
 import { Route as HqTeamsSlugRouteImport } from './routes/_hq.teams.$slug'
+import { Route as HqSystemsServicesRouteImport } from './routes/_hq.systems.services'
+import { Route as HqSystemsHelpdeskRouteImport } from './routes/_hq.systems.helpdesk'
+import { Route as HqSystemsAccessRouteImport } from './routes/_hq.systems.access'
 import { Route as HqProductRoadmapRouteImport } from './routes/_hq.product.roadmap'
 import { Route as HqProductReleasesRouteImport } from './routes/_hq.product.releases'
 import { Route as HqProductFeedbackRouteImport } from './routes/_hq.product.feedback'
@@ -363,6 +366,21 @@ const HqTeamsSlugRoute = HqTeamsSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => HqTeamsRoute,
 } as any)
+const HqSystemsServicesRoute = HqSystemsServicesRouteImport.update({
+  id: '/systems/services',
+  path: '/systems/services',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSystemsHelpdeskRoute = HqSystemsHelpdeskRouteImport.update({
+  id: '/systems/helpdesk',
+  path: '/systems/helpdesk',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSystemsAccessRoute = HqSystemsAccessRouteImport.update({
+  id: '/systems/access',
+  path: '/systems/access',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqProductRoadmapRoute = HqProductRoadmapRouteImport.update({
   id: '/product/roadmap',
   path: '/product/roadmap',
@@ -559,6 +577,9 @@ export interface FileRoutesByFullPath {
   '/product/feedback': typeof HqProductFeedbackRoute
   '/product/releases': typeof HqProductReleasesRoute
   '/product/roadmap': typeof HqProductRoadmapRoute
+  '/systems/access': typeof HqSystemsAccessRoute
+  '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
+  '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/teams/': typeof HqTeamsIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -638,6 +659,9 @@ export interface FileRoutesByTo {
   '/product/feedback': typeof HqProductFeedbackRoute
   '/product/releases': typeof HqProductReleasesRoute
   '/product/roadmap': typeof HqProductRoadmapRoute
+  '/systems/access': typeof HqSystemsAccessRoute
+  '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
+  '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/teams': typeof HqTeamsIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -720,6 +744,9 @@ export interface FileRoutesById {
   '/_hq/product/feedback': typeof HqProductFeedbackRoute
   '/_hq/product/releases': typeof HqProductReleasesRoute
   '/_hq/product/roadmap': typeof HqProductRoadmapRoute
+  '/_hq/systems/access': typeof HqSystemsAccessRoute
+  '/_hq/systems/helpdesk': typeof HqSystemsHelpdeskRoute
+  '/_hq/systems/services': typeof HqSystemsServicesRoute
   '/_hq/teams/$slug': typeof HqTeamsSlugRoute
   '/_hq/teams/': typeof HqTeamsIndexRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -802,6 +829,9 @@ export interface FileRouteTypes {
     | '/product/feedback'
     | '/product/releases'
     | '/product/roadmap'
+    | '/systems/access'
+    | '/systems/helpdesk'
+    | '/systems/services'
     | '/teams/$slug'
     | '/teams/'
     | '/lovable/email/auth/preview'
@@ -881,6 +911,9 @@ export interface FileRouteTypes {
     | '/product/feedback'
     | '/product/releases'
     | '/product/roadmap'
+    | '/systems/access'
+    | '/systems/helpdesk'
+    | '/systems/services'
     | '/teams/$slug'
     | '/teams'
     | '/lovable/email/auth/preview'
@@ -962,6 +995,9 @@ export interface FileRouteTypes {
     | '/_hq/product/feedback'
     | '/_hq/product/releases'
     | '/_hq/product/roadmap'
+    | '/_hq/systems/access'
+    | '/_hq/systems/helpdesk'
+    | '/_hq/systems/services'
     | '/_hq/teams/$slug'
     | '/_hq/teams/'
     | '/lovable/email/auth/preview'
@@ -1381,6 +1417,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqTeamsSlugRouteImport
       parentRoute: typeof HqTeamsRoute
     }
+    '/_hq/systems/services': {
+      id: '/_hq/systems/services'
+      path: '/systems/services'
+      fullPath: '/systems/services'
+      preLoaderRoute: typeof HqSystemsServicesRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/systems/helpdesk': {
+      id: '/_hq/systems/helpdesk'
+      path: '/systems/helpdesk'
+      fullPath: '/systems/helpdesk'
+      preLoaderRoute: typeof HqSystemsHelpdeskRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/systems/access': {
+      id: '/_hq/systems/access'
+      path: '/systems/access'
+      fullPath: '/systems/access'
+      preLoaderRoute: typeof HqSystemsAccessRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/product/roadmap': {
       id: '/_hq/product/roadmap'
       path: '/product/roadmap'
@@ -1620,6 +1677,9 @@ interface HqRouteChildren {
   HqProductFeedbackRoute: typeof HqProductFeedbackRoute
   HqProductReleasesRoute: typeof HqProductReleasesRoute
   HqProductRoadmapRoute: typeof HqProductRoadmapRoute
+  HqSystemsAccessRoute: typeof HqSystemsAccessRoute
+  HqSystemsHelpdeskRoute: typeof HqSystemsHelpdeskRoute
+  HqSystemsServicesRoute: typeof HqSystemsServicesRoute
 }
 
 const HqRouteChildren: HqRouteChildren = {
@@ -1677,6 +1737,9 @@ const HqRouteChildren: HqRouteChildren = {
   HqProductFeedbackRoute: HqProductFeedbackRoute,
   HqProductReleasesRoute: HqProductReleasesRoute,
   HqProductRoadmapRoute: HqProductRoadmapRoute,
+  HqSystemsAccessRoute: HqSystemsAccessRoute,
+  HqSystemsHelpdeskRoute: HqSystemsHelpdeskRoute,
+  HqSystemsServicesRoute: HqSystemsServicesRoute,
 }
 
 const HqRouteWithChildren = HqRoute._addFileChildren(HqRouteChildren)
