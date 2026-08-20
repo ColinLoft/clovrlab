@@ -73,8 +73,9 @@ export function ProductDashboard() {
             <aside className="space-y-3">
               {[
                 { label: "Open issues", value: data.issues, to: "/eng/issues" },
-                { label: "Reviews pending", value: data.reviews, to: "/eng/issues" },
-                { label: "Open changes", value: data.ecos, to: "/eng/issues" },
+                { label: "Reviews pending", value: data.reviews, to: "/eng/programs" },
+                { label: "Open changes", value: data.ecos, to: "/eng/changes" },
+
                               ].slice(0, 3).map((s) => (
                 <Link key={s.label} to={s.to as never} className="block rounded-lg border border-border bg-card p-4 hover:border-primary/60">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">{s.label}</p>
