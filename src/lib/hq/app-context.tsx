@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { fetchApps, resolveAppSlug, type OrgApp } from "./apps";
+import { fetchApps, resolveAppSlug, hasExplicitAppSelection, rememberApp, type OrgApp } from "./apps";
 import { applyAppTheme } from "./app-theme";
 import { useRouteAccess } from "./route-access";
+
 
 
 type AppState = {
@@ -53,17 +54,28 @@ export function CurrentAppProvider({ children }: { children: ReactNode }) {
     return () => { alive = false; };
   }, []);
 
-  const app = apps.find((a) => a.slug === slug || a.subdomain === slug) ?? null;
+  const matched = apps.find((a) => a.slug === slug || a.subdomain === slug) ?? null;
   const hub = apps.find((a) => a.is_hub) ?? null;
   const ready = !loading && !access.loading;
 
-  useEffect(() => { applyAppTheme(app ?? hub); }, [app?.id, hub?.id, app?.accent, app?.layout]);
-
-
   const opts = { isAdmin: access.isAdmin, units: access.units, unitSlugById };
   const permitted = apps.filter((a) => a.enabled && canEnter(a, opts));
-  const denied = ready && !!app && (!app.enabled || !canEnter(app, opts));
-  const unknown = ready && !app;
+  const teamApps = permitted.filter((a) => !a.is_hub);
+
+  // Nobody picked a workspace and this person belongs to exactly one team app:
+  // drop them straight into it instead of the shared hub.
+  const explicit = hasExplicitAppSelection();
+  const solo = !explicit && teamApps.length === 1 ? teamApps[0] : null;
+  const app = solo ?? matched;
+
+  useEffect(() => {
+    if (solo) rememberApp(solo.subdomain);
+  }, [solo?.id]);
+
+  useEffect(() => { applyAppTheme(app ?? hub); }, [app?.id, hub?.id, app?.accent, app?.layout]);
+
+  const denied = ready && !solo && !!matched && (!matched.enabled || !canEnter(matched, opts));
+  const unknown = ready && !solo && !matched;
 
   return (
     <Ctx.Provider
@@ -71,5 +83,6 @@ export function CurrentAppProvider({ children }: { children: ReactNode }) {
     >
       {children}
     </Ctx.Provider>
+
   );
 }

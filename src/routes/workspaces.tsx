@@ -51,12 +51,22 @@ function WorkspacePicker() {
   const ready = !loading && !access.loading;
   const opts = { isAdmin: access.isAdmin, units: access.units, unitSlugById };
   const permitted = apps.filter((a) => a.enabled && canEnter(a, opts));
+  const teamApps = permitted.filter((a) => !a.is_hub);
   const term = q.trim().toLowerCase();
   const shown = term
     ? permitted.filter((a) => `${a.label} ${a.tagline ?? ""} ${a.subdomain}`.toLowerCase().includes(term))
     : permitted;
   const hub = shown.find((a) => a.is_hub) ?? null;
   const rest = shown.filter((a) => !a.is_hub);
+
+  // One workspace, no choice to make — go straight in.
+  const soloTarget = ready && !access.isAdmin && teamApps.length === 1 ? teamApps[0] : null;
+  useEffect(() => {
+    if (!soloTarget) return;
+    try { sessionStorage.setItem("hq.app.override", soloTarget.subdomain); } catch {}
+    window.location.replace(appUrl(soloTarget));
+  }, [soloTarget?.id]);
+
 
   const open = (a: OrgApp, newTab: boolean) => {
     const url = appUrl(a);
@@ -68,7 +78,16 @@ function WorkspacePicker() {
   const hour = new Date().getHours();
   const partOfDay = hour < 5 ? "Late night" : hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
+  if (soloTarget) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center bg-background text-sm text-muted-foreground">
+        Opening {soloTarget.label}…
+      </div>
+    );
+  }
+
   return (
+
     <div className="relative min-h-dvh overflow-hidden bg-background text-foreground">
       <div
         aria-hidden
