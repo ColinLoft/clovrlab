@@ -82,6 +82,9 @@ import { Route as HqMfgLineRouteImport } from './routes/_hq.mfg.line'
 import { Route as HqFundGrantsRouteImport } from './routes/_hq.fund.grants'
 import { Route as HqFundDonorsRouteImport } from './routes/_hq.fund.donors'
 import { Route as HqFundDonationsRouteImport } from './routes/_hq.fund.donations'
+import { Route as HqExecOkrsRouteImport } from './routes/_hq.exec.okrs'
+import { Route as HqExecDecisionsRouteImport } from './routes/_hq.exec.decisions'
+import { Route as HqExecBriefingRouteImport } from './routes/_hq.exec.briefing'
 import { Route as HqEngProgramsRouteImport } from './routes/_hq.eng.programs'
 import { Route as HqEngIssuesRouteImport } from './routes/_hq.eng.issues'
 import { Route as HqEngChangesRouteImport } from './routes/_hq.eng.changes'
@@ -459,6 +462,21 @@ const HqFundDonationsRoute = HqFundDonationsRouteImport.update({
   path: '/fund/donations',
   getParentRoute: () => HqRoute,
 } as any)
+const HqExecOkrsRoute = HqExecOkrsRouteImport.update({
+  id: '/exec/okrs',
+  path: '/exec/okrs',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqExecDecisionsRoute = HqExecDecisionsRouteImport.update({
+  id: '/exec/decisions',
+  path: '/exec/decisions',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqExecBriefingRoute = HqExecBriefingRouteImport.update({
+  id: '/exec/briefing',
+  path: '/exec/briefing',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqEngProgramsRoute = HqEngProgramsRouteImport.update({
   id: '/eng/programs',
   path: '/eng/programs',
@@ -583,6 +601,9 @@ export interface FileRoutesByFullPath {
   '/eng/changes': typeof HqEngChangesRoute
   '/eng/issues': typeof HqEngIssuesRoute
   '/eng/programs': typeof HqEngProgramsRoute
+  '/exec/briefing': typeof HqExecBriefingRoute
+  '/exec/decisions': typeof HqExecDecisionsRoute
+  '/exec/okrs': typeof HqExecOkrsRoute
   '/fund/donations': typeof HqFundDonationsRoute
   '/fund/donors': typeof HqFundDonorsRoute
   '/fund/grants': typeof HqFundGrantsRoute
@@ -668,6 +689,9 @@ export interface FileRoutesByTo {
   '/eng/changes': typeof HqEngChangesRoute
   '/eng/issues': typeof HqEngIssuesRoute
   '/eng/programs': typeof HqEngProgramsRoute
+  '/exec/briefing': typeof HqExecBriefingRoute
+  '/exec/decisions': typeof HqExecDecisionsRoute
+  '/exec/okrs': typeof HqExecOkrsRoute
   '/fund/donations': typeof HqFundDonationsRoute
   '/fund/donors': typeof HqFundDonorsRoute
   '/fund/grants': typeof HqFundGrantsRoute
@@ -756,6 +780,9 @@ export interface FileRoutesById {
   '/_hq/eng/changes': typeof HqEngChangesRoute
   '/_hq/eng/issues': typeof HqEngIssuesRoute
   '/_hq/eng/programs': typeof HqEngProgramsRoute
+  '/_hq/exec/briefing': typeof HqExecBriefingRoute
+  '/_hq/exec/decisions': typeof HqExecDecisionsRoute
+  '/_hq/exec/okrs': typeof HqExecOkrsRoute
   '/_hq/fund/donations': typeof HqFundDonationsRoute
   '/_hq/fund/donors': typeof HqFundDonorsRoute
   '/_hq/fund/grants': typeof HqFundGrantsRoute
@@ -844,6 +871,9 @@ export interface FileRouteTypes {
     | '/eng/changes'
     | '/eng/issues'
     | '/eng/programs'
+    | '/exec/briefing'
+    | '/exec/decisions'
+    | '/exec/okrs'
     | '/fund/donations'
     | '/fund/donors'
     | '/fund/grants'
@@ -929,6 +959,9 @@ export interface FileRouteTypes {
     | '/eng/changes'
     | '/eng/issues'
     | '/eng/programs'
+    | '/exec/briefing'
+    | '/exec/decisions'
+    | '/exec/okrs'
     | '/fund/donations'
     | '/fund/donors'
     | '/fund/grants'
@@ -1016,6 +1049,9 @@ export interface FileRouteTypes {
     | '/_hq/eng/changes'
     | '/_hq/eng/issues'
     | '/_hq/eng/programs'
+    | '/_hq/exec/briefing'
+    | '/_hq/exec/decisions'
+    | '/_hq/exec/okrs'
     | '/_hq/fund/donations'
     | '/_hq/fund/donors'
     | '/_hq/fund/grants'
@@ -1579,6 +1615,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqFundDonationsRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/exec/okrs': {
+      id: '/_hq/exec/okrs'
+      path: '/exec/okrs'
+      fullPath: '/exec/okrs'
+      preLoaderRoute: typeof HqExecOkrsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/exec/decisions': {
+      id: '/_hq/exec/decisions'
+      path: '/exec/decisions'
+      fullPath: '/exec/decisions'
+      preLoaderRoute: typeof HqExecDecisionsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/exec/briefing': {
+      id: '/_hq/exec/briefing'
+      path: '/exec/briefing'
+      fullPath: '/exec/briefing'
+      preLoaderRoute: typeof HqExecBriefingRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/eng/programs': {
       id: '/_hq/eng/programs'
       path: '/eng/programs'
@@ -1722,6 +1779,9 @@ interface HqRouteChildren {
   HqEngChangesRoute: typeof HqEngChangesRoute
   HqEngIssuesRoute: typeof HqEngIssuesRoute
   HqEngProgramsRoute: typeof HqEngProgramsRoute
+  HqExecBriefingRoute: typeof HqExecBriefingRoute
+  HqExecDecisionsRoute: typeof HqExecDecisionsRoute
+  HqExecOkrsRoute: typeof HqExecOkrsRoute
   HqFundDonationsRoute: typeof HqFundDonationsRoute
   HqFundDonorsRoute: typeof HqFundDonorsRoute
   HqFundGrantsRoute: typeof HqFundGrantsRoute
@@ -1785,6 +1845,9 @@ const HqRouteChildren: HqRouteChildren = {
   HqEngChangesRoute: HqEngChangesRoute,
   HqEngIssuesRoute: HqEngIssuesRoute,
   HqEngProgramsRoute: HqEngProgramsRoute,
+  HqExecBriefingRoute: HqExecBriefingRoute,
+  HqExecDecisionsRoute: HqExecDecisionsRoute,
+  HqExecOkrsRoute: HqExecOkrsRoute,
   HqFundDonationsRoute: HqFundDonationsRoute,
   HqFundDonorsRoute: HqFundDonorsRoute,
   HqFundGrantsRoute: HqFundGrantsRoute,
