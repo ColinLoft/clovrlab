@@ -55,6 +55,7 @@ import { Route as HqSafetyRouteImport } from './routes/_hq.safety'
 import { Route as HqRfisRouteImport } from './routes/_hq.rfis'
 import { Route as HqReviewsRouteImport } from './routes/_hq.reviews'
 import { Route as HqResourcePlanningRouteImport } from './routes/_hq.resource-planning'
+import { Route as HqRequestsRouteImport } from './routes/_hq.requests'
 import { Route as HqReceivingRouteImport } from './routes/_hq.receiving'
 import { Route as HqRdIdeasRouteImport } from './routes/_hq.rd-ideas'
 import { Route as HqQuotesRouteImport } from './routes/_hq.quotes'
@@ -114,7 +115,18 @@ import { Route as HqClientsIndexRouteImport } from './routes/_hq.clients.index'
 import { Route as ApiHqAssistantRouteImport } from './routes/api/hq/assistant'
 import { Route as HqTeamsSlugRouteImport } from './routes/_hq.teams.$slug'
 import { Route as HqQuotesIdRouteImport } from './routes/_hq.quotes.$id'
+import { Route as HqProductRoadmapRouteImport } from './routes/_hq.product.roadmap'
+import { Route as HqProductReleasesRouteImport } from './routes/_hq.product.releases'
+import { Route as HqProductFeedbackRouteImport } from './routes/_hq.product.feedback'
+import { Route as HqOpsReadinessRouteImport } from './routes/_hq.ops.readiness'
+import { Route as HqOpsFlightsRouteImport } from './routes/_hq.ops.flights'
+import { Route as HqOpsDetectionsRouteImport } from './routes/_hq.ops.detections'
+import { Route as HqOpsControlRouteImport } from './routes/_hq.ops.control'
+import { Route as HqOpsAirspaceRouteImport } from './routes/_hq.ops.airspace'
 import { Route as HqJobsIdRouteImport } from './routes/_hq.jobs.$id'
+import { Route as HqEngProgramsRouteImport } from './routes/_hq.eng.programs'
+import { Route as HqEngIssuesRouteImport } from './routes/_hq.eng.issues'
+import { Route as HqEngChangesRouteImport } from './routes/_hq.eng.changes'
 import { Route as HqClientsIdRouteImport } from './routes/_hq.clients.$id'
 import { Route as HqAdminSlackRouteImport } from './routes/_hq.admin.slack'
 import { Route as HqAdminOrgRouteImport } from './routes/_hq.admin.org'
@@ -353,6 +365,11 @@ const HqReviewsRoute = HqReviewsRouteImport.update({
 const HqResourcePlanningRoute = HqResourcePlanningRouteImport.update({
   id: '/resource-planning',
   path: '/resource-planning',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqRequestsRoute = HqRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
   getParentRoute: () => HqRoute,
 } as any)
 const HqReceivingRoute = HqReceivingRouteImport.update({
@@ -650,10 +667,65 @@ const HqQuotesIdRoute = HqQuotesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => HqQuotesRoute,
 } as any)
+const HqProductRoadmapRoute = HqProductRoadmapRouteImport.update({
+  id: '/product/roadmap',
+  path: '/product/roadmap',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqProductReleasesRoute = HqProductReleasesRouteImport.update({
+  id: '/product/releases',
+  path: '/product/releases',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqProductFeedbackRoute = HqProductFeedbackRouteImport.update({
+  id: '/product/feedback',
+  path: '/product/feedback',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsReadinessRoute = HqOpsReadinessRouteImport.update({
+  id: '/ops/readiness',
+  path: '/ops/readiness',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsFlightsRoute = HqOpsFlightsRouteImport.update({
+  id: '/ops/flights',
+  path: '/ops/flights',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsDetectionsRoute = HqOpsDetectionsRouteImport.update({
+  id: '/ops/detections',
+  path: '/ops/detections',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsControlRoute = HqOpsControlRouteImport.update({
+  id: '/ops/control',
+  path: '/ops/control',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsAirspaceRoute = HqOpsAirspaceRouteImport.update({
+  id: '/ops/airspace',
+  path: '/ops/airspace',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqJobsIdRoute = HqJobsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => HqJobsRoute,
+} as any)
+const HqEngProgramsRoute = HqEngProgramsRouteImport.update({
+  id: '/eng/programs',
+  path: '/eng/programs',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqEngIssuesRoute = HqEngIssuesRouteImport.update({
+  id: '/eng/issues',
+  path: '/eng/issues',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqEngChangesRoute = HqEngChangesRouteImport.update({
+  id: '/eng/changes',
+  path: '/eng/changes',
+  getParentRoute: () => HqRoute,
 } as any)
 const HqClientsIdRoute = HqClientsIdRouteImport.update({
   id: '/$id',
@@ -777,6 +849,7 @@ export interface FileRoutesByFullPath {
   '/quotes': typeof HqQuotesRouteWithChildren
   '/rd-ideas': typeof HqRdIdeasRoute
   '/receiving': typeof HqReceivingRoute
+  '/requests': typeof HqRequestsRoute
   '/resource-planning': typeof HqResourcePlanningRoute
   '/reviews': typeof HqReviewsRoute
   '/rfis': typeof HqRfisRoute
@@ -812,7 +885,18 @@ export interface FileRoutesByFullPath {
   '/admin/org': typeof HqAdminOrgRoute
   '/admin/slack': typeof HqAdminSlackRoute
   '/clients/$id': typeof HqClientsIdRoute
+  '/eng/changes': typeof HqEngChangesRoute
+  '/eng/issues': typeof HqEngIssuesRoute
+  '/eng/programs': typeof HqEngProgramsRoute
   '/jobs/$id': typeof HqJobsIdRoute
+  '/ops/airspace': typeof HqOpsAirspaceRoute
+  '/ops/control': typeof HqOpsControlRoute
+  '/ops/detections': typeof HqOpsDetectionsRoute
+  '/ops/flights': typeof HqOpsFlightsRoute
+  '/ops/readiness': typeof HqOpsReadinessRoute
+  '/product/feedback': typeof HqProductFeedbackRoute
+  '/product/releases': typeof HqProductReleasesRoute
+  '/product/roadmap': typeof HqProductRoadmapRoute
   '/quotes/$id': typeof HqQuotesIdRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/api/hq/assistant': typeof ApiHqAssistantRoute
@@ -890,6 +974,7 @@ export interface FileRoutesByTo {
   '/purchase-orders': typeof HqPurchaseOrdersRoute
   '/rd-ideas': typeof HqRdIdeasRoute
   '/receiving': typeof HqReceivingRoute
+  '/requests': typeof HqRequestsRoute
   '/resource-planning': typeof HqResourcePlanningRoute
   '/reviews': typeof HqReviewsRoute
   '/rfis': typeof HqRfisRoute
@@ -924,7 +1009,18 @@ export interface FileRoutesByTo {
   '/admin/org': typeof HqAdminOrgRoute
   '/admin/slack': typeof HqAdminSlackRoute
   '/clients/$id': typeof HqClientsIdRoute
+  '/eng/changes': typeof HqEngChangesRoute
+  '/eng/issues': typeof HqEngIssuesRoute
+  '/eng/programs': typeof HqEngProgramsRoute
   '/jobs/$id': typeof HqJobsIdRoute
+  '/ops/airspace': typeof HqOpsAirspaceRoute
+  '/ops/control': typeof HqOpsControlRoute
+  '/ops/detections': typeof HqOpsDetectionsRoute
+  '/ops/flights': typeof HqOpsFlightsRoute
+  '/ops/readiness': typeof HqOpsReadinessRoute
+  '/product/feedback': typeof HqProductFeedbackRoute
+  '/product/releases': typeof HqProductReleasesRoute
+  '/product/roadmap': typeof HqProductRoadmapRoute
   '/quotes/$id': typeof HqQuotesIdRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/api/hq/assistant': typeof ApiHqAssistantRoute
@@ -1008,6 +1104,7 @@ export interface FileRoutesById {
   '/_hq/quotes': typeof HqQuotesRouteWithChildren
   '/_hq/rd-ideas': typeof HqRdIdeasRoute
   '/_hq/receiving': typeof HqReceivingRoute
+  '/_hq/requests': typeof HqRequestsRoute
   '/_hq/resource-planning': typeof HqResourcePlanningRoute
   '/_hq/reviews': typeof HqReviewsRoute
   '/_hq/rfis': typeof HqRfisRoute
@@ -1043,7 +1140,18 @@ export interface FileRoutesById {
   '/_hq/admin/org': typeof HqAdminOrgRoute
   '/_hq/admin/slack': typeof HqAdminSlackRoute
   '/_hq/clients/$id': typeof HqClientsIdRoute
+  '/_hq/eng/changes': typeof HqEngChangesRoute
+  '/_hq/eng/issues': typeof HqEngIssuesRoute
+  '/_hq/eng/programs': typeof HqEngProgramsRoute
   '/_hq/jobs/$id': typeof HqJobsIdRoute
+  '/_hq/ops/airspace': typeof HqOpsAirspaceRoute
+  '/_hq/ops/control': typeof HqOpsControlRoute
+  '/_hq/ops/detections': typeof HqOpsDetectionsRoute
+  '/_hq/ops/flights': typeof HqOpsFlightsRoute
+  '/_hq/ops/readiness': typeof HqOpsReadinessRoute
+  '/_hq/product/feedback': typeof HqProductFeedbackRoute
+  '/_hq/product/releases': typeof HqProductReleasesRoute
+  '/_hq/product/roadmap': typeof HqProductRoadmapRoute
   '/_hq/quotes/$id': typeof HqQuotesIdRoute
   '/_hq/teams/$slug': typeof HqTeamsSlugRoute
   '/api/hq/assistant': typeof ApiHqAssistantRoute
@@ -1127,6 +1235,7 @@ export interface FileRouteTypes {
     | '/quotes'
     | '/rd-ideas'
     | '/receiving'
+    | '/requests'
     | '/resource-planning'
     | '/reviews'
     | '/rfis'
@@ -1162,7 +1271,18 @@ export interface FileRouteTypes {
     | '/admin/org'
     | '/admin/slack'
     | '/clients/$id'
+    | '/eng/changes'
+    | '/eng/issues'
+    | '/eng/programs'
     | '/jobs/$id'
+    | '/ops/airspace'
+    | '/ops/control'
+    | '/ops/detections'
+    | '/ops/flights'
+    | '/ops/readiness'
+    | '/product/feedback'
+    | '/product/releases'
+    | '/product/roadmap'
     | '/quotes/$id'
     | '/teams/$slug'
     | '/api/hq/assistant'
@@ -1240,6 +1360,7 @@ export interface FileRouteTypes {
     | '/purchase-orders'
     | '/rd-ideas'
     | '/receiving'
+    | '/requests'
     | '/resource-planning'
     | '/reviews'
     | '/rfis'
@@ -1274,7 +1395,18 @@ export interface FileRouteTypes {
     | '/admin/org'
     | '/admin/slack'
     | '/clients/$id'
+    | '/eng/changes'
+    | '/eng/issues'
+    | '/eng/programs'
     | '/jobs/$id'
+    | '/ops/airspace'
+    | '/ops/control'
+    | '/ops/detections'
+    | '/ops/flights'
+    | '/ops/readiness'
+    | '/product/feedback'
+    | '/product/releases'
+    | '/product/roadmap'
     | '/quotes/$id'
     | '/teams/$slug'
     | '/api/hq/assistant'
@@ -1357,6 +1489,7 @@ export interface FileRouteTypes {
     | '/_hq/quotes'
     | '/_hq/rd-ideas'
     | '/_hq/receiving'
+    | '/_hq/requests'
     | '/_hq/resource-planning'
     | '/_hq/reviews'
     | '/_hq/rfis'
@@ -1392,7 +1525,18 @@ export interface FileRouteTypes {
     | '/_hq/admin/org'
     | '/_hq/admin/slack'
     | '/_hq/clients/$id'
+    | '/_hq/eng/changes'
+    | '/_hq/eng/issues'
+    | '/_hq/eng/programs'
     | '/_hq/jobs/$id'
+    | '/_hq/ops/airspace'
+    | '/_hq/ops/control'
+    | '/_hq/ops/detections'
+    | '/_hq/ops/flights'
+    | '/_hq/ops/readiness'
+    | '/_hq/product/feedback'
+    | '/_hq/product/releases'
+    | '/_hq/product/roadmap'
     | '/_hq/quotes/$id'
     | '/_hq/teams/$slug'
     | '/api/hq/assistant'
@@ -1755,6 +1899,13 @@ declare module '@tanstack/react-router' {
       path: '/resource-planning'
       fullPath: '/resource-planning'
       preLoaderRoute: typeof HqResourcePlanningRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/requests': {
+      id: '/_hq/requests'
+      path: '/requests'
+      fullPath: '/requests'
+      preLoaderRoute: typeof HqRequestsRouteImport
       parentRoute: typeof HqRoute
     }
     '/_hq/receiving': {
@@ -2170,12 +2321,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqQuotesIdRouteImport
       parentRoute: typeof HqQuotesRoute
     }
+    '/_hq/product/roadmap': {
+      id: '/_hq/product/roadmap'
+      path: '/product/roadmap'
+      fullPath: '/product/roadmap'
+      preLoaderRoute: typeof HqProductRoadmapRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/product/releases': {
+      id: '/_hq/product/releases'
+      path: '/product/releases'
+      fullPath: '/product/releases'
+      preLoaderRoute: typeof HqProductReleasesRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/product/feedback': {
+      id: '/_hq/product/feedback'
+      path: '/product/feedback'
+      fullPath: '/product/feedback'
+      preLoaderRoute: typeof HqProductFeedbackRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/readiness': {
+      id: '/_hq/ops/readiness'
+      path: '/ops/readiness'
+      fullPath: '/ops/readiness'
+      preLoaderRoute: typeof HqOpsReadinessRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/flights': {
+      id: '/_hq/ops/flights'
+      path: '/ops/flights'
+      fullPath: '/ops/flights'
+      preLoaderRoute: typeof HqOpsFlightsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/detections': {
+      id: '/_hq/ops/detections'
+      path: '/ops/detections'
+      fullPath: '/ops/detections'
+      preLoaderRoute: typeof HqOpsDetectionsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/control': {
+      id: '/_hq/ops/control'
+      path: '/ops/control'
+      fullPath: '/ops/control'
+      preLoaderRoute: typeof HqOpsControlRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/airspace': {
+      id: '/_hq/ops/airspace'
+      path: '/ops/airspace'
+      fullPath: '/ops/airspace'
+      preLoaderRoute: typeof HqOpsAirspaceRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/jobs/$id': {
       id: '/_hq/jobs/$id'
       path: '/$id'
       fullPath: '/jobs/$id'
       preLoaderRoute: typeof HqJobsIdRouteImport
       parentRoute: typeof HqJobsRoute
+    }
+    '/_hq/eng/programs': {
+      id: '/_hq/eng/programs'
+      path: '/eng/programs'
+      fullPath: '/eng/programs'
+      preLoaderRoute: typeof HqEngProgramsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/eng/issues': {
+      id: '/_hq/eng/issues'
+      path: '/eng/issues'
+      fullPath: '/eng/issues'
+      preLoaderRoute: typeof HqEngIssuesRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/eng/changes': {
+      id: '/_hq/eng/changes'
+      path: '/eng/changes'
+      fullPath: '/eng/changes'
+      preLoaderRoute: typeof HqEngChangesRouteImport
+      parentRoute: typeof HqRoute
     }
     '/_hq/clients/$id': {
       id: '/_hq/clients/$id'
@@ -2357,6 +2585,7 @@ interface HqRouteChildren {
   HqQuotesRoute: typeof HqQuotesRouteWithChildren
   HqRdIdeasRoute: typeof HqRdIdeasRoute
   HqReceivingRoute: typeof HqReceivingRoute
+  HqRequestsRoute: typeof HqRequestsRoute
   HqResourcePlanningRoute: typeof HqResourcePlanningRoute
   HqReviewsRoute: typeof HqReviewsRoute
   HqRfisRoute: typeof HqRfisRoute
@@ -2382,6 +2611,17 @@ interface HqRouteChildren {
   HqAdminItRoute: typeof HqAdminItRoute
   HqAdminOrgRoute: typeof HqAdminOrgRoute
   HqAdminSlackRoute: typeof HqAdminSlackRoute
+  HqEngChangesRoute: typeof HqEngChangesRoute
+  HqEngIssuesRoute: typeof HqEngIssuesRoute
+  HqEngProgramsRoute: typeof HqEngProgramsRoute
+  HqOpsAirspaceRoute: typeof HqOpsAirspaceRoute
+  HqOpsControlRoute: typeof HqOpsControlRoute
+  HqOpsDetectionsRoute: typeof HqOpsDetectionsRoute
+  HqOpsFlightsRoute: typeof HqOpsFlightsRoute
+  HqOpsReadinessRoute: typeof HqOpsReadinessRoute
+  HqProductFeedbackRoute: typeof HqProductFeedbackRoute
+  HqProductReleasesRoute: typeof HqProductReleasesRoute
+  HqProductRoadmapRoute: typeof HqProductRoadmapRoute
 }
 
 const HqRouteChildren: HqRouteChildren = {
@@ -2437,6 +2677,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqQuotesRoute: HqQuotesRouteWithChildren,
   HqRdIdeasRoute: HqRdIdeasRoute,
   HqReceivingRoute: HqReceivingRoute,
+  HqRequestsRoute: HqRequestsRoute,
   HqResourcePlanningRoute: HqResourcePlanningRoute,
   HqReviewsRoute: HqReviewsRoute,
   HqRfisRoute: HqRfisRoute,
@@ -2462,6 +2703,17 @@ const HqRouteChildren: HqRouteChildren = {
   HqAdminItRoute: HqAdminItRoute,
   HqAdminOrgRoute: HqAdminOrgRoute,
   HqAdminSlackRoute: HqAdminSlackRoute,
+  HqEngChangesRoute: HqEngChangesRoute,
+  HqEngIssuesRoute: HqEngIssuesRoute,
+  HqEngProgramsRoute: HqEngProgramsRoute,
+  HqOpsAirspaceRoute: HqOpsAirspaceRoute,
+  HqOpsControlRoute: HqOpsControlRoute,
+  HqOpsDetectionsRoute: HqOpsDetectionsRoute,
+  HqOpsFlightsRoute: HqOpsFlightsRoute,
+  HqOpsReadinessRoute: HqOpsReadinessRoute,
+  HqProductFeedbackRoute: HqProductFeedbackRoute,
+  HqProductReleasesRoute: HqProductReleasesRoute,
+  HqProductRoadmapRoute: HqProductRoadmapRoute,
 }
 
 const HqRouteWithChildren = HqRoute._addFileChildren(HqRouteChildren)

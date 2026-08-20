@@ -2,6 +2,8 @@ import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ChevronDown, LogOut, Settings as SettingsIcon, Search, HelpCircle, PanelLeftClose } from "lucide-react";
 import { navGroups } from "./nav-config";
+import { navForApp, type AppNavGroup } from "./app-nav";
+
 import { useRouteAccess } from "@/lib/hq/route-access";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentApp } from "@/lib/hq/app-context";
@@ -25,16 +27,21 @@ export function Sidebar({ onNavigate, onCollapse }: { onNavigate?: () => void; o
   const { app } = useCurrentApp();
 
   const permittedGroups = useMemo(() => {
-    // 1. Only the sections this workspace exposes.
-    const inApp = app && app.nav_groups.length > 0
-      ? navGroups.filter((g) => app.nav_groups.includes(g.label))
-      : navGroups;
+    // 1. Each workspace ships its own purpose-built navigation.
+    const custom = navForApp(app?.slug);
+    const inApp: AppNavGroup[] = custom
+      ? custom
+      : app && app.nav_groups.length > 0
+        ? (navGroups.filter((g) => app.nav_groups.includes(g.label)) as AppNavGroup[])
+        : (navGroups as AppNavGroup[]);
     // 2. Then the person's own page permissions.
     if (access.isAdmin || access.allowed === null) return inApp;
     return inApp
       .map((g) => ({ ...g, items: g.items.filter((i) => ALWAYS_VISIBLE.has(i.to) || access.allowed!.has(i.to)) }))
       .filter((g) => g.items.length > 0);
+
   }, [access, app]);
+
 
   useEffect(() => {
     try {
