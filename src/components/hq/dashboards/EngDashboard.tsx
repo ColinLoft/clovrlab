@@ -6,7 +6,7 @@ async function load() {
     rows("eng_projects", "id,name,status,target_date,progress", (q: any) => q.neq("status", "complete").order("target_date", { nullsFirst: false }), 6),
     rows("eng_milestones", "id,title,due_date,status,project_id", (q: any) => q.neq("status", "complete").order("due_date", { nullsFirst: false }), 6),
     rows("eng_issues", "id,title,severity,status,created_at", (q: any) => q.neq("status", "closed").order("created_at", { ascending: false }), 8),
-    rows("eng_design_reviews", "id,title,status,scheduled_at", (q: any) => q.neq("status", "approved").order("scheduled_date", { nullsFirst: false }), 5),
+    rows("eng_design_reviews", "id,title,status,review_date", (q: any) => q.neq("status", "approved").order("scheduled_date", { nullsFirst: false }), 5),
     rows("eng_ecos", "id,title,status,created_at", (q: any) => q.neq("status", "implemented").order("created_at", { ascending: false }), 5),
     count("eng_bom_items"),
     rows("eng_tasks", "id,title,status,priority,due_date", (q: any) => q.neq("status", "done").order("due_date", { nullsFirst: false }), 8),
@@ -84,7 +84,7 @@ export function EngDashboard() {
                   <RowLink key={m.id} to="/eng-projects" title={m.title} meta={`Milestone · ${m.due_date ?? "unscheduled"}`} badge="gate" />
                 ))}
                 {data.reviews.map((r: any) => (
-                  <RowLink key={r.id} to="/eng-projects" title={r.title} meta={`Review · ${r.scheduled_at ?? "unscheduled"}`} badge="review" />
+                  <RowLink key={r.id} to="/eng-projects" title={r.title} meta={`Review · ${r.review_date ?? "unscheduled"}`} badge="review" />
                 ))}
               </div>
             </Panel>
