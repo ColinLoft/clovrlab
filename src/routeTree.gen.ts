@@ -72,6 +72,7 @@ import { Route as HqOpsFlightsRouteImport } from './routes/_hq.ops.flights'
 import { Route as HqOpsDetectionsRouteImport } from './routes/_hq.ops.detections'
 import { Route as HqOpsControlRouteImport } from './routes/_hq.ops.control'
 import { Route as HqOpsAirspaceRouteImport } from './routes/_hq.ops.airspace'
+import { Route as HqMfgSupplyRouteImport } from './routes/_hq.mfg.supply'
 import { Route as HqMfgStockRouteImport } from './routes/_hq.mfg.stock'
 import { Route as HqMfgQualityRouteImport } from './routes/_hq.mfg.quality'
 import { Route as HqMfgLineRouteImport } from './routes/_hq.mfg.line'
@@ -402,6 +403,11 @@ const HqOpsAirspaceRoute = HqOpsAirspaceRouteImport.update({
   path: '/ops/airspace',
   getParentRoute: () => HqRoute,
 } as any)
+const HqMfgSupplyRoute = HqMfgSupplyRouteImport.update({
+  id: '/mfg/supply',
+  path: '/mfg/supply',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqMfgStockRoute = HqMfgStockRouteImport.update({
   id: '/mfg/stock',
   path: '/mfg/stock',
@@ -544,6 +550,7 @@ export interface FileRoutesByFullPath {
   '/mfg/line': typeof HqMfgLineRoute
   '/mfg/quality': typeof HqMfgQualityRoute
   '/mfg/stock': typeof HqMfgStockRoute
+  '/mfg/supply': typeof HqMfgSupplyRoute
   '/ops/airspace': typeof HqOpsAirspaceRoute
   '/ops/control': typeof HqOpsControlRoute
   '/ops/detections': typeof HqOpsDetectionsRoute
@@ -622,6 +629,7 @@ export interface FileRoutesByTo {
   '/mfg/line': typeof HqMfgLineRoute
   '/mfg/quality': typeof HqMfgQualityRoute
   '/mfg/stock': typeof HqMfgStockRoute
+  '/mfg/supply': typeof HqMfgSupplyRoute
   '/ops/airspace': typeof HqOpsAirspaceRoute
   '/ops/control': typeof HqOpsControlRoute
   '/ops/detections': typeof HqOpsDetectionsRoute
@@ -703,6 +711,7 @@ export interface FileRoutesById {
   '/_hq/mfg/line': typeof HqMfgLineRoute
   '/_hq/mfg/quality': typeof HqMfgQualityRoute
   '/_hq/mfg/stock': typeof HqMfgStockRoute
+  '/_hq/mfg/supply': typeof HqMfgSupplyRoute
   '/_hq/ops/airspace': typeof HqOpsAirspaceRoute
   '/_hq/ops/control': typeof HqOpsControlRoute
   '/_hq/ops/detections': typeof HqOpsDetectionsRoute
@@ -784,6 +793,7 @@ export interface FileRouteTypes {
     | '/mfg/line'
     | '/mfg/quality'
     | '/mfg/stock'
+    | '/mfg/supply'
     | '/ops/airspace'
     | '/ops/control'
     | '/ops/detections'
@@ -862,6 +872,7 @@ export interface FileRouteTypes {
     | '/mfg/line'
     | '/mfg/quality'
     | '/mfg/stock'
+    | '/mfg/supply'
     | '/ops/airspace'
     | '/ops/control'
     | '/ops/detections'
@@ -942,6 +953,7 @@ export interface FileRouteTypes {
     | '/_hq/mfg/line'
     | '/_hq/mfg/quality'
     | '/_hq/mfg/stock'
+    | '/_hq/mfg/supply'
     | '/_hq/ops/airspace'
     | '/_hq/ops/control'
     | '/_hq/ops/detections'
@@ -1425,6 +1437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqOpsAirspaceRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/mfg/supply': {
+      id: '/_hq/mfg/supply'
+      path: '/mfg/supply'
+      fullPath: '/mfg/supply'
+      preLoaderRoute: typeof HqMfgSupplyRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/mfg/stock': {
       id: '/_hq/mfg/stock'
       path: '/mfg/stock'
@@ -1592,6 +1611,7 @@ interface HqRouteChildren {
   HqMfgLineRoute: typeof HqMfgLineRoute
   HqMfgQualityRoute: typeof HqMfgQualityRoute
   HqMfgStockRoute: typeof HqMfgStockRoute
+  HqMfgSupplyRoute: typeof HqMfgSupplyRoute
   HqOpsAirspaceRoute: typeof HqOpsAirspaceRoute
   HqOpsControlRoute: typeof HqOpsControlRoute
   HqOpsDetectionsRoute: typeof HqOpsDetectionsRoute
@@ -1648,6 +1668,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqMfgLineRoute: HqMfgLineRoute,
   HqMfgQualityRoute: HqMfgQualityRoute,
   HqMfgStockRoute: HqMfgStockRoute,
+  HqMfgSupplyRoute: HqMfgSupplyRoute,
   HqOpsAirspaceRoute: HqOpsAirspaceRoute,
   HqOpsControlRoute: HqOpsControlRoute,
   HqOpsDetectionsRoute: HqOpsDetectionsRoute,
