@@ -116,6 +116,7 @@ import { Route as ApiHqAssistantRouteImport } from './routes/api/hq/assistant'
 import { Route as HqTeamsSlugRouteImport } from './routes/_hq.teams.$slug'
 import { Route as HqQuotesIdRouteImport } from './routes/_hq.quotes.$id'
 import { Route as HqProductRoadmapRouteImport } from './routes/_hq.product.roadmap'
+import { Route as HqProductReleasesRouteImport } from './routes/_hq.product.releases'
 import { Route as HqOpsReadinessRouteImport } from './routes/_hq.ops.readiness'
 import { Route as HqOpsFlightsRouteImport } from './routes/_hq.ops.flights'
 import { Route as HqOpsDetectionsRouteImport } from './routes/_hq.ops.detections'
@@ -670,6 +671,11 @@ const HqProductRoadmapRoute = HqProductRoadmapRouteImport.update({
   path: '/product/roadmap',
   getParentRoute: () => HqRoute,
 } as any)
+const HqProductReleasesRoute = HqProductReleasesRouteImport.update({
+  id: '/product/releases',
+  path: '/product/releases',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqOpsReadinessRoute = HqOpsReadinessRouteImport.update({
   id: '/ops/readiness',
   path: '/ops/readiness',
@@ -882,6 +888,7 @@ export interface FileRoutesByFullPath {
   '/ops/detections': typeof HqOpsDetectionsRoute
   '/ops/flights': typeof HqOpsFlightsRoute
   '/ops/readiness': typeof HqOpsReadinessRoute
+  '/product/releases': typeof HqProductReleasesRoute
   '/product/roadmap': typeof HqProductRoadmapRoute
   '/quotes/$id': typeof HqQuotesIdRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
@@ -1004,6 +1011,7 @@ export interface FileRoutesByTo {
   '/ops/detections': typeof HqOpsDetectionsRoute
   '/ops/flights': typeof HqOpsFlightsRoute
   '/ops/readiness': typeof HqOpsReadinessRoute
+  '/product/releases': typeof HqProductReleasesRoute
   '/product/roadmap': typeof HqProductRoadmapRoute
   '/quotes/$id': typeof HqQuotesIdRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
@@ -1133,6 +1141,7 @@ export interface FileRoutesById {
   '/_hq/ops/detections': typeof HqOpsDetectionsRoute
   '/_hq/ops/flights': typeof HqOpsFlightsRoute
   '/_hq/ops/readiness': typeof HqOpsReadinessRoute
+  '/_hq/product/releases': typeof HqProductReleasesRoute
   '/_hq/product/roadmap': typeof HqProductRoadmapRoute
   '/_hq/quotes/$id': typeof HqQuotesIdRoute
   '/_hq/teams/$slug': typeof HqTeamsSlugRoute
@@ -1262,6 +1271,7 @@ export interface FileRouteTypes {
     | '/ops/detections'
     | '/ops/flights'
     | '/ops/readiness'
+    | '/product/releases'
     | '/product/roadmap'
     | '/quotes/$id'
     | '/teams/$slug'
@@ -1384,6 +1394,7 @@ export interface FileRouteTypes {
     | '/ops/detections'
     | '/ops/flights'
     | '/ops/readiness'
+    | '/product/releases'
     | '/product/roadmap'
     | '/quotes/$id'
     | '/teams/$slug'
@@ -1512,6 +1523,7 @@ export interface FileRouteTypes {
     | '/_hq/ops/detections'
     | '/_hq/ops/flights'
     | '/_hq/ops/readiness'
+    | '/_hq/product/releases'
     | '/_hq/product/roadmap'
     | '/_hq/quotes/$id'
     | '/_hq/teams/$slug'
@@ -2304,6 +2316,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqProductRoadmapRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/product/releases': {
+      id: '/_hq/product/releases'
+      path: '/product/releases'
+      fullPath: '/product/releases'
+      preLoaderRoute: typeof HqProductReleasesRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/ops/readiness': {
       id: '/_hq/ops/readiness'
       path: '/ops/readiness'
@@ -2581,6 +2600,7 @@ interface HqRouteChildren {
   HqOpsDetectionsRoute: typeof HqOpsDetectionsRoute
   HqOpsFlightsRoute: typeof HqOpsFlightsRoute
   HqOpsReadinessRoute: typeof HqOpsReadinessRoute
+  HqProductReleasesRoute: typeof HqProductReleasesRoute
   HqProductRoadmapRoute: typeof HqProductRoadmapRoute
 }
 
@@ -2671,6 +2691,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqOpsDetectionsRoute: HqOpsDetectionsRoute,
   HqOpsFlightsRoute: HqOpsFlightsRoute,
   HqOpsReadinessRoute: HqOpsReadinessRoute,
+  HqProductReleasesRoute: HqProductReleasesRoute,
   HqProductRoadmapRoute: HqProductRoadmapRoute,
 }
 
