@@ -4,11 +4,11 @@ import { count, rows, useDash, DashShell, Loading, ErrorNote, Panel, Empty, RowL
 async function load() {
   const [active, deployments, safety, ready, total, logs, tasks, crews] = await Promise.all([
     rows("con_jobs", "id,name,job_number,status,stage,percent_complete,target_end_date", (q: any) => q.eq("status", "active").order("target_end_date", { nullsFirst: false }), 6),
-    rows("con_schedule_blocks", "id,title,start_date,end_date,status", (q: any) => q.neq("status", "complete").order("start_date", { nullsFirst: false }), 6),
+    rows("con_schedule_blocks", "id,title,scheduled_date,phase,status", (q: any) => q.neq("status", "complete").order("scheduled_date", { nullsFirst: false }), 6),
     rows("con_safety_incidents", "id,incident_type,severity,incident_date,status", (q: any) => q.neq("status", "closed").order("incident_date", { ascending: false }), 5),
     count("con_equipment", (q: any) => q.eq("status", "available")),
     count("con_equipment"),
-    rows("con_daily_logs", "id,log_date,status,weather,notes", (q: any) => q.order("log_date", { ascending: false }), 5),
+    rows("con_daily_logs", "id,log_date,status,weather,work_performed", (q: any) => q.order("log_date", { ascending: false }), 5),
     rows("con_tasks", "id,title,status,priority,due_date", (q: any) => q.neq("status", "complete").order("due_date", { nullsFirst: false }), 8),
     count("con_crews"),
   ]);
@@ -46,7 +46,7 @@ export function OpsDashboard() {
               <div className="divide-y divide-border">
                 {data.deployments.length === 0 && <Empty>No deployments scheduled.</Empty>}
                 {data.deployments.map((d: any) => (
-                  <RowLink key={d.id} to="/scheduling" title={d.title ?? "Deployment"} meta={`${d.start_date ?? "TBD"} → ${d.end_date ?? "open"}`} badge={d.status ?? "planned"} />
+                  <RowLink key={d.id} to="/scheduling" title={d.title ?? "Deployment"} meta={`${d.scheduled_date ?? "TBD"} · ${d.phase ?? "field"}`} badge={d.status ?? "planned"} />
                 ))}
               </div>
             </Panel>
@@ -79,7 +79,7 @@ export function OpsDashboard() {
                 <div className="divide-y divide-border">
                   {data.logs.length === 0 && <Empty>No reports filed.</Empty>}
                   {data.logs.map((l: any) => (
-                    <RowLink key={l.id} to="/daily-logs" title={l.log_date ?? "Log"} meta={l.notes ?? l.weather ?? l.status ?? "Filed"} />
+                    <RowLink key={l.id} to="/daily-logs" title={l.log_date ?? "Log"} meta={l.work_performed ?? l.weather ?? l.status ?? "Filed"} />
                   ))}
                 </div>
               </Panel>

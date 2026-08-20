@@ -3,10 +3,10 @@ import { count, rows, useDash, DashShell, Loading, ErrorNote, Panel, Bar, Empty,
 
 async function load() {
   const [projects, milestones, issues, reviews, ecos, bom, tasks, openIssues, closedIssues] = await Promise.all([
-    rows("eng_projects", "id,name,status,phase,target_date,progress", (q: any) => q.neq("status", "complete").order("target_date", { nullsFirst: false }), 6),
-    rows("eng_milestones", "id,name,due_date,status,project_id", (q: any) => q.neq("status", "complete").order("due_date", { nullsFirst: false }), 6),
+    rows("eng_projects", "id,name,status,target_date,progress", (q: any) => q.neq("status", "complete").order("target_date", { nullsFirst: false }), 6),
+    rows("eng_milestones", "id,title,due_date,status,project_id", (q: any) => q.neq("status", "complete").order("due_date", { nullsFirst: false }), 6),
     rows("eng_issues", "id,title,severity,status,created_at", (q: any) => q.neq("status", "closed").order("created_at", { ascending: false }), 8),
-    rows("eng_design_reviews", "id,title,status,scheduled_date", (q: any) => q.neq("status", "approved").order("scheduled_date", { nullsFirst: false }), 5),
+    rows("eng_design_reviews", "id,title,status,scheduled_at", (q: any) => q.neq("status", "approved").order("scheduled_date", { nullsFirst: false }), 5),
     rows("eng_ecos", "id,title,status,created_at", (q: any) => q.neq("status", "implemented").order("created_at", { ascending: false }), 5),
     count("eng_bom_items"),
     rows("eng_tasks", "id,title,status,priority,due_date", (q: any) => q.neq("status", "done").order("due_date", { nullsFirst: false }), 8),
@@ -42,7 +42,7 @@ export function EngDashboard() {
                   <div key={p.id}>
                     <div className="flex items-center justify-between font-mono text-xs uppercase tracking-wide text-muted-foreground">
                       <span className="truncate text-foreground">{p.name}</span>
-                      <span>{p.phase ?? p.status ?? "active"} · {p.target_date ?? "no target"}</span>
+                      <span>{p.status ?? "active"} · {p.target_date ?? "no target"}</span>
                     </div>
                     <div className="mt-1.5"><Bar value={Number(p.progress ?? 0)} max={100} /></div>
                   </div>
@@ -81,10 +81,10 @@ export function EngDashboard() {
               <div className="divide-y divide-border">
                 {[...data.milestones, ...data.reviews].length === 0 && <Empty>Nothing scheduled.</Empty>}
                 {data.milestones.map((m: any) => (
-                  <RowLink key={m.id} to="/eng-projects" title={m.name} meta={`Milestone · ${m.due_date ?? "unscheduled"}`} badge="gate" />
+                  <RowLink key={m.id} to="/eng-projects" title={m.title} meta={`Milestone · ${m.due_date ?? "unscheduled"}`} badge="gate" />
                 ))}
                 {data.reviews.map((r: any) => (
-                  <RowLink key={r.id} to="/eng-projects" title={r.title} meta={`Review · ${r.scheduled_date ?? "unscheduled"}`} badge="review" />
+                  <RowLink key={r.id} to="/eng-projects" title={r.title} meta={`Review · ${r.scheduled_at ?? "unscheduled"}`} badge="review" />
                 ))}
               </div>
             </Panel>

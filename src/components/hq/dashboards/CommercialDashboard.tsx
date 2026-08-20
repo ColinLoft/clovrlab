@@ -5,11 +5,11 @@ const STAGES = ["prospect", "qualified", "proposal", "negotiation", "closed_won"
 
 async function load() {
   const [deals, contacts, proposals, invoices, expenses, contracts] = await Promise.all([
-    rows("sales_deals", "id,name,stage,value,expected_close", (q: any) => q.order("expected_close", { nullsFirst: false }), 60),
+    rows("sales_deals", "id,title,stage,value,expected_close", (q: any) => q.order("expected_close", { nullsFirst: false }), 60),
     count("sales_contacts"),
     rows("con_estimates", "id,title,status,total,valid_until", (q: any) => q.in("status", ["draft", "sent", "pending"]).order("valid_until", { nullsFirst: false }), 6),
     rows("fin_invoices", "id,invoice_number,total,status,due_date", (q: any) => q.neq("status", "paid").order("due_date", { nullsFirst: false }), 8),
-    rows("fin_expenses", "id,description,amount,expense_date", (q: any) => q.order("expense_date", { ascending: false }), 5),
+    rows("fin_expenses", "id,purpose,amount,spent_at", (q: any) => q.order("spent_at", { ascending: false }), 5),
     count("sales_contracts"),
   ]);
   const pipeline = deals.reduce((s: number, d: any) => s + Number(d.value || 0), 0);
@@ -81,7 +81,7 @@ export function CommercialDashboard() {
               <div className="divide-y divide-border">
                 {data.expenses.length === 0 && <Empty>No expenses recorded.</Empty>}
                 {data.expenses.map((e: any) => (
-                  <RowLink key={e.id} to="/expenses" title={e.description ?? "Expense"} meta={`${money(Number(e.amount || 0))} · ${e.expense_date ?? ""}`} />
+                  <RowLink key={e.id} to="/expenses" title={e.purpose ?? "Expense"} meta={`${money(Number(e.amount || 0))} · ${e.spent_at ?? ""}`} />
                 ))}
               </div>
             </Panel>

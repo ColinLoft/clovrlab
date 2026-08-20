@@ -10,8 +10,8 @@ const COLUMNS: { key: string; label: string; match: (s: string) => boolean }[] =
 
 async function load() {
   const [projects, milestones, issues, tasks, reviews, ecos] = await Promise.all([
-    rows("eng_projects", "id,name,status,phase,progress,target_date", (q: any) => q.neq("status", "complete"), 40),
-    rows("eng_milestones", "id,name,status,due_date", (q: any) => q.neq("status", "complete").order("due_date", { nullsFirst: false }), 8),
+    rows("eng_projects", "id,name,status,progress,target_date", (q: any) => q.neq("status", "complete"), 40),
+    rows("eng_milestones", "id,title,status,due_date", (q: any) => q.neq("status", "complete").order("due_date", { nullsFirst: false }), 8),
     count("eng_issues", (q: any) => q.neq("status", "closed")),
     rows("eng_tasks", "id,title,status,due_date,priority", (q: any) => q.neq("status", "done"), 40),
     count("eng_design_reviews", (q: any) => q.neq("status", "approved")),
@@ -34,7 +34,7 @@ export function ProductDashboard() {
         <>
           <section className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {COLUMNS.map((col) => {
-              const items = data.projects.filter((p: any) => col.match((p.status ?? p.phase ?? "").toLowerCase()));
+              const items = data.projects.filter((p: any) => col.match((p.status ?? "").toLowerCase()));
               return (
                 <div key={col.key} className="rounded-lg border border-border bg-muted/30">
                   <div className="flex items-center justify-between border-b border-border px-3 py-2">
@@ -46,7 +46,7 @@ export function ProductDashboard() {
                     {items.map((p: any) => (
                       <Link key={p.id} to="/eng-projects" className="block rounded-md border border-border bg-card p-3 transition hover:border-primary/60">
                         <p className="truncate text-sm font-medium">{p.name}</p>
-                        <p className="mt-0.5 text-[11px] text-muted-foreground">{p.phase ?? p.status ?? "—"} · {p.target_date ?? "no target"}</p>
+                        <p className="mt-0.5 text-[11px] text-muted-foreground">{p.status ?? "—"} · {p.target_date ?? "no target"}</p>
                         <div className="mt-2"><Bar value={Number(p.progress ?? 0)} max={100} /></div>
                       </Link>
                     ))}
@@ -64,7 +64,7 @@ export function ProductDashboard() {
                 {data.milestones.map((m: any) => (
                   <li key={m.id} className="flex items-center gap-4 px-4 py-3">
                     <span className="w-24 shrink-0 font-mono text-xs text-muted-foreground">{m.due_date ?? "TBD"}</span>
-                    <span className="min-w-0 flex-1 truncate text-sm font-medium">{m.name}</span>
+                    <span className="min-w-0 flex-1 truncate text-sm font-medium">{m.title}</span>
                     <span className="text-xs text-muted-foreground">{m.status ?? "open"}</span>
                   </li>
                 ))}
@@ -75,8 +75,7 @@ export function ProductDashboard() {
                 { label: "Open issues", value: data.issues, to: "/eng-projects" },
                 { label: "Reviews pending", value: data.reviews, to: "/eng-projects" },
                 { label: "Open changes", value: data.ecos, to: "/eng-projects" },
-                { label: "Task completion", value: `${pct(0, 0)}` , to: "/tasks" },
-              ].slice(0, 3).map((s) => (
+                              ].slice(0, 3).map((s) => (
                 <Link key={s.label} to={s.to as never} className="block rounded-lg border border-border bg-card p-4 hover:border-primary/60">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">{s.label}</p>
                   <p className="mt-1 text-2xl font-semibold tabular-nums">{s.value}</p>

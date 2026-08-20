@@ -4,11 +4,11 @@ import { count, rows, useDash, DashShell, Loading, ErrorNote, Panel, Empty, RowL
 async function load() {
   const [apps, integrations, infra, software, repos, security, errors] = await Promise.all([
     rows("org_apps", "id,label,slug,enabled,subdomain", (q: any) => q.order("sort_order"), 12),
-    rows("dev_integrations", "id,name,status,provider", (q: any) => q, 8),
+    rows("dev_integrations", "id,name,status,vendor", (q: any) => q, 8),
     rows("dev_infrastructure", "id,name,status,environment,provider", (q: any) => q, 8),
     count("dev_software"),
     count("dev_repos"),
-    rows("dev_security_logs", "id,event_type,severity,description,created_at", (q: any) => q.order("created_at", { ascending: false }), 6),
+    rows("dev_security_logs", "id,event,severity,details,created_at", (q: any) => q.order("created_at", { ascending: false }), 6),
     rows("sys_error_log", "id,message,created_at,path", (q: any) => q.order("created_at", { ascending: false }), 6),
   ]);
   return { apps, integrations, infra, software, repos, security, errors };
@@ -78,7 +78,7 @@ export function SystemsDashboard() {
               <div className="divide-y divide-border">
                 {data.security.length === 0 && <Empty>No security events.</Empty>}
                 {data.security.map((s: any) => (
-                  <RowLink key={s.id} to="/admin/it" title={s.event_type ?? "Event"} meta={`${s.severity ?? "info"} · ${s.description ?? ""}`} tone={["high", "critical"].includes((s.severity ?? "").toLowerCase()) ? "risk" : undefined} />
+                  <RowLink key={s.id} to="/admin/it" title={s.event ?? "Event"} meta={`${s.severity ?? "info"} · ${typeof s.details === "string" ? s.details : ""}`} tone={["high", "critical"].includes((s.severity ?? "").toLowerCase()) ? "risk" : undefined} />
                 ))}
               </div>
             </Panel>

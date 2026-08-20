@@ -10,7 +10,7 @@ async function load() {
     count("cs_tickets", (q: any) => q.neq("status", "closed")),
     rows("con_safety_incidents", "id,incident_type,severity,incident_date,status", (q: any) => q.neq("status", "closed").order("incident_date", { ascending: false }), 5),
     rows("fin_invoices", "id,total,status,due_date", (q: any) => q, 300),
-    rows("fin_expenses", "id,amount,expense_date", (q: any) => q, 300),
+    rows("fin_expenses", "id,amount,spent_at", (q: any) => q, 300),
     count("eng_ecos", (q: any) => q.neq("status", "implemented")),
     rows("con_jobs", "id,name,job_number,stage,status,percent_complete,target_end_date", (q: any) => q.eq("status", "active").order("target_end_date", { nullsFirst: false }), 6),
   ]);
