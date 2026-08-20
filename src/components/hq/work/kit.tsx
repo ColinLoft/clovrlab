@@ -146,8 +146,10 @@ export function Stat({ label, value, hint, tone = "default", icon: Icon }: {
   );
 }
 
+const COLS: Record<number, string> = { 2: "lg:grid-cols-2", 3: "lg:grid-cols-3", 4: "lg:grid-cols-4", 5: "lg:grid-cols-5", 6: "lg:grid-cols-6" };
+
 export function StatRow({ children, cols = 4 }: { children: React.ReactNode; cols?: number }) {
-  return <section className={`mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-${cols}`}>{children}</section>;
+  return <section className={`mt-5 grid gap-3 sm:grid-cols-2 ${COLS[cols] ?? COLS[4]}`}>{children}</section>;
 }
 
 export function Card({ title, hint, action, children, className = "", pad = true }: {
