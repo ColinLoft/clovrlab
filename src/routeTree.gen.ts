@@ -96,6 +96,7 @@ import { Route as HqFundCampaignsRouteImport } from './routes/_hq.fund.campaigns
 import { Route as HqExecOkrsRouteImport } from './routes/_hq.exec.okrs'
 import { Route as HqExecDecisionsRouteImport } from './routes/_hq.exec.decisions'
 import { Route as HqExecBriefingRouteImport } from './routes/_hq.exec.briefing'
+import { Route as HqExecAnnouncementsRouteImport } from './routes/_hq.exec.announcements'
 import { Route as HqEngReviewsRouteImport } from './routes/_hq.eng.reviews'
 import { Route as HqEngProgramsRouteImport } from './routes/_hq.eng.programs'
 import { Route as HqEngLibraryRouteImport } from './routes/_hq.eng.library'
@@ -548,6 +549,11 @@ const HqExecBriefingRoute = HqExecBriefingRouteImport.update({
   path: '/exec/briefing',
   getParentRoute: () => HqRoute,
 } as any)
+const HqExecAnnouncementsRoute = HqExecAnnouncementsRouteImport.update({
+  id: '/exec/announcements',
+  path: '/exec/announcements',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqEngReviewsRoute = HqEngReviewsRouteImport.update({
   id: '/eng/reviews',
   path: '/eng/reviews',
@@ -702,6 +708,7 @@ export interface FileRoutesByFullPath {
   '/eng/library': typeof HqEngLibraryRoute
   '/eng/programs': typeof HqEngProgramsRoute
   '/eng/reviews': typeof HqEngReviewsRoute
+  '/exec/announcements': typeof HqExecAnnouncementsRoute
   '/exec/briefing': typeof HqExecBriefingRoute
   '/exec/decisions': typeof HqExecDecisionsRoute
   '/exec/okrs': typeof HqExecOkrsRoute
@@ -806,6 +813,7 @@ export interface FileRoutesByTo {
   '/eng/library': typeof HqEngLibraryRoute
   '/eng/programs': typeof HqEngProgramsRoute
   '/eng/reviews': typeof HqEngReviewsRoute
+  '/exec/announcements': typeof HqExecAnnouncementsRoute
   '/exec/briefing': typeof HqExecBriefingRoute
   '/exec/decisions': typeof HqExecDecisionsRoute
   '/exec/okrs': typeof HqExecOkrsRoute
@@ -913,6 +921,7 @@ export interface FileRoutesById {
   '/_hq/eng/library': typeof HqEngLibraryRoute
   '/_hq/eng/programs': typeof HqEngProgramsRoute
   '/_hq/eng/reviews': typeof HqEngReviewsRoute
+  '/_hq/exec/announcements': typeof HqExecAnnouncementsRoute
   '/_hq/exec/briefing': typeof HqExecBriefingRoute
   '/_hq/exec/decisions': typeof HqExecDecisionsRoute
   '/_hq/exec/okrs': typeof HqExecOkrsRoute
@@ -1020,6 +1029,7 @@ export interface FileRouteTypes {
     | '/eng/library'
     | '/eng/programs'
     | '/eng/reviews'
+    | '/exec/announcements'
     | '/exec/briefing'
     | '/exec/decisions'
     | '/exec/okrs'
@@ -1124,6 +1134,7 @@ export interface FileRouteTypes {
     | '/eng/library'
     | '/eng/programs'
     | '/eng/reviews'
+    | '/exec/announcements'
     | '/exec/briefing'
     | '/exec/decisions'
     | '/exec/okrs'
@@ -1230,6 +1241,7 @@ export interface FileRouteTypes {
     | '/_hq/eng/library'
     | '/_hq/eng/programs'
     | '/_hq/eng/reviews'
+    | '/_hq/exec/announcements'
     | '/_hq/exec/briefing'
     | '/_hq/exec/decisions'
     | '/_hq/exec/okrs'
@@ -1905,6 +1917,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqExecBriefingRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/exec/announcements': {
+      id: '/_hq/exec/announcements'
+      path: '/exec/announcements'
+      fullPath: '/exec/announcements'
+      preLoaderRoute: typeof HqExecAnnouncementsRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/eng/reviews': {
       id: '/_hq/eng/reviews'
       path: '/eng/reviews'
@@ -2088,6 +2107,7 @@ interface HqRouteChildren {
   HqEngLibraryRoute: typeof HqEngLibraryRoute
   HqEngProgramsRoute: typeof HqEngProgramsRoute
   HqEngReviewsRoute: typeof HqEngReviewsRoute
+  HqExecAnnouncementsRoute: typeof HqExecAnnouncementsRoute
   HqExecBriefingRoute: typeof HqExecBriefingRoute
   HqExecDecisionsRoute: typeof HqExecDecisionsRoute
   HqExecOkrsRoute: typeof HqExecOkrsRoute
@@ -2170,6 +2190,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqEngLibraryRoute: HqEngLibraryRoute,
   HqEngProgramsRoute: HqEngProgramsRoute,
   HqEngReviewsRoute: HqEngReviewsRoute,
+  HqExecAnnouncementsRoute: HqExecAnnouncementsRoute,
   HqExecBriefingRoute: HqExecBriefingRoute,
   HqExecDecisionsRoute: HqExecDecisionsRoute,
   HqExecOkrsRoute: HqExecOkrsRoute,
