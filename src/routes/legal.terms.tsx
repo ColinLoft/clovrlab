@@ -29,7 +29,7 @@ export const Route = createFileRoute("/legal/terms")({
         <h2 className="text-xl font-semibold">Orders</h2>
         <p>All orders are subject to availability. Prices are shown at checkout and may change over time.</p>
         <h2 className="text-xl font-semibold">Warranty & liability</h2>
-        <p>Our warranty is described on the <a className="text-primary hover:underline" href="/legal/warranty">warranty page</a>. To the extent permitted by law, our liability is limited to the amount you paid for the product.</p>
+        <p>Our warranty is described on the these terms. To the extent permitted by law, our liability is limited to the amount you paid for the product.</p>
         <h2 className="text-xl font-semibold">Changes</h2>
         <p>We may update these terms; the "last updated" date will change and continued use means you accept the update.</p>
         <p className="text-muted-foreground"><Placeholder>[PLACEHOLDER: replace with lawyer-reviewed terms specific to jurisdiction, business structure, and dispute resolution before launch.]</Placeholder></p>
