@@ -89,6 +89,7 @@ import { Route as HqExecDecisionsRouteImport } from './routes/_hq.exec.decisions
 import { Route as HqExecBriefingRouteImport } from './routes/_hq.exec.briefing'
 import { Route as HqEngReviewsRouteImport } from './routes/_hq.eng.reviews'
 import { Route as HqEngProgramsRouteImport } from './routes/_hq.eng.programs'
+import { Route as HqEngLibraryRouteImport } from './routes/_hq.eng.library'
 import { Route as HqEngIssuesRouteImport } from './routes/_hq.eng.issues'
 import { Route as HqEngHardwareRouteImport } from './routes/_hq.eng.hardware'
 import { Route as HqEngFirmwareRouteImport } from './routes/_hq.eng.firmware'
@@ -502,6 +503,11 @@ const HqEngProgramsRoute = HqEngProgramsRouteImport.update({
   path: '/eng/programs',
   getParentRoute: () => HqRoute,
 } as any)
+const HqEngLibraryRoute = HqEngLibraryRouteImport.update({
+  id: '/eng/library',
+  path: '/eng/library',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqEngIssuesRoute = HqEngIssuesRouteImport.update({
   id: '/eng/issues',
   path: '/eng/issues',
@@ -632,6 +638,7 @@ export interface FileRoutesByFullPath {
   '/eng/firmware': typeof HqEngFirmwareRoute
   '/eng/hardware': typeof HqEngHardwareRoute
   '/eng/issues': typeof HqEngIssuesRoute
+  '/eng/library': typeof HqEngLibraryRoute
   '/eng/programs': typeof HqEngProgramsRoute
   '/eng/reviews': typeof HqEngReviewsRoute
   '/exec/briefing': typeof HqExecBriefingRoute
@@ -725,6 +732,7 @@ export interface FileRoutesByTo {
   '/eng/firmware': typeof HqEngFirmwareRoute
   '/eng/hardware': typeof HqEngHardwareRoute
   '/eng/issues': typeof HqEngIssuesRoute
+  '/eng/library': typeof HqEngLibraryRoute
   '/eng/programs': typeof HqEngProgramsRoute
   '/eng/reviews': typeof HqEngReviewsRoute
   '/exec/briefing': typeof HqExecBriefingRoute
@@ -821,6 +829,7 @@ export interface FileRoutesById {
   '/_hq/eng/firmware': typeof HqEngFirmwareRoute
   '/_hq/eng/hardware': typeof HqEngHardwareRoute
   '/_hq/eng/issues': typeof HqEngIssuesRoute
+  '/_hq/eng/library': typeof HqEngLibraryRoute
   '/_hq/eng/programs': typeof HqEngProgramsRoute
   '/_hq/eng/reviews': typeof HqEngReviewsRoute
   '/_hq/exec/briefing': typeof HqExecBriefingRoute
@@ -917,6 +926,7 @@ export interface FileRouteTypes {
     | '/eng/firmware'
     | '/eng/hardware'
     | '/eng/issues'
+    | '/eng/library'
     | '/eng/programs'
     | '/eng/reviews'
     | '/exec/briefing'
@@ -1010,6 +1020,7 @@ export interface FileRouteTypes {
     | '/eng/firmware'
     | '/eng/hardware'
     | '/eng/issues'
+    | '/eng/library'
     | '/eng/programs'
     | '/eng/reviews'
     | '/exec/briefing'
@@ -1105,6 +1116,7 @@ export interface FileRouteTypes {
     | '/_hq/eng/firmware'
     | '/_hq/eng/hardware'
     | '/_hq/eng/issues'
+    | '/_hq/eng/library'
     | '/_hq/eng/programs'
     | '/_hq/eng/reviews'
     | '/_hq/exec/briefing'
@@ -1724,6 +1736,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqEngProgramsRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/eng/library': {
+      id: '/_hq/eng/library'
+      path: '/eng/library'
+      fullPath: '/eng/library'
+      preLoaderRoute: typeof HqEngLibraryRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/eng/issues': {
       id: '/_hq/eng/issues'
       path: '/eng/issues'
@@ -1875,6 +1894,7 @@ interface HqRouteChildren {
   HqEngFirmwareRoute: typeof HqEngFirmwareRoute
   HqEngHardwareRoute: typeof HqEngHardwareRoute
   HqEngIssuesRoute: typeof HqEngIssuesRoute
+  HqEngLibraryRoute: typeof HqEngLibraryRoute
   HqEngProgramsRoute: typeof HqEngProgramsRoute
   HqEngReviewsRoute: typeof HqEngReviewsRoute
   HqExecBriefingRoute: typeof HqExecBriefingRoute
@@ -1946,6 +1966,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqEngFirmwareRoute: HqEngFirmwareRoute,
   HqEngHardwareRoute: HqEngHardwareRoute,
   HqEngIssuesRoute: HqEngIssuesRoute,
+  HqEngLibraryRoute: HqEngLibraryRoute,
   HqEngProgramsRoute: HqEngProgramsRoute,
   HqEngReviewsRoute: HqEngReviewsRoute,
   HqExecBriefingRoute: HqExecBriefingRoute,
