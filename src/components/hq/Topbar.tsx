@@ -21,7 +21,8 @@ export function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
   const [open, setOpen] = useState<null | "notif" | "apps">(null);
   const [notifs, setNotifs] = useState<Notification[]>([]);
   const { theme, setTheme } = useHQTheme();
-  const { permitted, app: current } = useCurrentApp();
+  const { permitted: allPermitted, app: current } = useCurrentApp();
+  const permitted = allPermitted.filter((a) => !a.is_hub);
   const { incoming, acceptIncoming, declineIncoming } = usePhone();
 
   useEffect(() => {

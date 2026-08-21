@@ -50,14 +50,13 @@ function WorkspacePicker() {
 
   const ready = !loading && !access.loading;
   const opts = { isAdmin: access.isAdmin, units: access.units, unitSlugById };
-  const permitted = apps.filter((a) => a.enabled && canEnter(a, opts));
-  const teamApps = permitted.filter((a) => !a.is_hub);
+  const permitted = apps.filter((a) => a.enabled && !a.is_hub && canEnter(a, opts));
+  const teamApps = permitted;
   const term = q.trim().toLowerCase();
   const shown = term
     ? permitted.filter((a) => `${a.label} ${a.tagline ?? ""} ${a.subdomain}`.toLowerCase().includes(term))
     : permitted;
-  const hub = shown.find((a) => a.is_hub) ?? null;
-  const rest = shown.filter((a) => !a.is_hub);
+  const rest = shown;
 
   // One workspace, no choice to make — go straight in.
   const soloTarget = ready && !access.isAdmin && teamApps.length === 1 ? teamApps[0] : null;
@@ -169,30 +168,8 @@ function WorkspacePicker() {
           </div>
         )}
 
-        {ready && hub && (
-          <button
-            onClick={() => open(hub, false)}
-            className="group mt-8 flex w-full items-center gap-5 rounded-2xl border border-border bg-card p-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
-          >
-            <span
-              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-sm font-bold uppercase"
-              style={{
-                background: hub.accent ? `color-mix(in oklab, ${hub.accent} 18%, transparent)` : "color-mix(in oklab, var(--primary) 14%, transparent)",
-                color: hub.accent ?? "var(--primary)",
-              }}
-            >
-              {(hub.short_code || hub.subdomain).slice(0, 2)}
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-primary">Start here</p>
-              <p className="mt-1 truncate text-lg font-semibold">{hub.label}</p>
-              <p className="truncate text-sm text-muted-foreground">
-                {hub.tagline || "Company-wide hub: people, calendar, mail and shared tools."}
-              </p>
-            </div>
-            <ArrowUpRight className="h-5 w-5 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground" />
-          </button>
-        )}
+
+
 
         {ready && rest.length > 0 && (
           <>
