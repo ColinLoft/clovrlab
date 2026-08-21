@@ -66,6 +66,7 @@ import { Route as HqTeamsIndexRouteImport } from './routes/_hq.teams.index'
 import { Route as HqTeamsSlugRouteImport } from './routes/_hq.teams.$slug'
 import { Route as HqSystemsServicesRouteImport } from './routes/_hq.systems.services'
 import { Route as HqSystemsHelpdeskRouteImport } from './routes/_hq.systems.helpdesk'
+import { Route as HqSystemsAssetsRouteImport } from './routes/_hq.systems.assets'
 import { Route as HqSystemsAccessRouteImport } from './routes/_hq.systems.access'
 import { Route as HqProductSupportRouteImport } from './routes/_hq.product.support'
 import { Route as HqProductRoadmapRouteImport } from './routes/_hq.product.roadmap'
@@ -396,6 +397,11 @@ const HqSystemsHelpdeskRoute = HqSystemsHelpdeskRouteImport.update({
   path: '/systems/helpdesk',
   getParentRoute: () => HqRoute,
 } as any)
+const HqSystemsAssetsRoute = HqSystemsAssetsRouteImport.update({
+  id: '/systems/assets',
+  path: '/systems/assets',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqSystemsAccessRoute = HqSystemsAccessRouteImport.update({
   id: '/systems/access',
   path: '/systems/access',
@@ -718,6 +724,7 @@ export interface FileRoutesByFullPath {
   '/product/roadmap': typeof HqProductRoadmapRoute
   '/product/support': typeof HqProductSupportRoute
   '/systems/access': typeof HqSystemsAccessRoute
+  '/systems/assets': typeof HqSystemsAssetsRoute
   '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
@@ -820,6 +827,7 @@ export interface FileRoutesByTo {
   '/product/roadmap': typeof HqProductRoadmapRoute
   '/product/support': typeof HqProductSupportRoute
   '/systems/access': typeof HqSystemsAccessRoute
+  '/systems/assets': typeof HqSystemsAssetsRoute
   '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
@@ -925,6 +933,7 @@ export interface FileRoutesById {
   '/_hq/product/roadmap': typeof HqProductRoadmapRoute
   '/_hq/product/support': typeof HqProductSupportRoute
   '/_hq/systems/access': typeof HqSystemsAccessRoute
+  '/_hq/systems/assets': typeof HqSystemsAssetsRoute
   '/_hq/systems/helpdesk': typeof HqSystemsHelpdeskRoute
   '/_hq/systems/services': typeof HqSystemsServicesRoute
   '/_hq/teams/$slug': typeof HqTeamsSlugRoute
@@ -1030,6 +1039,7 @@ export interface FileRouteTypes {
     | '/product/roadmap'
     | '/product/support'
     | '/systems/access'
+    | '/systems/assets'
     | '/systems/helpdesk'
     | '/systems/services'
     | '/teams/$slug'
@@ -1132,6 +1142,7 @@ export interface FileRouteTypes {
     | '/product/roadmap'
     | '/product/support'
     | '/systems/access'
+    | '/systems/assets'
     | '/systems/helpdesk'
     | '/systems/services'
     | '/teams/$slug'
@@ -1236,6 +1247,7 @@ export interface FileRouteTypes {
     | '/_hq/product/roadmap'
     | '/_hq/product/support'
     | '/_hq/systems/access'
+    | '/_hq/systems/assets'
     | '/_hq/systems/helpdesk'
     | '/_hq/systems/services'
     | '/_hq/teams/$slug'
@@ -1671,6 +1683,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqSystemsHelpdeskRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/systems/assets': {
+      id: '/_hq/systems/assets'
+      path: '/systems/assets'
+      fullPath: '/systems/assets'
+      preLoaderRoute: typeof HqSystemsAssetsRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/systems/access': {
       id: '/_hq/systems/access'
       path: '/systems/access'
@@ -2078,6 +2097,7 @@ interface HqRouteChildren {
   HqProductRoadmapRoute: typeof HqProductRoadmapRoute
   HqProductSupportRoute: typeof HqProductSupportRoute
   HqSystemsAccessRoute: typeof HqSystemsAccessRoute
+  HqSystemsAssetsRoute: typeof HqSystemsAssetsRoute
   HqSystemsHelpdeskRoute: typeof HqSystemsHelpdeskRoute
   HqSystemsServicesRoute: typeof HqSystemsServicesRoute
 }
@@ -2158,6 +2178,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqProductRoadmapRoute: HqProductRoadmapRoute,
   HqProductSupportRoute: HqProductSupportRoute,
   HqSystemsAccessRoute: HqSystemsAccessRoute,
+  HqSystemsAssetsRoute: HqSystemsAssetsRoute,
   HqSystemsHelpdeskRoute: HqSystemsHelpdeskRoute,
   HqSystemsServicesRoute: HqSystemsServicesRoute,
 }
