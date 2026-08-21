@@ -122,6 +122,7 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
       label: "Enterprise Systems",
       items: [
         { label: "Service Health", to: "/systems/services", icon: Activity },
+        { label: "Detection Network", to: "/systems/detection", icon: Radar },
         { label: "Support Desk", to: "/systems/helpdesk", icon: LifeBuoy },
         { label: "Access & Identity", to: "/systems/access", icon: ShieldCheck },
         { label: "Application Register", to: "/systems/assets", icon: Boxes },
