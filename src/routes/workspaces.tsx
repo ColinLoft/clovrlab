@@ -50,14 +50,13 @@ function WorkspacePicker() {
 
   const ready = !loading && !access.loading;
   const opts = { isAdmin: access.isAdmin, units: access.units, unitSlugById };
-  const permitted = apps.filter((a) => a.enabled && canEnter(a, opts));
-  const teamApps = permitted.filter((a) => !a.is_hub);
+  const permitted = apps.filter((a) => a.enabled && !a.is_hub && canEnter(a, opts));
+  const teamApps = permitted;
   const term = q.trim().toLowerCase();
   const shown = term
     ? permitted.filter((a) => `${a.label} ${a.tagline ?? ""} ${a.subdomain}`.toLowerCase().includes(term))
     : permitted;
-  const hub = shown.find((a) => a.is_hub) ?? null;
-  const rest = shown.filter((a) => !a.is_hub);
+  const rest = shown;
 
   // One workspace, no choice to make — go straight in.
   const soloTarget = ready && !access.isAdmin && teamApps.length === 1 ? teamApps[0] : null;
