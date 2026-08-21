@@ -106,6 +106,7 @@ import { Route as HqEngFirmwareRouteImport } from './routes/_hq.eng.firmware'
 import { Route as HqEngChangesRouteImport } from './routes/_hq.eng.changes'
 import { Route as HqEngBoardRouteImport } from './routes/_hq.eng.board'
 import { Route as HqAdminSlackRouteImport } from './routes/_hq.admin.slack'
+import { Route as HqAdminPoliciesRouteImport } from './routes/_hq.admin.policies'
 import { Route as HqAdminOrgRouteImport } from './routes/_hq.admin.org'
 import { Route as HqAdminItRouteImport } from './routes/_hq.admin.it'
 import { Route as HqAdminHealthRouteImport } from './routes/_hq.admin.health'
@@ -599,6 +600,11 @@ const HqAdminSlackRoute = HqAdminSlackRouteImport.update({
   path: '/admin/slack',
   getParentRoute: () => HqRoute,
 } as any)
+const HqAdminPoliciesRoute = HqAdminPoliciesRouteImport.update({
+  id: '/admin/policies',
+  path: '/admin/policies',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqAdminOrgRoute = HqAdminOrgRouteImport.update({
   id: '/admin/org',
   path: '/admin/org',
@@ -699,6 +705,7 @@ export interface FileRoutesByFullPath {
   '/admin/health': typeof HqAdminHealthRoute
   '/admin/it': typeof HqAdminItRoute
   '/admin/org': typeof HqAdminOrgRoute
+  '/admin/policies': typeof HqAdminPoliciesRoute
   '/admin/slack': typeof HqAdminSlackRoute
   '/eng/board': typeof HqEngBoardRoute
   '/eng/changes': typeof HqEngChangesRoute
@@ -804,6 +811,7 @@ export interface FileRoutesByTo {
   '/admin/health': typeof HqAdminHealthRoute
   '/admin/it': typeof HqAdminItRoute
   '/admin/org': typeof HqAdminOrgRoute
+  '/admin/policies': typeof HqAdminPoliciesRoute
   '/admin/slack': typeof HqAdminSlackRoute
   '/eng/board': typeof HqEngBoardRoute
   '/eng/changes': typeof HqEngChangesRoute
@@ -912,6 +920,7 @@ export interface FileRoutesById {
   '/_hq/admin/health': typeof HqAdminHealthRoute
   '/_hq/admin/it': typeof HqAdminItRoute
   '/_hq/admin/org': typeof HqAdminOrgRoute
+  '/_hq/admin/policies': typeof HqAdminPoliciesRoute
   '/_hq/admin/slack': typeof HqAdminSlackRoute
   '/_hq/eng/board': typeof HqEngBoardRoute
   '/_hq/eng/changes': typeof HqEngChangesRoute
@@ -1020,6 +1029,7 @@ export interface FileRouteTypes {
     | '/admin/health'
     | '/admin/it'
     | '/admin/org'
+    | '/admin/policies'
     | '/admin/slack'
     | '/eng/board'
     | '/eng/changes'
@@ -1125,6 +1135,7 @@ export interface FileRouteTypes {
     | '/admin/health'
     | '/admin/it'
     | '/admin/org'
+    | '/admin/policies'
     | '/admin/slack'
     | '/eng/board'
     | '/eng/changes'
@@ -1232,6 +1243,7 @@ export interface FileRouteTypes {
     | '/_hq/admin/health'
     | '/_hq/admin/it'
     | '/_hq/admin/org'
+    | '/_hq/admin/policies'
     | '/_hq/admin/slack'
     | '/_hq/eng/board'
     | '/_hq/eng/changes'
@@ -1987,6 +1999,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqAdminSlackRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/admin/policies': {
+      id: '/_hq/admin/policies'
+      path: '/admin/policies'
+      fullPath: '/admin/policies'
+      preLoaderRoute: typeof HqAdminPoliciesRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/admin/org': {
       id: '/_hq/admin/org'
       path: '/admin/org'
@@ -2098,6 +2117,7 @@ interface HqRouteChildren {
   HqAdminHealthRoute: typeof HqAdminHealthRoute
   HqAdminItRoute: typeof HqAdminItRoute
   HqAdminOrgRoute: typeof HqAdminOrgRoute
+  HqAdminPoliciesRoute: typeof HqAdminPoliciesRoute
   HqAdminSlackRoute: typeof HqAdminSlackRoute
   HqEngBoardRoute: typeof HqEngBoardRoute
   HqEngChangesRoute: typeof HqEngChangesRoute
@@ -2181,6 +2201,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqAdminHealthRoute: HqAdminHealthRoute,
   HqAdminItRoute: HqAdminItRoute,
   HqAdminOrgRoute: HqAdminOrgRoute,
+  HqAdminPoliciesRoute: HqAdminPoliciesRoute,
   HqAdminSlackRoute: HqAdminSlackRoute,
   HqEngBoardRoute: HqEngBoardRoute,
   HqEngChangesRoute: HqEngChangesRoute,
