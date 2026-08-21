@@ -70,8 +70,8 @@ function IncidentsPage() {
 
   const dispatch = async (c: (typeof candidates)[number]) => {
     if (!current) return;
-    if (!confirm(`Dispatch ${c.drone.name} to ${current.title}? You are recorded as the dispatching operator.`)) return;
-    await assignDroneToIncident(current.id, c.drone.id, Math.round(c.etaMin), Math.round(c.distMi));
+    if (!confirm(`Dispatch ${c.drone.tail_number} to ${current.title}? You are recorded as the dispatching operator.`)) return;
+    await assignDroneToIncident(current.id, c.drone.id, Math.round(c.eta_min), Math.round(c.distance_mi));
     setTick((t) => t + 1);
   };
 
@@ -169,13 +169,13 @@ function IncidentsPage() {
                     {candidates.map((c) => (
                       <div key={c.drone.id} className="flex items-center justify-between gap-3 px-4 py-3">
                         <div className="min-w-0">
-                          <p className="truncate text-sm font-medium">{c.drone.name}</p>
+                          <p className="truncate text-sm font-medium">{c.drone.tail_number}</p>
                           <p className="font-mono text-[11px] text-muted-foreground">
-                            {Math.round(c.distMi)} mi · ETA {Math.round(c.etaMin)} min · {c.drone.battery_pct ?? "—"}% battery
+                            {Math.round(c.distance_mi)} mi · ETA {Math.round(c.eta_min)} min · {c.drone.battery_pct ?? "—"}% battery
                           </p>
-                          {!c.eligible && <p className="text-[11px] text-amber-500">{c.reason}</p>}
+                          {!(c.ready && c.in_range && c.battery_ok) && <p className="text-[11px] text-amber-500">{c.reasons.join(" · ")}</p>}
                         </div>
-                        <Btn variant="primary" disabled={!c.eligible} onClick={() => dispatch(c)}>Dispatch</Btn>
+                        <Btn variant="primary" disabled={!(c.ready && c.in_range && c.battery_ok)} onClick={() => dispatch(c)}>Dispatch</Btn>
                       </div>
                     ))}
                   </div>
