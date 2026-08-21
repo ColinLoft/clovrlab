@@ -1,0 +1,162 @@
+import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
+interface CameraInput {
+  camera_id: string;
+  camera_name: string;
+  image_url: string;
+  image_time: string;
+  lat: number;
+  lng: number;
+  state?: string | null;
+  county?: string | null;
+}
+
+const SYSTEM = `You are a wildfire detection analyst examining a wildfire watch camera frame.
+Reply ONLY with strict JSON of shape: {"label":"fire"|"smoke"|"clear","confidence":0-100,"reasoning":"one short sentence"}.
+- "fire": visible active flames or active fire glow.
+- "smoke": visible smoke plume rising from terrain (not clouds, not fog, not haze on horizon).
+- "clear": no signs of smoke or fire.
+Be conservative: prefer "clear" unless you can point to specific visual evidence. Cloud cover, fog banks, sun glare, and lens artifacts are NOT smoke.`;
+
+async function analyzeOne(input: CameraInput, apiKey: string) {
+  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Lovable-API-Key": apiKey,
+    },
+    body: JSON.stringify({
+      model: "google/gemini-2.5-flash",
+      messages: [
+        { role: "system", content: SYSTEM },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: `Camera ${input.camera_name} at ${input.lat.toFixed(3)}, ${input.lng.toFixed(3)}. Analyze for smoke or fire.` },
+            { type: "image_url", image_url: { url: input.image_url } },
+          ],
+        },
+      ],
+      response_format: { type: "json_object" },
+    }),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`AI ${res.status}: ${text.slice(0, 200)}`);
+  }
+  const j: any = await res.json();
+  const raw = j?.choices?.[0]?.message?.content ?? "{}";
+  let parsed: any = {};
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    parsed = {};
+  }
+  const label = ["fire", "smoke", "clear"].includes(parsed.label) ? parsed.label : "clear";
+  const confidence = Math.max(0, Math.min(100, Number(parsed.confidence) || 0));
+  return { label, confidence, reasoning: String(parsed.reasoning ?? "").slice(0, 240) };
+}
+
+export interface SweepResultItem {
+  camera_id: string;
+  camera_name: string;
+  lat: number;
+  lng: number;
+  image_url: string;
+  label: "fire" | "smoke" | "clear";
+  confidence: number;
+  reasoning: string;
+  queued: boolean;
+  error?: string;
+}
+
+export const sweepCameras = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { cameras: CameraInput[] }) => {
+    if (!Array.isArray(d?.cameras)) throw new Error("cameras required");
+    return { cameras: d.cameras.slice(0, 50) }; // hard cap per call
+  })
+  .handler(async ({ data, context }) => {
+    const apiKey = process.env.LOVABLE_API_KEY;
+    if (!apiKey) return { created: 0, errors: ["LOVABLE_API_KEY missing"], analyzed: 0, results: [] as SweepResultItem[] };
+
+    const supabase = context.supabase;
+    const errors: string[] = [];
+    const results: SweepResultItem[] = [];
+    let created = 0;
+    let analyzed = 0;
+
+    // Process in small parallel batches to keep latency reasonable.
+    const BATCH = 5;
+    for (let i = 0; i < data.cameras.length; i += BATCH) {
+      const chunk = data.cameras.slice(i, i + BATCH);
+      const settled = await Promise.allSettled(
+        chunk.map(async (cam) => {
+          const result = await analyzeOne(cam, apiKey);
+          analyzed++;
+          let queued = false;
+          if (result.label !== "clear" && result.confidence >= 55) {
+            const { data: row, error } = await supabase
+              .from("net_suggestions")
+              .insert({
+                source: "camera",
+                camera_id: cam.camera_id,
+                camera_name: cam.camera_name,
+                lat: cam.lat,
+                lng: cam.lng,
+                state: cam.state ?? null,
+                county: cam.county ?? null,
+                image_url: cam.image_url,
+                image_time: cam.image_time,
+                label: result.label,
+                confidence: result.confidence,
+                reasoning: result.reasoning,
+                status: "pending",
+              })
+              .select("id")
+              .single();
+            if (error) {
+              if (!String(error.message).toLowerCase().includes("duplicate")) {
+                errors.push(`${cam.camera_id}: ${error.message}`);
+              }
+            } else if (row) {
+              created++;
+              queued = true;
+            }
+          }
+          results.push({
+            camera_id: cam.camera_id,
+            camera_name: cam.camera_name,
+            lat: cam.lat,
+            lng: cam.lng,
+            image_url: cam.image_url,
+            label: result.label as any,
+            confidence: result.confidence,
+            reasoning: result.reasoning,
+            queued,
+          });
+        }),
+      );
+      settled.forEach((s, idx) => {
+        if (s.status === "rejected") {
+          const cam = chunk[idx];
+          errors.push(`${cam.camera_id}: ${s.reason?.message ?? "failed"}`);
+          results.push({
+            camera_id: cam.camera_id,
+            camera_name: cam.camera_name,
+            lat: cam.lat,
+            lng: cam.lng,
+            image_url: cam.image_url,
+            label: "clear",
+            confidence: 0,
+            reasoning: "Analysis failed",
+            queued: false,
+            error: String(s.reason?.message ?? "failed"),
+          });
+        }
+      });
+    }
+    return { created, analyzed, errors: errors.slice(0, 5), results };
+  });
+
