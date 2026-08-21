@@ -15,17 +15,16 @@ type Source = {
 };
 
 const SOURCES: Source[] = [
-  { table: "con_clients", group: "Clients", cols: ["name", "company", "email", "city"], title: (r) => r.company || r.name, subtitle: (r) => [r.name, r.email, r.city].filter(Boolean).join(" · "), link: (r) => ({ to: "/clients/$id", params: { id: r.id } }) },
-  { table: "con_jobs", group: "Jobs", cols: ["name", "job_number", "address", "city", "description"], title: (r) => `${r.job_number ? r.job_number + " · " : ""}${r.name}`, subtitle: (r) => [r.stage, r.city, r.state].filter(Boolean).join(" · "), link: (r) => ({ to: "/jobs/$id", params: { id: r.id } }) },
-  { table: "con_leads", group: "Leads", cols: ["title", "lead_number", "contact_name", "location"], title: (r) => r.title, subtitle: (r) => [r.stage, r.location].filter(Boolean).join(" · "), link: () => ({ to: "/leads" }) },
-  { table: "con_estimates", group: "Estimates", cols: ["title", "estimate_number", "scope"], title: (r) => `${r.estimate_number ? r.estimate_number + " · " : ""}${r.title}`, subtitle: (r) => `${r.status ?? ""} · $${Number(r.total || 0).toLocaleString()}`, link: () => ({ to: "/quotes" }) },
-  { table: "con_tasks", group: "Tasks", cols: ["title", "description"], title: (r) => r.title, subtitle: (r) => [r.status, r.priority, r.department].filter(Boolean).join(" · "), link: () => ({ to: "/company-tasks" }) },
-  { table: "con_subcontractors", group: "Subcontractors", cols: ["name", "trade", "contact_name", "email"], title: (r) => r.name, subtitle: (r) => [r.trade, r.contact_name].filter(Boolean).join(" · "), link: () => ({ to: "/subcontractors" }) },
-  { table: "con_equipment", group: "Equipment", cols: ["name", "asset_tag", "make", "model"], title: (r) => r.name, subtitle: (r) => [r.make, r.model, r.status].filter(Boolean).join(" · "), link: () => ({ to: "/equipment" }) },
+  { table: "ops_detections", group: "Detections", cols: ["title", "location", "notes"], title: (r) => r.title ?? "Detection", subtitle: (r) => [r.status, r.location].filter(Boolean).join(" · "), link: () => ({ to: "/ops/detections" }) },
+  { table: "ops_flights", group: "Flights", cols: ["mission_name", "notes"], title: (r) => r.mission_name ?? "Flight", subtitle: (r) => [r.status, r.aircraft_id].filter(Boolean).join(" · "), link: () => ({ to: "/ops/flights" }) },
+  { table: "fleet_aircraft", group: "Fleet", cols: ["tail_number", "model", "notes"], title: (r) => r.tail_number ?? r.model, subtitle: (r) => [r.model, r.status].filter(Boolean).join(" · "), link: () => ({ to: "/ops/readiness" }) },
+  { table: "eng_tasks", group: "Tasks", cols: ["title", "description"], title: (r) => r.title, subtitle: (r) => [r.status, r.priority].filter(Boolean).join(" · "), link: () => ({ to: "/tasks" }) },
+  { table: "eng_issues", group: "Issues", cols: ["title", "description"], title: (r) => r.title, subtitle: (r) => [r.status, r.severity].filter(Boolean).join(" · "), link: () => ({ to: "/eng/issues" }) },
+  { table: "prod_features", group: "Features", cols: ["title", "description"], title: (r) => r.title, subtitle: (r) => [r.status, r.stage].filter(Boolean).join(" · "), link: () => ({ to: "/product/portfolio" }) },
   { table: "profiles", group: "People", cols: ["full_name", "email", "department", "title"], title: (r) => r.full_name || r.email, subtitle: (r) => [r.title, r.department].filter(Boolean).join(" · "), link: () => ({ to: "/employees" }) },
   { table: "fin_invoices", group: "Invoices", cols: ["invoice_number", "customer_name", "notes"], title: (r) => `${r.invoice_number ?? "Invoice"} · ${r.customer_name ?? ""}`, subtitle: (r) => `${r.status ?? ""} · $${Number(r.total || 0).toLocaleString()}`, link: () => ({ to: "/invoices" }) },
-  { table: "con_documents", group: "Documents", cols: ["title", "doc_type", "notes"], title: (r) => r.title, subtitle: (r) => [r.doc_type, r.version].filter(Boolean).join(" · "), link: () => ({ to: "/plans" }) },
 ];
+
 
 function UniversalSearch() {
   const search = useSearch({ from: "/_hq/search" }) as { q?: string };
