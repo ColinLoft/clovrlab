@@ -5984,6 +5984,490 @@ export type Database = {
           },
         ]
       }
+      net_airframes: {
+        Row: {
+          created_at: string
+          cruise_speed_mph: number
+          endurance_min: number
+          id: string
+          manufacturer: string | null
+          model: string
+          notes: string | null
+          range_mi: number
+          retardant_capacity_l: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          cruise_speed_mph?: number
+          endurance_min?: number
+          id?: string
+          manufacturer?: string | null
+          model: string
+          notes?: string | null
+          range_mi?: number
+          retardant_capacity_l?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          cruise_speed_mph?: number
+          endurance_min?: number
+          id?: string
+          manufacturer?: string | null
+          model?: string
+          notes?: string | null
+          range_mi?: number
+          retardant_capacity_l?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      net_bases: {
+        Row: {
+          city: string | null
+          code: string
+          created_at: string
+          hangar_capacity: number
+          id: string
+          is_hq: boolean
+          lat: number
+          lng: number
+          name: string
+          notes: string | null
+          state: string | null
+          updated_at: string
+        }
+        Insert: {
+          city?: string | null
+          code: string
+          created_at?: string
+          hangar_capacity?: number
+          id?: string
+          is_hq?: boolean
+          lat: number
+          lng: number
+          name: string
+          notes?: string | null
+          state?: string | null
+          updated_at?: string
+        }
+        Update: {
+          city?: string | null
+          code?: string
+          created_at?: string
+          hangar_capacity?: number
+          id?: string
+          is_hq?: boolean
+          lat?: number
+          lng?: number
+          name?: string
+          notes?: string | null
+          state?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      net_drones: {
+        Row: {
+          airframe_id: string | null
+          base_id: string | null
+          battery_pct: number
+          created_at: string
+          flight_hours: number
+          heading_deg: number | null
+          id: string
+          last_lat: number | null
+          last_lng: number | null
+          last_telemetry_at: string | null
+          next_service_at: string | null
+          notes: string | null
+          retardant_l: number
+          status: Database["public"]["Enums"]["net_drone_status"]
+          tail_number: string
+          updated_at: string
+        }
+        Insert: {
+          airframe_id?: string | null
+          base_id?: string | null
+          battery_pct?: number
+          created_at?: string
+          flight_hours?: number
+          heading_deg?: number | null
+          id?: string
+          last_lat?: number | null
+          last_lng?: number | null
+          last_telemetry_at?: string | null
+          next_service_at?: string | null
+          notes?: string | null
+          retardant_l?: number
+          status?: Database["public"]["Enums"]["net_drone_status"]
+          tail_number: string
+          updated_at?: string
+        }
+        Update: {
+          airframe_id?: string | null
+          base_id?: string | null
+          battery_pct?: number
+          created_at?: string
+          flight_hours?: number
+          heading_deg?: number | null
+          id?: string
+          last_lat?: number | null
+          last_lng?: number | null
+          last_telemetry_at?: string | null
+          next_service_at?: string | null
+          notes?: string | null
+          retardant_l?: number
+          status?: Database["public"]["Enums"]["net_drone_status"]
+          tail_number?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "net_drones_airframe_id_fkey"
+            columns: ["airframe_id"]
+            isOneToOne: false
+            referencedRelation: "net_airframes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "net_drones_base_id_fkey"
+            columns: ["base_id"]
+            isOneToOne: false
+            referencedRelation: "net_bases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      net_incident_events: {
+        Row: {
+          actor: string | null
+          created_at: string
+          event_type: string
+          id: string
+          incident_id: string
+          message: string | null
+          payload: Json | null
+        }
+        Insert: {
+          actor?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          incident_id: string
+          message?: string | null
+          payload?: Json | null
+        }
+        Update: {
+          actor?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          incident_id?: string
+          message?: string | null
+          payload?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "net_incident_events_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "net_incidents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      net_incident_reports: {
+        Row: {
+          author: string | null
+          body: string
+          created_at: string
+          id: string
+          incident_id: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          incident_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          incident_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "net_incident_reports_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "net_incidents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      net_incidents: {
+        Row: {
+          acreage: number | null
+          assigned_drone_id: string | null
+          confidence: number | null
+          county: string | null
+          created_at: string
+          created_by: string | null
+          discovered_at: string
+          external_id: string | null
+          frp: number | null
+          id: string
+          lat: number
+          lng: number
+          notes: string | null
+          priority: Database["public"]["Enums"]["net_incident_priority"]
+          source: Database["public"]["Enums"]["net_incident_source"]
+          state: string | null
+          status: Database["public"]["Enums"]["net_incident_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          acreage?: number | null
+          assigned_drone_id?: string | null
+          confidence?: number | null
+          county?: string | null
+          created_at?: string
+          created_by?: string | null
+          discovered_at?: string
+          external_id?: string | null
+          frp?: number | null
+          id?: string
+          lat: number
+          lng: number
+          notes?: string | null
+          priority?: Database["public"]["Enums"]["net_incident_priority"]
+          source?: Database["public"]["Enums"]["net_incident_source"]
+          state?: string | null
+          status?: Database["public"]["Enums"]["net_incident_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          acreage?: number | null
+          assigned_drone_id?: string | null
+          confidence?: number | null
+          county?: string | null
+          created_at?: string
+          created_by?: string | null
+          discovered_at?: string
+          external_id?: string | null
+          frp?: number | null
+          id?: string
+          lat?: number
+          lng?: number
+          notes?: string | null
+          priority?: Database["public"]["Enums"]["net_incident_priority"]
+          source?: Database["public"]["Enums"]["net_incident_source"]
+          state?: string | null
+          status?: Database["public"]["Enums"]["net_incident_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "net_incidents_assigned_drone_id_fkey"
+            columns: ["assigned_drone_id"]
+            isOneToOne: false
+            referencedRelation: "net_drones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      net_maintenance_logs: {
+        Row: {
+          created_at: string
+          description: string
+          drone_id: string
+          hours_at: number | null
+          id: string
+          kind: Database["public"]["Enums"]["net_maint_kind"]
+          performed_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          drone_id: string
+          hours_at?: number | null
+          id?: string
+          kind?: Database["public"]["Enums"]["net_maint_kind"]
+          performed_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          drone_id?: string
+          hours_at?: number | null
+          id?: string
+          kind?: Database["public"]["Enums"]["net_maint_kind"]
+          performed_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "net_maintenance_logs_drone_id_fkey"
+            columns: ["drone_id"]
+            isOneToOne: false
+            referencedRelation: "net_drones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      net_muted_cameras: {
+        Row: {
+          camera_id: string
+          camera_name: string | null
+          created_at: string
+          muted_by: string | null
+          muted_until: string
+          reason: string | null
+        }
+        Insert: {
+          camera_id: string
+          camera_name?: string | null
+          created_at?: string
+          muted_by?: string | null
+          muted_until?: string
+          reason?: string | null
+        }
+        Update: {
+          camera_id?: string
+          camera_name?: string | null
+          created_at?: string
+          muted_by?: string | null
+          muted_until?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
+      net_response_area: {
+        Row: {
+          address: string | null
+          center_lat: number
+          center_lng: number
+          counties: string[]
+          id: boolean
+          mode: string
+          radius_mi: number
+          states: string[]
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          address?: string | null
+          center_lat?: number
+          center_lng?: number
+          counties?: string[]
+          id?: boolean
+          mode?: string
+          radius_mi?: number
+          states?: string[]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          address?: string | null
+          center_lat?: number
+          center_lng?: number
+          counties?: string[]
+          id?: boolean
+          mode?: string
+          radius_mi?: number
+          states?: string[]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      net_suggestions: {
+        Row: {
+          camera_id: string | null
+          camera_name: string | null
+          confidence: number
+          county: string | null
+          created_at: string
+          id: string
+          image_time: string | null
+          image_url: string | null
+          incident_id: string | null
+          label: Database["public"]["Enums"]["net_suggestion_label"]
+          lat: number
+          lng: number
+          reasoning: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          source: string
+          state: string | null
+          status: Database["public"]["Enums"]["net_suggestion_status"]
+        }
+        Insert: {
+          camera_id?: string | null
+          camera_name?: string | null
+          confidence: number
+          county?: string | null
+          created_at?: string
+          id?: string
+          image_time?: string | null
+          image_url?: string | null
+          incident_id?: string | null
+          label: Database["public"]["Enums"]["net_suggestion_label"]
+          lat: number
+          lng: number
+          reasoning?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          source: string
+          state?: string | null
+          status?: Database["public"]["Enums"]["net_suggestion_status"]
+        }
+        Update: {
+          camera_id?: string | null
+          camera_name?: string | null
+          confidence?: number
+          county?: string | null
+          created_at?: string
+          id?: string
+          image_time?: string | null
+          image_url?: string | null
+          incident_id?: string | null
+          label?: Database["public"]["Enums"]["net_suggestion_label"]
+          lat?: number
+          lng?: number
+          reasoning?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          source?: string
+          state?: string | null
+          status?: Database["public"]["Enums"]["net_suggestion_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "net_suggestions_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "net_incidents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       newsletter_signups: {
         Row: {
           created_at: string
@@ -7479,6 +7963,34 @@ export type Database = {
         | "it"
         | "support"
         | "marketing"
+      net_drone_status:
+        | "ready"
+        | "preflight"
+        | "inflight"
+        | "returning"
+        | "charging"
+        | "maintenance"
+        | "offline"
+      net_incident_priority: "p1" | "p2" | "p3" | "p4"
+      net_incident_source:
+        | "alertwest"
+        | "firms"
+        | "nws"
+        | "usgs"
+        | "user"
+        | "manual"
+        | "other"
+      net_incident_status:
+        | "new"
+        | "triaging"
+        | "dispatched"
+        | "onscene"
+        | "contained"
+        | "closed"
+        | "false_positive"
+      net_maint_kind: "scheduled" | "unscheduled" | "inspection"
+      net_suggestion_label: "smoke" | "fire" | "clear"
+      net_suggestion_status: "pending" | "promoted" | "dismissed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -7620,6 +8132,37 @@ export const Constants = {
         "support",
         "marketing",
       ],
+      net_drone_status: [
+        "ready",
+        "preflight",
+        "inflight",
+        "returning",
+        "charging",
+        "maintenance",
+        "offline",
+      ],
+      net_incident_priority: ["p1", "p2", "p3", "p4"],
+      net_incident_source: [
+        "alertwest",
+        "firms",
+        "nws",
+        "usgs",
+        "user",
+        "manual",
+        "other",
+      ],
+      net_incident_status: [
+        "new",
+        "triaging",
+        "dispatched",
+        "onscene",
+        "contained",
+        "closed",
+        "false_positive",
+      ],
+      net_maint_kind: ["scheduled", "unscheduled", "inspection"],
+      net_suggestion_label: ["smoke", "fire", "clear"],
+      net_suggestion_status: ["pending", "promoted", "dismissed"],
     },
   },
 } as const

@@ -30,6 +30,7 @@ import { Route as MeetingIdRouteImport } from './routes/meeting.$id'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
 import { Route as LegalCookiesRouteImport } from './routes/legal.cookies'
+import { Route as ApiPlanesRouteImport } from './routes/api/planes'
 import { Route as HqTrainingRouteImport } from './routes/_hq.training'
 import { Route as HqTimeOffRouteImport } from './routes/_hq.time-off'
 import { Route as HqTeamsRouteImport } from './routes/_hq.teams'
@@ -77,11 +78,16 @@ import { Route as HqProductInsightsRouteImport } from './routes/_hq.product.insi
 import { Route as HqProductFeedbackRouteImport } from './routes/_hq.product.feedback'
 import { Route as HqOpsSitrepRouteImport } from './routes/_hq.ops.sitrep'
 import { Route as HqOpsReadinessRouteImport } from './routes/_hq.ops.readiness'
+import { Route as HqOpsNetworkFleetRouteImport } from './routes/_hq.ops.network-fleet'
 import { Route as HqOpsMaintenanceRouteImport } from './routes/_hq.ops.maintenance'
+import { Route as HqOpsLiveMapRouteImport } from './routes/_hq.ops.live-map'
+import { Route as HqOpsIncidentsRouteImport } from './routes/_hq.ops.incidents'
+import { Route as HqOpsHazardsRouteImport } from './routes/_hq.ops.hazards'
 import { Route as HqOpsFlightsRouteImport } from './routes/_hq.ops.flights'
 import { Route as HqOpsDetectionsRouteImport } from './routes/_hq.ops.detections'
 import { Route as HqOpsCoverageRouteImport } from './routes/_hq.ops.coverage'
 import { Route as HqOpsControlRouteImport } from './routes/_hq.ops.control'
+import { Route as HqOpsCamerasRouteImport } from './routes/_hq.ops.cameras'
 import { Route as HqOpsAirspaceRouteImport } from './routes/_hq.ops.airspace'
 import { Route as HqMfgSupplyRouteImport } from './routes/_hq.mfg.supply'
 import { Route as HqMfgStockRouteImport } from './routes/_hq.mfg.stock'
@@ -219,6 +225,11 @@ const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
 const LegalCookiesRoute = LegalCookiesRouteImport.update({
   id: '/legal/cookies',
   path: '/legal/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPlanesRoute = ApiPlanesRouteImport.update({
+  id: '/api/planes',
+  path: '/api/planes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HqTrainingRoute = HqTrainingRouteImport.update({
@@ -456,9 +467,29 @@ const HqOpsReadinessRoute = HqOpsReadinessRouteImport.update({
   path: '/ops/readiness',
   getParentRoute: () => HqRoute,
 } as any)
+const HqOpsNetworkFleetRoute = HqOpsNetworkFleetRouteImport.update({
+  id: '/ops/network-fleet',
+  path: '/ops/network-fleet',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqOpsMaintenanceRoute = HqOpsMaintenanceRouteImport.update({
   id: '/ops/maintenance',
   path: '/ops/maintenance',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsLiveMapRoute = HqOpsLiveMapRouteImport.update({
+  id: '/ops/live-map',
+  path: '/ops/live-map',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsIncidentsRoute = HqOpsIncidentsRouteImport.update({
+  id: '/ops/incidents',
+  path: '/ops/incidents',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsHazardsRoute = HqOpsHazardsRouteImport.update({
+  id: '/ops/hazards',
+  path: '/ops/hazards',
   getParentRoute: () => HqRoute,
 } as any)
 const HqOpsFlightsRoute = HqOpsFlightsRouteImport.update({
@@ -479,6 +510,11 @@ const HqOpsCoverageRoute = HqOpsCoverageRouteImport.update({
 const HqOpsControlRoute = HqOpsControlRouteImport.update({
   id: '/ops/control',
   path: '/ops/control',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsCamerasRoute = HqOpsCamerasRouteImport.update({
+  id: '/ops/cameras',
+  path: '/ops/cameras',
   getParentRoute: () => HqRoute,
 } as any)
 const HqOpsAirspaceRoute = HqOpsAirspaceRouteImport.update({
@@ -702,6 +738,7 @@ export interface FileRoutesByFullPath {
   '/teams': typeof HqTeamsRouteWithChildren
   '/time-off': typeof HqTimeOffRoute
   '/training': typeof HqTrainingRoute
+  '/api/planes': typeof ApiPlanesRoute
   '/legal/cookies': typeof LegalCookiesRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -738,11 +775,16 @@ export interface FileRoutesByFullPath {
   '/mfg/stock': typeof HqMfgStockRoute
   '/mfg/supply': typeof HqMfgSupplyRoute
   '/ops/airspace': typeof HqOpsAirspaceRoute
+  '/ops/cameras': typeof HqOpsCamerasRoute
   '/ops/control': typeof HqOpsControlRoute
   '/ops/coverage': typeof HqOpsCoverageRoute
   '/ops/detections': typeof HqOpsDetectionsRoute
   '/ops/flights': typeof HqOpsFlightsRoute
+  '/ops/hazards': typeof HqOpsHazardsRoute
+  '/ops/incidents': typeof HqOpsIncidentsRoute
+  '/ops/live-map': typeof HqOpsLiveMapRoute
   '/ops/maintenance': typeof HqOpsMaintenanceRoute
+  '/ops/network-fleet': typeof HqOpsNetworkFleetRoute
   '/ops/readiness': typeof HqOpsReadinessRoute
   '/ops/sitrep': typeof HqOpsSitrepRoute
   '/product/feedback': typeof HqProductFeedbackRoute
@@ -809,6 +851,7 @@ export interface FileRoutesByTo {
   '/tasks': typeof HqTasksRoute
   '/time-off': typeof HqTimeOffRoute
   '/training': typeof HqTrainingRoute
+  '/api/planes': typeof ApiPlanesRoute
   '/legal/cookies': typeof LegalCookiesRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -845,11 +888,16 @@ export interface FileRoutesByTo {
   '/mfg/stock': typeof HqMfgStockRoute
   '/mfg/supply': typeof HqMfgSupplyRoute
   '/ops/airspace': typeof HqOpsAirspaceRoute
+  '/ops/cameras': typeof HqOpsCamerasRoute
   '/ops/control': typeof HqOpsControlRoute
   '/ops/coverage': typeof HqOpsCoverageRoute
   '/ops/detections': typeof HqOpsDetectionsRoute
   '/ops/flights': typeof HqOpsFlightsRoute
+  '/ops/hazards': typeof HqOpsHazardsRoute
+  '/ops/incidents': typeof HqOpsIncidentsRoute
+  '/ops/live-map': typeof HqOpsLiveMapRoute
   '/ops/maintenance': typeof HqOpsMaintenanceRoute
+  '/ops/network-fleet': typeof HqOpsNetworkFleetRoute
   '/ops/readiness': typeof HqOpsReadinessRoute
   '/ops/sitrep': typeof HqOpsSitrepRoute
   '/product/feedback': typeof HqProductFeedbackRoute
@@ -919,6 +967,7 @@ export interface FileRoutesById {
   '/_hq/teams': typeof HqTeamsRouteWithChildren
   '/_hq/time-off': typeof HqTimeOffRoute
   '/_hq/training': typeof HqTrainingRoute
+  '/api/planes': typeof ApiPlanesRoute
   '/legal/cookies': typeof LegalCookiesRoute
   '/legal/privacy': typeof LegalPrivacyRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -955,11 +1004,16 @@ export interface FileRoutesById {
   '/_hq/mfg/stock': typeof HqMfgStockRoute
   '/_hq/mfg/supply': typeof HqMfgSupplyRoute
   '/_hq/ops/airspace': typeof HqOpsAirspaceRoute
+  '/_hq/ops/cameras': typeof HqOpsCamerasRoute
   '/_hq/ops/control': typeof HqOpsControlRoute
   '/_hq/ops/coverage': typeof HqOpsCoverageRoute
   '/_hq/ops/detections': typeof HqOpsDetectionsRoute
   '/_hq/ops/flights': typeof HqOpsFlightsRoute
+  '/_hq/ops/hazards': typeof HqOpsHazardsRoute
+  '/_hq/ops/incidents': typeof HqOpsIncidentsRoute
+  '/_hq/ops/live-map': typeof HqOpsLiveMapRoute
   '/_hq/ops/maintenance': typeof HqOpsMaintenanceRoute
+  '/_hq/ops/network-fleet': typeof HqOpsNetworkFleetRoute
   '/_hq/ops/readiness': typeof HqOpsReadinessRoute
   '/_hq/ops/sitrep': typeof HqOpsSitrepRoute
   '/_hq/product/feedback': typeof HqProductFeedbackRoute
@@ -1029,6 +1083,7 @@ export interface FileRouteTypes {
     | '/teams'
     | '/time-off'
     | '/training'
+    | '/api/planes'
     | '/legal/cookies'
     | '/legal/privacy'
     | '/legal/terms'
@@ -1065,11 +1120,16 @@ export interface FileRouteTypes {
     | '/mfg/stock'
     | '/mfg/supply'
     | '/ops/airspace'
+    | '/ops/cameras'
     | '/ops/control'
     | '/ops/coverage'
     | '/ops/detections'
     | '/ops/flights'
+    | '/ops/hazards'
+    | '/ops/incidents'
+    | '/ops/live-map'
     | '/ops/maintenance'
+    | '/ops/network-fleet'
     | '/ops/readiness'
     | '/ops/sitrep'
     | '/product/feedback'
@@ -1136,6 +1196,7 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/time-off'
     | '/training'
+    | '/api/planes'
     | '/legal/cookies'
     | '/legal/privacy'
     | '/legal/terms'
@@ -1172,11 +1233,16 @@ export interface FileRouteTypes {
     | '/mfg/stock'
     | '/mfg/supply'
     | '/ops/airspace'
+    | '/ops/cameras'
     | '/ops/control'
     | '/ops/coverage'
     | '/ops/detections'
     | '/ops/flights'
+    | '/ops/hazards'
+    | '/ops/incidents'
+    | '/ops/live-map'
     | '/ops/maintenance'
+    | '/ops/network-fleet'
     | '/ops/readiness'
     | '/ops/sitrep'
     | '/product/feedback'
@@ -1245,6 +1311,7 @@ export interface FileRouteTypes {
     | '/_hq/teams'
     | '/_hq/time-off'
     | '/_hq/training'
+    | '/api/planes'
     | '/legal/cookies'
     | '/legal/privacy'
     | '/legal/terms'
@@ -1281,11 +1348,16 @@ export interface FileRouteTypes {
     | '/_hq/mfg/stock'
     | '/_hq/mfg/supply'
     | '/_hq/ops/airspace'
+    | '/_hq/ops/cameras'
     | '/_hq/ops/control'
     | '/_hq/ops/coverage'
     | '/_hq/ops/detections'
     | '/_hq/ops/flights'
+    | '/_hq/ops/hazards'
+    | '/_hq/ops/incidents'
+    | '/_hq/ops/live-map'
     | '/_hq/ops/maintenance'
+    | '/_hq/ops/network-fleet'
     | '/_hq/ops/readiness'
     | '/_hq/ops/sitrep'
     | '/_hq/product/feedback'
@@ -1322,6 +1394,7 @@ export interface RootRouteChildren {
   TechnologyRoute: typeof TechnologyRoute
   WelcomeRoute: typeof WelcomeRoute
   WorkspacesRoute: typeof WorkspacesRoute
+  ApiPlanesRoute: typeof ApiPlanesRoute
   LegalCookiesRoute: typeof LegalCookiesRoute
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
@@ -1477,6 +1550,13 @@ declare module '@tanstack/react-router' {
       path: '/legal/cookies'
       fullPath: '/legal/cookies'
       preLoaderRoute: typeof LegalCookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/planes': {
+      id: '/api/planes'
+      path: '/api/planes'
+      fullPath: '/api/planes'
+      preLoaderRoute: typeof ApiPlanesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_hq/training': {
@@ -1808,11 +1888,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqOpsReadinessRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/ops/network-fleet': {
+      id: '/_hq/ops/network-fleet'
+      path: '/ops/network-fleet'
+      fullPath: '/ops/network-fleet'
+      preLoaderRoute: typeof HqOpsNetworkFleetRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/ops/maintenance': {
       id: '/_hq/ops/maintenance'
       path: '/ops/maintenance'
       fullPath: '/ops/maintenance'
       preLoaderRoute: typeof HqOpsMaintenanceRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/live-map': {
+      id: '/_hq/ops/live-map'
+      path: '/ops/live-map'
+      fullPath: '/ops/live-map'
+      preLoaderRoute: typeof HqOpsLiveMapRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/incidents': {
+      id: '/_hq/ops/incidents'
+      path: '/ops/incidents'
+      fullPath: '/ops/incidents'
+      preLoaderRoute: typeof HqOpsIncidentsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/hazards': {
+      id: '/_hq/ops/hazards'
+      path: '/ops/hazards'
+      fullPath: '/ops/hazards'
+      preLoaderRoute: typeof HqOpsHazardsRouteImport
       parentRoute: typeof HqRoute
     }
     '/_hq/ops/flights': {
@@ -1841,6 +1949,13 @@ declare module '@tanstack/react-router' {
       path: '/ops/control'
       fullPath: '/ops/control'
       preLoaderRoute: typeof HqOpsControlRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/cameras': {
+      id: '/_hq/ops/cameras'
+      path: '/ops/cameras'
+      fullPath: '/ops/cameras'
+      preLoaderRoute: typeof HqOpsCamerasRouteImport
       parentRoute: typeof HqRoute
     }
     '/_hq/ops/airspace': {
@@ -2163,11 +2278,16 @@ interface HqRouteChildren {
   HqMfgStockRoute: typeof HqMfgStockRoute
   HqMfgSupplyRoute: typeof HqMfgSupplyRoute
   HqOpsAirspaceRoute: typeof HqOpsAirspaceRoute
+  HqOpsCamerasRoute: typeof HqOpsCamerasRoute
   HqOpsControlRoute: typeof HqOpsControlRoute
   HqOpsCoverageRoute: typeof HqOpsCoverageRoute
   HqOpsDetectionsRoute: typeof HqOpsDetectionsRoute
   HqOpsFlightsRoute: typeof HqOpsFlightsRoute
+  HqOpsHazardsRoute: typeof HqOpsHazardsRoute
+  HqOpsIncidentsRoute: typeof HqOpsIncidentsRoute
+  HqOpsLiveMapRoute: typeof HqOpsLiveMapRoute
   HqOpsMaintenanceRoute: typeof HqOpsMaintenanceRoute
+  HqOpsNetworkFleetRoute: typeof HqOpsNetworkFleetRoute
   HqOpsReadinessRoute: typeof HqOpsReadinessRoute
   HqOpsSitrepRoute: typeof HqOpsSitrepRoute
   HqProductFeedbackRoute: typeof HqProductFeedbackRoute
@@ -2248,11 +2368,16 @@ const HqRouteChildren: HqRouteChildren = {
   HqMfgStockRoute: HqMfgStockRoute,
   HqMfgSupplyRoute: HqMfgSupplyRoute,
   HqOpsAirspaceRoute: HqOpsAirspaceRoute,
+  HqOpsCamerasRoute: HqOpsCamerasRoute,
   HqOpsControlRoute: HqOpsControlRoute,
   HqOpsCoverageRoute: HqOpsCoverageRoute,
   HqOpsDetectionsRoute: HqOpsDetectionsRoute,
   HqOpsFlightsRoute: HqOpsFlightsRoute,
+  HqOpsHazardsRoute: HqOpsHazardsRoute,
+  HqOpsIncidentsRoute: HqOpsIncidentsRoute,
+  HqOpsLiveMapRoute: HqOpsLiveMapRoute,
   HqOpsMaintenanceRoute: HqOpsMaintenanceRoute,
+  HqOpsNetworkFleetRoute: HqOpsNetworkFleetRoute,
   HqOpsReadinessRoute: HqOpsReadinessRoute,
   HqOpsSitrepRoute: HqOpsSitrepRoute,
   HqProductFeedbackRoute: HqProductFeedbackRoute,
@@ -2287,6 +2412,7 @@ const rootRouteChildren: RootRouteChildren = {
   TechnologyRoute: TechnologyRoute,
   WelcomeRoute: WelcomeRoute,
   WorkspacesRoute: WorkspacesRoute,
+  ApiPlanesRoute: ApiPlanesRoute,
   LegalCookiesRoute: LegalCookiesRoute,
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
