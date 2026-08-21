@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useCurrentApp } from "@/lib/hq/app-context";
 import { WorkspaceDashboard } from "@/components/hq/WorkspaceDashboard";
 import { Loading } from "@/components/hq/work/kit";
