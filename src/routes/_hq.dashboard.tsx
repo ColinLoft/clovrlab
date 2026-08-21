@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useCurrentApp } from "@/lib/hq/app-context";
 import { WorkspaceDashboard } from "@/components/hq/WorkspaceDashboard";
 import { Loading } from "@/components/hq/work/kit";
@@ -9,7 +10,14 @@ import { Loading } from "@/components/hq/work/kit";
  */
 function DashboardPage() {
   const { app, loading } = useCurrentApp();
-  if (loading) return <Loading />;
+  const navigate = useNavigate();
+
+  // The shared hub no longer has its own dashboard — teams own their own.
+  useEffect(() => {
+    if (!loading && (!app || app.is_hub)) navigate({ to: "/workspaces", replace: true });
+  }, [loading, app?.id, app?.is_hub, navigate]);
+
+  if (loading || !app || app.is_hub) return <Loading />;
   return <WorkspaceDashboard app={app as any} />;
 }
 

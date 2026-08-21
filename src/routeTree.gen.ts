@@ -66,7 +66,9 @@ import { Route as HqTeamsIndexRouteImport } from './routes/_hq.teams.index'
 import { Route as HqTeamsSlugRouteImport } from './routes/_hq.teams.$slug'
 import { Route as HqSystemsServicesRouteImport } from './routes/_hq.systems.services'
 import { Route as HqSystemsHelpdeskRouteImport } from './routes/_hq.systems.helpdesk'
+import { Route as HqSystemsAssetsRouteImport } from './routes/_hq.systems.assets'
 import { Route as HqSystemsAccessRouteImport } from './routes/_hq.systems.access'
+import { Route as HqProductSupportRouteImport } from './routes/_hq.product.support'
 import { Route as HqProductRoadmapRouteImport } from './routes/_hq.product.roadmap'
 import { Route as HqProductReleasesRouteImport } from './routes/_hq.product.releases'
 import { Route as HqProductPortfolioRouteImport } from './routes/_hq.product.portfolio'
@@ -74,6 +76,7 @@ import { Route as HqProductInsightsRouteImport } from './routes/_hq.product.insi
 import { Route as HqProductFeedbackRouteImport } from './routes/_hq.product.feedback'
 import { Route as HqOpsSitrepRouteImport } from './routes/_hq.ops.sitrep'
 import { Route as HqOpsReadinessRouteImport } from './routes/_hq.ops.readiness'
+import { Route as HqOpsMaintenanceRouteImport } from './routes/_hq.ops.maintenance'
 import { Route as HqOpsFlightsRouteImport } from './routes/_hq.ops.flights'
 import { Route as HqOpsDetectionsRouteImport } from './routes/_hq.ops.detections'
 import { Route as HqOpsCoverageRouteImport } from './routes/_hq.ops.coverage'
@@ -81,9 +84,11 @@ import { Route as HqOpsControlRouteImport } from './routes/_hq.ops.control'
 import { Route as HqOpsAirspaceRouteImport } from './routes/_hq.ops.airspace'
 import { Route as HqMfgSupplyRouteImport } from './routes/_hq.mfg.supply'
 import { Route as HqMfgStockRouteImport } from './routes/_hq.mfg.stock'
+import { Route as HqMfgReturnsRouteImport } from './routes/_hq.mfg.returns'
 import { Route as HqMfgQualityRouteImport } from './routes/_hq.mfg.quality'
 import { Route as HqMfgOrdersRouteImport } from './routes/_hq.mfg.orders'
 import { Route as HqMfgLineRouteImport } from './routes/_hq.mfg.line'
+import { Route as HqFundPipelineRouteImport } from './routes/_hq.fund.pipeline'
 import { Route as HqFundGrantsRouteImport } from './routes/_hq.fund.grants'
 import { Route as HqFundDonorsRouteImport } from './routes/_hq.fund.donors'
 import { Route as HqFundDonationsRouteImport } from './routes/_hq.fund.donations'
@@ -91,6 +96,7 @@ import { Route as HqFundCampaignsRouteImport } from './routes/_hq.fund.campaigns
 import { Route as HqExecOkrsRouteImport } from './routes/_hq.exec.okrs'
 import { Route as HqExecDecisionsRouteImport } from './routes/_hq.exec.decisions'
 import { Route as HqExecBriefingRouteImport } from './routes/_hq.exec.briefing'
+import { Route as HqExecAnnouncementsRouteImport } from './routes/_hq.exec.announcements'
 import { Route as HqEngReviewsRouteImport } from './routes/_hq.eng.reviews'
 import { Route as HqEngProgramsRouteImport } from './routes/_hq.eng.programs'
 import { Route as HqEngLibraryRouteImport } from './routes/_hq.eng.library'
@@ -98,7 +104,9 @@ import { Route as HqEngIssuesRouteImport } from './routes/_hq.eng.issues'
 import { Route as HqEngHardwareRouteImport } from './routes/_hq.eng.hardware'
 import { Route as HqEngFirmwareRouteImport } from './routes/_hq.eng.firmware'
 import { Route as HqEngChangesRouteImport } from './routes/_hq.eng.changes'
+import { Route as HqEngBoardRouteImport } from './routes/_hq.eng.board'
 import { Route as HqAdminSlackRouteImport } from './routes/_hq.admin.slack'
+import { Route as HqAdminPoliciesRouteImport } from './routes/_hq.admin.policies'
 import { Route as HqAdminOrgRouteImport } from './routes/_hq.admin.org'
 import { Route as HqAdminItRouteImport } from './routes/_hq.admin.it'
 import { Route as HqAdminHealthRouteImport } from './routes/_hq.admin.health'
@@ -392,9 +400,19 @@ const HqSystemsHelpdeskRoute = HqSystemsHelpdeskRouteImport.update({
   path: '/systems/helpdesk',
   getParentRoute: () => HqRoute,
 } as any)
+const HqSystemsAssetsRoute = HqSystemsAssetsRouteImport.update({
+  id: '/systems/assets',
+  path: '/systems/assets',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqSystemsAccessRoute = HqSystemsAccessRouteImport.update({
   id: '/systems/access',
   path: '/systems/access',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqProductSupportRoute = HqProductSupportRouteImport.update({
+  id: '/product/support',
+  path: '/product/support',
   getParentRoute: () => HqRoute,
 } as any)
 const HqProductRoadmapRoute = HqProductRoadmapRouteImport.update({
@@ -432,6 +450,11 @@ const HqOpsReadinessRoute = HqOpsReadinessRouteImport.update({
   path: '/ops/readiness',
   getParentRoute: () => HqRoute,
 } as any)
+const HqOpsMaintenanceRoute = HqOpsMaintenanceRouteImport.update({
+  id: '/ops/maintenance',
+  path: '/ops/maintenance',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqOpsFlightsRoute = HqOpsFlightsRouteImport.update({
   id: '/ops/flights',
   path: '/ops/flights',
@@ -467,6 +490,11 @@ const HqMfgStockRoute = HqMfgStockRouteImport.update({
   path: '/mfg/stock',
   getParentRoute: () => HqRoute,
 } as any)
+const HqMfgReturnsRoute = HqMfgReturnsRouteImport.update({
+  id: '/mfg/returns',
+  path: '/mfg/returns',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqMfgQualityRoute = HqMfgQualityRouteImport.update({
   id: '/mfg/quality',
   path: '/mfg/quality',
@@ -480,6 +508,11 @@ const HqMfgOrdersRoute = HqMfgOrdersRouteImport.update({
 const HqMfgLineRoute = HqMfgLineRouteImport.update({
   id: '/mfg/line',
   path: '/mfg/line',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqFundPipelineRoute = HqFundPipelineRouteImport.update({
+  id: '/fund/pipeline',
+  path: '/fund/pipeline',
   getParentRoute: () => HqRoute,
 } as any)
 const HqFundGrantsRoute = HqFundGrantsRouteImport.update({
@@ -517,6 +550,11 @@ const HqExecBriefingRoute = HqExecBriefingRouteImport.update({
   path: '/exec/briefing',
   getParentRoute: () => HqRoute,
 } as any)
+const HqExecAnnouncementsRoute = HqExecAnnouncementsRouteImport.update({
+  id: '/exec/announcements',
+  path: '/exec/announcements',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqEngReviewsRoute = HqEngReviewsRouteImport.update({
   id: '/eng/reviews',
   path: '/eng/reviews',
@@ -552,9 +590,19 @@ const HqEngChangesRoute = HqEngChangesRouteImport.update({
   path: '/eng/changes',
   getParentRoute: () => HqRoute,
 } as any)
+const HqEngBoardRoute = HqEngBoardRouteImport.update({
+  id: '/eng/board',
+  path: '/eng/board',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqAdminSlackRoute = HqAdminSlackRouteImport.update({
   id: '/admin/slack',
   path: '/admin/slack',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqAdminPoliciesRoute = HqAdminPoliciesRouteImport.update({
+  id: '/admin/policies',
+  path: '/admin/policies',
   getParentRoute: () => HqRoute,
 } as any)
 const HqAdminOrgRoute = HqAdminOrgRouteImport.update({
@@ -657,7 +705,9 @@ export interface FileRoutesByFullPath {
   '/admin/health': typeof HqAdminHealthRoute
   '/admin/it': typeof HqAdminItRoute
   '/admin/org': typeof HqAdminOrgRoute
+  '/admin/policies': typeof HqAdminPoliciesRoute
   '/admin/slack': typeof HqAdminSlackRoute
+  '/eng/board': typeof HqEngBoardRoute
   '/eng/changes': typeof HqEngChangesRoute
   '/eng/firmware': typeof HqEngFirmwareRoute
   '/eng/hardware': typeof HqEngHardwareRoute
@@ -665,6 +715,7 @@ export interface FileRoutesByFullPath {
   '/eng/library': typeof HqEngLibraryRoute
   '/eng/programs': typeof HqEngProgramsRoute
   '/eng/reviews': typeof HqEngReviewsRoute
+  '/exec/announcements': typeof HqExecAnnouncementsRoute
   '/exec/briefing': typeof HqExecBriefingRoute
   '/exec/decisions': typeof HqExecDecisionsRoute
   '/exec/okrs': typeof HqExecOkrsRoute
@@ -672,9 +723,11 @@ export interface FileRoutesByFullPath {
   '/fund/donations': typeof HqFundDonationsRoute
   '/fund/donors': typeof HqFundDonorsRoute
   '/fund/grants': typeof HqFundGrantsRoute
+  '/fund/pipeline': typeof HqFundPipelineRoute
   '/mfg/line': typeof HqMfgLineRoute
   '/mfg/orders': typeof HqMfgOrdersRoute
   '/mfg/quality': typeof HqMfgQualityRoute
+  '/mfg/returns': typeof HqMfgReturnsRoute
   '/mfg/stock': typeof HqMfgStockRoute
   '/mfg/supply': typeof HqMfgSupplyRoute
   '/ops/airspace': typeof HqOpsAirspaceRoute
@@ -682,6 +735,7 @@ export interface FileRoutesByFullPath {
   '/ops/coverage': typeof HqOpsCoverageRoute
   '/ops/detections': typeof HqOpsDetectionsRoute
   '/ops/flights': typeof HqOpsFlightsRoute
+  '/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/ops/readiness': typeof HqOpsReadinessRoute
   '/ops/sitrep': typeof HqOpsSitrepRoute
   '/product/feedback': typeof HqProductFeedbackRoute
@@ -689,7 +743,9 @@ export interface FileRoutesByFullPath {
   '/product/portfolio': typeof HqProductPortfolioRoute
   '/product/releases': typeof HqProductReleasesRoute
   '/product/roadmap': typeof HqProductRoadmapRoute
+  '/product/support': typeof HqProductSupportRoute
   '/systems/access': typeof HqSystemsAccessRoute
+  '/systems/assets': typeof HqSystemsAssetsRoute
   '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
@@ -755,7 +811,9 @@ export interface FileRoutesByTo {
   '/admin/health': typeof HqAdminHealthRoute
   '/admin/it': typeof HqAdminItRoute
   '/admin/org': typeof HqAdminOrgRoute
+  '/admin/policies': typeof HqAdminPoliciesRoute
   '/admin/slack': typeof HqAdminSlackRoute
+  '/eng/board': typeof HqEngBoardRoute
   '/eng/changes': typeof HqEngChangesRoute
   '/eng/firmware': typeof HqEngFirmwareRoute
   '/eng/hardware': typeof HqEngHardwareRoute
@@ -763,6 +821,7 @@ export interface FileRoutesByTo {
   '/eng/library': typeof HqEngLibraryRoute
   '/eng/programs': typeof HqEngProgramsRoute
   '/eng/reviews': typeof HqEngReviewsRoute
+  '/exec/announcements': typeof HqExecAnnouncementsRoute
   '/exec/briefing': typeof HqExecBriefingRoute
   '/exec/decisions': typeof HqExecDecisionsRoute
   '/exec/okrs': typeof HqExecOkrsRoute
@@ -770,9 +829,11 @@ export interface FileRoutesByTo {
   '/fund/donations': typeof HqFundDonationsRoute
   '/fund/donors': typeof HqFundDonorsRoute
   '/fund/grants': typeof HqFundGrantsRoute
+  '/fund/pipeline': typeof HqFundPipelineRoute
   '/mfg/line': typeof HqMfgLineRoute
   '/mfg/orders': typeof HqMfgOrdersRoute
   '/mfg/quality': typeof HqMfgQualityRoute
+  '/mfg/returns': typeof HqMfgReturnsRoute
   '/mfg/stock': typeof HqMfgStockRoute
   '/mfg/supply': typeof HqMfgSupplyRoute
   '/ops/airspace': typeof HqOpsAirspaceRoute
@@ -780,6 +841,7 @@ export interface FileRoutesByTo {
   '/ops/coverage': typeof HqOpsCoverageRoute
   '/ops/detections': typeof HqOpsDetectionsRoute
   '/ops/flights': typeof HqOpsFlightsRoute
+  '/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/ops/readiness': typeof HqOpsReadinessRoute
   '/ops/sitrep': typeof HqOpsSitrepRoute
   '/product/feedback': typeof HqProductFeedbackRoute
@@ -787,7 +849,9 @@ export interface FileRoutesByTo {
   '/product/portfolio': typeof HqProductPortfolioRoute
   '/product/releases': typeof HqProductReleasesRoute
   '/product/roadmap': typeof HqProductRoadmapRoute
+  '/product/support': typeof HqProductSupportRoute
   '/systems/access': typeof HqSystemsAccessRoute
+  '/systems/assets': typeof HqSystemsAssetsRoute
   '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
@@ -856,7 +920,9 @@ export interface FileRoutesById {
   '/_hq/admin/health': typeof HqAdminHealthRoute
   '/_hq/admin/it': typeof HqAdminItRoute
   '/_hq/admin/org': typeof HqAdminOrgRoute
+  '/_hq/admin/policies': typeof HqAdminPoliciesRoute
   '/_hq/admin/slack': typeof HqAdminSlackRoute
+  '/_hq/eng/board': typeof HqEngBoardRoute
   '/_hq/eng/changes': typeof HqEngChangesRoute
   '/_hq/eng/firmware': typeof HqEngFirmwareRoute
   '/_hq/eng/hardware': typeof HqEngHardwareRoute
@@ -864,6 +930,7 @@ export interface FileRoutesById {
   '/_hq/eng/library': typeof HqEngLibraryRoute
   '/_hq/eng/programs': typeof HqEngProgramsRoute
   '/_hq/eng/reviews': typeof HqEngReviewsRoute
+  '/_hq/exec/announcements': typeof HqExecAnnouncementsRoute
   '/_hq/exec/briefing': typeof HqExecBriefingRoute
   '/_hq/exec/decisions': typeof HqExecDecisionsRoute
   '/_hq/exec/okrs': typeof HqExecOkrsRoute
@@ -871,9 +938,11 @@ export interface FileRoutesById {
   '/_hq/fund/donations': typeof HqFundDonationsRoute
   '/_hq/fund/donors': typeof HqFundDonorsRoute
   '/_hq/fund/grants': typeof HqFundGrantsRoute
+  '/_hq/fund/pipeline': typeof HqFundPipelineRoute
   '/_hq/mfg/line': typeof HqMfgLineRoute
   '/_hq/mfg/orders': typeof HqMfgOrdersRoute
   '/_hq/mfg/quality': typeof HqMfgQualityRoute
+  '/_hq/mfg/returns': typeof HqMfgReturnsRoute
   '/_hq/mfg/stock': typeof HqMfgStockRoute
   '/_hq/mfg/supply': typeof HqMfgSupplyRoute
   '/_hq/ops/airspace': typeof HqOpsAirspaceRoute
@@ -881,6 +950,7 @@ export interface FileRoutesById {
   '/_hq/ops/coverage': typeof HqOpsCoverageRoute
   '/_hq/ops/detections': typeof HqOpsDetectionsRoute
   '/_hq/ops/flights': typeof HqOpsFlightsRoute
+  '/_hq/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/_hq/ops/readiness': typeof HqOpsReadinessRoute
   '/_hq/ops/sitrep': typeof HqOpsSitrepRoute
   '/_hq/product/feedback': typeof HqProductFeedbackRoute
@@ -888,7 +958,9 @@ export interface FileRoutesById {
   '/_hq/product/portfolio': typeof HqProductPortfolioRoute
   '/_hq/product/releases': typeof HqProductReleasesRoute
   '/_hq/product/roadmap': typeof HqProductRoadmapRoute
+  '/_hq/product/support': typeof HqProductSupportRoute
   '/_hq/systems/access': typeof HqSystemsAccessRoute
+  '/_hq/systems/assets': typeof HqSystemsAssetsRoute
   '/_hq/systems/helpdesk': typeof HqSystemsHelpdeskRoute
   '/_hq/systems/services': typeof HqSystemsServicesRoute
   '/_hq/teams/$slug': typeof HqTeamsSlugRoute
@@ -957,7 +1029,9 @@ export interface FileRouteTypes {
     | '/admin/health'
     | '/admin/it'
     | '/admin/org'
+    | '/admin/policies'
     | '/admin/slack'
+    | '/eng/board'
     | '/eng/changes'
     | '/eng/firmware'
     | '/eng/hardware'
@@ -965,6 +1039,7 @@ export interface FileRouteTypes {
     | '/eng/library'
     | '/eng/programs'
     | '/eng/reviews'
+    | '/exec/announcements'
     | '/exec/briefing'
     | '/exec/decisions'
     | '/exec/okrs'
@@ -972,9 +1047,11 @@ export interface FileRouteTypes {
     | '/fund/donations'
     | '/fund/donors'
     | '/fund/grants'
+    | '/fund/pipeline'
     | '/mfg/line'
     | '/mfg/orders'
     | '/mfg/quality'
+    | '/mfg/returns'
     | '/mfg/stock'
     | '/mfg/supply'
     | '/ops/airspace'
@@ -982,6 +1059,7 @@ export interface FileRouteTypes {
     | '/ops/coverage'
     | '/ops/detections'
     | '/ops/flights'
+    | '/ops/maintenance'
     | '/ops/readiness'
     | '/ops/sitrep'
     | '/product/feedback'
@@ -989,7 +1067,9 @@ export interface FileRouteTypes {
     | '/product/portfolio'
     | '/product/releases'
     | '/product/roadmap'
+    | '/product/support'
     | '/systems/access'
+    | '/systems/assets'
     | '/systems/helpdesk'
     | '/systems/services'
     | '/teams/$slug'
@@ -1055,7 +1135,9 @@ export interface FileRouteTypes {
     | '/admin/health'
     | '/admin/it'
     | '/admin/org'
+    | '/admin/policies'
     | '/admin/slack'
+    | '/eng/board'
     | '/eng/changes'
     | '/eng/firmware'
     | '/eng/hardware'
@@ -1063,6 +1145,7 @@ export interface FileRouteTypes {
     | '/eng/library'
     | '/eng/programs'
     | '/eng/reviews'
+    | '/exec/announcements'
     | '/exec/briefing'
     | '/exec/decisions'
     | '/exec/okrs'
@@ -1070,9 +1153,11 @@ export interface FileRouteTypes {
     | '/fund/donations'
     | '/fund/donors'
     | '/fund/grants'
+    | '/fund/pipeline'
     | '/mfg/line'
     | '/mfg/orders'
     | '/mfg/quality'
+    | '/mfg/returns'
     | '/mfg/stock'
     | '/mfg/supply'
     | '/ops/airspace'
@@ -1080,6 +1165,7 @@ export interface FileRouteTypes {
     | '/ops/coverage'
     | '/ops/detections'
     | '/ops/flights'
+    | '/ops/maintenance'
     | '/ops/readiness'
     | '/ops/sitrep'
     | '/product/feedback'
@@ -1087,7 +1173,9 @@ export interface FileRouteTypes {
     | '/product/portfolio'
     | '/product/releases'
     | '/product/roadmap'
+    | '/product/support'
     | '/systems/access'
+    | '/systems/assets'
     | '/systems/helpdesk'
     | '/systems/services'
     | '/teams/$slug'
@@ -1155,7 +1243,9 @@ export interface FileRouteTypes {
     | '/_hq/admin/health'
     | '/_hq/admin/it'
     | '/_hq/admin/org'
+    | '/_hq/admin/policies'
     | '/_hq/admin/slack'
+    | '/_hq/eng/board'
     | '/_hq/eng/changes'
     | '/_hq/eng/firmware'
     | '/_hq/eng/hardware'
@@ -1163,6 +1253,7 @@ export interface FileRouteTypes {
     | '/_hq/eng/library'
     | '/_hq/eng/programs'
     | '/_hq/eng/reviews'
+    | '/_hq/exec/announcements'
     | '/_hq/exec/briefing'
     | '/_hq/exec/decisions'
     | '/_hq/exec/okrs'
@@ -1170,9 +1261,11 @@ export interface FileRouteTypes {
     | '/_hq/fund/donations'
     | '/_hq/fund/donors'
     | '/_hq/fund/grants'
+    | '/_hq/fund/pipeline'
     | '/_hq/mfg/line'
     | '/_hq/mfg/orders'
     | '/_hq/mfg/quality'
+    | '/_hq/mfg/returns'
     | '/_hq/mfg/stock'
     | '/_hq/mfg/supply'
     | '/_hq/ops/airspace'
@@ -1180,6 +1273,7 @@ export interface FileRouteTypes {
     | '/_hq/ops/coverage'
     | '/_hq/ops/detections'
     | '/_hq/ops/flights'
+    | '/_hq/ops/maintenance'
     | '/_hq/ops/readiness'
     | '/_hq/ops/sitrep'
     | '/_hq/product/feedback'
@@ -1187,7 +1281,9 @@ export interface FileRouteTypes {
     | '/_hq/product/portfolio'
     | '/_hq/product/releases'
     | '/_hq/product/roadmap'
+    | '/_hq/product/support'
     | '/_hq/systems/access'
+    | '/_hq/systems/assets'
     | '/_hq/systems/helpdesk'
     | '/_hq/systems/services'
     | '/_hq/teams/$slug'
@@ -1623,11 +1719,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqSystemsHelpdeskRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/systems/assets': {
+      id: '/_hq/systems/assets'
+      path: '/systems/assets'
+      fullPath: '/systems/assets'
+      preLoaderRoute: typeof HqSystemsAssetsRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/systems/access': {
       id: '/_hq/systems/access'
       path: '/systems/access'
       fullPath: '/systems/access'
       preLoaderRoute: typeof HqSystemsAccessRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/product/support': {
+      id: '/_hq/product/support'
+      path: '/product/support'
+      fullPath: '/product/support'
+      preLoaderRoute: typeof HqProductSupportRouteImport
       parentRoute: typeof HqRoute
     }
     '/_hq/product/roadmap': {
@@ -1679,6 +1789,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqOpsReadinessRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/ops/maintenance': {
+      id: '/_hq/ops/maintenance'
+      path: '/ops/maintenance'
+      fullPath: '/ops/maintenance'
+      preLoaderRoute: typeof HqOpsMaintenanceRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/ops/flights': {
       id: '/_hq/ops/flights'
       path: '/ops/flights'
@@ -1728,6 +1845,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqMfgStockRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/mfg/returns': {
+      id: '/_hq/mfg/returns'
+      path: '/mfg/returns'
+      fullPath: '/mfg/returns'
+      preLoaderRoute: typeof HqMfgReturnsRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/mfg/quality': {
       id: '/_hq/mfg/quality'
       path: '/mfg/quality'
@@ -1747,6 +1871,13 @@ declare module '@tanstack/react-router' {
       path: '/mfg/line'
       fullPath: '/mfg/line'
       preLoaderRoute: typeof HqMfgLineRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/fund/pipeline': {
+      id: '/_hq/fund/pipeline'
+      path: '/fund/pipeline'
+      fullPath: '/fund/pipeline'
+      preLoaderRoute: typeof HqFundPipelineRouteImport
       parentRoute: typeof HqRoute
     }
     '/_hq/fund/grants': {
@@ -1798,6 +1929,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqExecBriefingRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/exec/announcements': {
+      id: '/_hq/exec/announcements'
+      path: '/exec/announcements'
+      fullPath: '/exec/announcements'
+      preLoaderRoute: typeof HqExecAnnouncementsRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/eng/reviews': {
       id: '/_hq/eng/reviews'
       path: '/eng/reviews'
@@ -1847,11 +1985,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqEngChangesRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/eng/board': {
+      id: '/_hq/eng/board'
+      path: '/eng/board'
+      fullPath: '/eng/board'
+      preLoaderRoute: typeof HqEngBoardRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/admin/slack': {
       id: '/_hq/admin/slack'
       path: '/admin/slack'
       fullPath: '/admin/slack'
       preLoaderRoute: typeof HqAdminSlackRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/admin/policies': {
+      id: '/_hq/admin/policies'
+      path: '/admin/policies'
+      fullPath: '/admin/policies'
+      preLoaderRoute: typeof HqAdminPoliciesRouteImport
       parentRoute: typeof HqRoute
     }
     '/_hq/admin/org': {
@@ -1965,7 +2117,9 @@ interface HqRouteChildren {
   HqAdminHealthRoute: typeof HqAdminHealthRoute
   HqAdminItRoute: typeof HqAdminItRoute
   HqAdminOrgRoute: typeof HqAdminOrgRoute
+  HqAdminPoliciesRoute: typeof HqAdminPoliciesRoute
   HqAdminSlackRoute: typeof HqAdminSlackRoute
+  HqEngBoardRoute: typeof HqEngBoardRoute
   HqEngChangesRoute: typeof HqEngChangesRoute
   HqEngFirmwareRoute: typeof HqEngFirmwareRoute
   HqEngHardwareRoute: typeof HqEngHardwareRoute
@@ -1973,6 +2127,7 @@ interface HqRouteChildren {
   HqEngLibraryRoute: typeof HqEngLibraryRoute
   HqEngProgramsRoute: typeof HqEngProgramsRoute
   HqEngReviewsRoute: typeof HqEngReviewsRoute
+  HqExecAnnouncementsRoute: typeof HqExecAnnouncementsRoute
   HqExecBriefingRoute: typeof HqExecBriefingRoute
   HqExecDecisionsRoute: typeof HqExecDecisionsRoute
   HqExecOkrsRoute: typeof HqExecOkrsRoute
@@ -1980,9 +2135,11 @@ interface HqRouteChildren {
   HqFundDonationsRoute: typeof HqFundDonationsRoute
   HqFundDonorsRoute: typeof HqFundDonorsRoute
   HqFundGrantsRoute: typeof HqFundGrantsRoute
+  HqFundPipelineRoute: typeof HqFundPipelineRoute
   HqMfgLineRoute: typeof HqMfgLineRoute
   HqMfgOrdersRoute: typeof HqMfgOrdersRoute
   HqMfgQualityRoute: typeof HqMfgQualityRoute
+  HqMfgReturnsRoute: typeof HqMfgReturnsRoute
   HqMfgStockRoute: typeof HqMfgStockRoute
   HqMfgSupplyRoute: typeof HqMfgSupplyRoute
   HqOpsAirspaceRoute: typeof HqOpsAirspaceRoute
@@ -1990,6 +2147,7 @@ interface HqRouteChildren {
   HqOpsCoverageRoute: typeof HqOpsCoverageRoute
   HqOpsDetectionsRoute: typeof HqOpsDetectionsRoute
   HqOpsFlightsRoute: typeof HqOpsFlightsRoute
+  HqOpsMaintenanceRoute: typeof HqOpsMaintenanceRoute
   HqOpsReadinessRoute: typeof HqOpsReadinessRoute
   HqOpsSitrepRoute: typeof HqOpsSitrepRoute
   HqProductFeedbackRoute: typeof HqProductFeedbackRoute
@@ -1997,7 +2155,9 @@ interface HqRouteChildren {
   HqProductPortfolioRoute: typeof HqProductPortfolioRoute
   HqProductReleasesRoute: typeof HqProductReleasesRoute
   HqProductRoadmapRoute: typeof HqProductRoadmapRoute
+  HqProductSupportRoute: typeof HqProductSupportRoute
   HqSystemsAccessRoute: typeof HqSystemsAccessRoute
+  HqSystemsAssetsRoute: typeof HqSystemsAssetsRoute
   HqSystemsHelpdeskRoute: typeof HqSystemsHelpdeskRoute
   HqSystemsServicesRoute: typeof HqSystemsServicesRoute
 }
@@ -2041,7 +2201,9 @@ const HqRouteChildren: HqRouteChildren = {
   HqAdminHealthRoute: HqAdminHealthRoute,
   HqAdminItRoute: HqAdminItRoute,
   HqAdminOrgRoute: HqAdminOrgRoute,
+  HqAdminPoliciesRoute: HqAdminPoliciesRoute,
   HqAdminSlackRoute: HqAdminSlackRoute,
+  HqEngBoardRoute: HqEngBoardRoute,
   HqEngChangesRoute: HqEngChangesRoute,
   HqEngFirmwareRoute: HqEngFirmwareRoute,
   HqEngHardwareRoute: HqEngHardwareRoute,
@@ -2049,6 +2211,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqEngLibraryRoute: HqEngLibraryRoute,
   HqEngProgramsRoute: HqEngProgramsRoute,
   HqEngReviewsRoute: HqEngReviewsRoute,
+  HqExecAnnouncementsRoute: HqExecAnnouncementsRoute,
   HqExecBriefingRoute: HqExecBriefingRoute,
   HqExecDecisionsRoute: HqExecDecisionsRoute,
   HqExecOkrsRoute: HqExecOkrsRoute,
@@ -2056,9 +2219,11 @@ const HqRouteChildren: HqRouteChildren = {
   HqFundDonationsRoute: HqFundDonationsRoute,
   HqFundDonorsRoute: HqFundDonorsRoute,
   HqFundGrantsRoute: HqFundGrantsRoute,
+  HqFundPipelineRoute: HqFundPipelineRoute,
   HqMfgLineRoute: HqMfgLineRoute,
   HqMfgOrdersRoute: HqMfgOrdersRoute,
   HqMfgQualityRoute: HqMfgQualityRoute,
+  HqMfgReturnsRoute: HqMfgReturnsRoute,
   HqMfgStockRoute: HqMfgStockRoute,
   HqMfgSupplyRoute: HqMfgSupplyRoute,
   HqOpsAirspaceRoute: HqOpsAirspaceRoute,
@@ -2066,6 +2231,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqOpsCoverageRoute: HqOpsCoverageRoute,
   HqOpsDetectionsRoute: HqOpsDetectionsRoute,
   HqOpsFlightsRoute: HqOpsFlightsRoute,
+  HqOpsMaintenanceRoute: HqOpsMaintenanceRoute,
   HqOpsReadinessRoute: HqOpsReadinessRoute,
   HqOpsSitrepRoute: HqOpsSitrepRoute,
   HqProductFeedbackRoute: HqProductFeedbackRoute,
@@ -2073,7 +2239,9 @@ const HqRouteChildren: HqRouteChildren = {
   HqProductPortfolioRoute: HqProductPortfolioRoute,
   HqProductReleasesRoute: HqProductReleasesRoute,
   HqProductRoadmapRoute: HqProductRoadmapRoute,
+  HqProductSupportRoute: HqProductSupportRoute,
   HqSystemsAccessRoute: HqSystemsAccessRoute,
+  HqSystemsAssetsRoute: HqSystemsAssetsRoute,
   HqSystemsHelpdeskRoute: HqSystemsHelpdeskRoute,
   HqSystemsServicesRoute: HqSystemsServicesRoute,
 }

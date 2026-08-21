@@ -9,7 +9,7 @@ import {
   ServerCog, LifeBuoy, Network, Target, HeartHandshake, FileSignature, Coins,
   Gauge, ScrollText, IdCard, UserSearch, GraduationCap, Clock, CalendarDays, Award, Star,
   Building2, BarChart3, Settings, Grip, ArrowLeftRight, Landmark, Receipt, FileBarChart,
-  BookOpen, Users2, ShoppingCart,
+  BookOpen, ShoppingCart,
 } from "lucide-react";
 
 export type AppNavItem = { label: string; to: string; icon: any; badge?: string };
@@ -53,6 +53,7 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
         { label: "Fleet Readiness", to: "/ops/readiness", icon: Gauge },
         { label: "Situation Report", to: "/ops/sitrep", icon: ScrollText },
         { label: "Coverage Map", to: "/ops/coverage", icon: MapIcon },
+        { label: "Maintenance", to: "/ops/maintenance", icon: Wrench },
       ],
     },
     handoffs,
@@ -67,6 +68,7 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
         { label: "Change Control", to: "/eng/changes", icon: GitPullRequestArrow },
         { label: "Hardware & BOM", to: "/eng/hardware", icon: Wrench },
         { label: "Firmware & Autonomy", to: "/eng/firmware", icon: Binary },
+        { label: "Sprint Board", to: "/eng/board", icon: CheckSquare },
         { label: "Design Reviews", to: "/eng/reviews", icon: ClipboardCheck },
         { label: "Library", to: "/eng/library", icon: BookOpen },
       ],
@@ -83,6 +85,7 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
         { label: "Field Feedback", to: "/product/feedback", icon: MessageSquareHeart },
         { label: "Feature Portfolio", to: "/product/portfolio", icon: Boxes },
         { label: "Field Insights", to: "/product/insights", icon: BarChart3 },
+        { label: "Operator Support", to: "/product/support", icon: LifeBuoy },
       ],
     },
     handoffs,
@@ -97,6 +100,7 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
         { label: "Quality", to: "/mfg/quality", icon: ClipboardCheck },
         { label: "Supply Chain", to: "/mfg/supply", icon: Truck },
         { label: "Build Schedule", to: "/mfg/orders", icon: CalendarDays },
+        { label: "Returns & Repairs", to: "/mfg/returns", icon: Wrench },
         { label: "Aircraft Build Status", to: "/ops/readiness", icon: Plane },
       ],
     },
@@ -110,6 +114,7 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
         { label: "Service Health", to: "/systems/services", icon: Activity },
         { label: "Support Desk", to: "/systems/helpdesk", icon: LifeBuoy },
         { label: "Access & Identity", to: "/systems/access", icon: ShieldCheck },
+        { label: "Application Register", to: "/systems/assets", icon: Boxes },
         { label: "Systems Console", to: "/admin/it", icon: ServerCog },
         { label: "Slack Admin", to: "/admin/slack", icon: Grip },
       ],
@@ -125,7 +130,7 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
         { label: "Grant Pipeline", to: "/fund/grants", icon: FileSignature },
         { label: "Gift Ledger", to: "/fund/donations", icon: Coins },
         { label: "Campaign Performance", to: "/fund/campaigns", icon: BarChart3 },
-        { label: "Partners", to: "/clients", icon: Users2 },
+        { label: "Partnership Pipeline", to: "/fund/pipeline", icon: Target },
         { label: "Knowledge Base", to: "/kb", icon: BookOpen },
       ],
     },
@@ -139,6 +144,7 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
         { label: "Org Briefing", to: "/exec/briefing", icon: Gauge },
         { label: "Objectives", to: "/exec/okrs", icon: Target },
         { label: "Decision Log", to: "/exec/decisions", icon: ScrollText },
+        { label: "Announcements", to: "/exec/announcements", icon: MessageSquareHeart },
         { label: "Analytics", to: "/analytics", icon: BarChart3 },
       ],
     },
@@ -165,6 +171,7 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
         { label: "Certifications", to: "/certifications", icon: Award },
         { label: "Training", to: "/training", icon: GraduationCap },
         { label: "Performance", to: "/reviews", icon: Star },
+        { label: "Handbook", to: "/admin/policies", icon: BookOpen },
       ],
     },
     {
@@ -180,7 +187,13 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
     handoffs,
   ],
   hq: [
-    core([{ label: "Notes", to: "/rd-ideas", icon: Lightbulb }]),
+    {
+      label: "My Workspace",
+      items: [
+        { label: "Workspaces", to: "/workspaces", icon: Grip },
+        ...core([{ label: "Notes", to: "/rd-ideas", icon: Lightbulb }]).items.filter((i) => i.to !== "/dashboard"),
+      ],
+    },
     {
       label: "Between Teams",
       items: [
