@@ -75,7 +75,7 @@ function CamerasPage() {
             state: c.site.state,
             county: c.site.county,
             image_url: c.image.url as string,
-            image_time: c.image.time ?? null,
+            image_time: c.image.time ?? new Date().toISOString(),
           })),
         },
       });
