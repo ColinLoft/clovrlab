@@ -5,6 +5,7 @@ import {
   WorkPage, StatRow, Stat, Card, Loading, Empty, Pill, Toolbar, Select, Btn, statusTone, d,
   RecordDialog, NewButton, useRows, usePeople, nameOf, type Field,
 } from "@/components/hq/work/kit";
+import { UserMention } from "@/components/hq/UserMention";
 
 const STATUSES = ["open", "in_progress", "waiting_parts", "closed"];
 
@@ -69,7 +70,8 @@ function Maintenance() {
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-medium">{r.title}</span>
                       <span className="block text-xs text-muted-foreground">
-                        {r.kind ?? "unscheduled"} · opened {d(r.opened_on)} · {nameOf(byId, r.assignee_id)}
+                        {r.kind ?? "unscheduled"} · opened {d(r.opened_on)} ·{" "}
+                        {r.assignee_id ? <UserMention userId={r.assignee_id} name={nameOf(byId, r.assignee_id)} size="xs" /> : "Unassigned"}
                       </span>
                     </span>
                     {r.grounding && r.status !== "closed" && <Pill tone="risk">grounding</Pill>}
