@@ -99,6 +99,7 @@ import { Route as HqEngIssuesRouteImport } from './routes/_hq.eng.issues'
 import { Route as HqEngHardwareRouteImport } from './routes/_hq.eng.hardware'
 import { Route as HqEngFirmwareRouteImport } from './routes/_hq.eng.firmware'
 import { Route as HqEngChangesRouteImport } from './routes/_hq.eng.changes'
+import { Route as HqEngBoardRouteImport } from './routes/_hq.eng.board'
 import { Route as HqAdminSlackRouteImport } from './routes/_hq.admin.slack'
 import { Route as HqAdminOrgRouteImport } from './routes/_hq.admin.org'
 import { Route as HqAdminItRouteImport } from './routes/_hq.admin.it'
@@ -558,6 +559,11 @@ const HqEngChangesRoute = HqEngChangesRouteImport.update({
   path: '/eng/changes',
   getParentRoute: () => HqRoute,
 } as any)
+const HqEngBoardRoute = HqEngBoardRouteImport.update({
+  id: '/eng/board',
+  path: '/eng/board',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqAdminSlackRoute = HqAdminSlackRouteImport.update({
   id: '/admin/slack',
   path: '/admin/slack',
@@ -664,6 +670,7 @@ export interface FileRoutesByFullPath {
   '/admin/it': typeof HqAdminItRoute
   '/admin/org': typeof HqAdminOrgRoute
   '/admin/slack': typeof HqAdminSlackRoute
+  '/eng/board': typeof HqEngBoardRoute
   '/eng/changes': typeof HqEngChangesRoute
   '/eng/firmware': typeof HqEngFirmwareRoute
   '/eng/hardware': typeof HqEngHardwareRoute
@@ -763,6 +770,7 @@ export interface FileRoutesByTo {
   '/admin/it': typeof HqAdminItRoute
   '/admin/org': typeof HqAdminOrgRoute
   '/admin/slack': typeof HqAdminSlackRoute
+  '/eng/board': typeof HqEngBoardRoute
   '/eng/changes': typeof HqEngChangesRoute
   '/eng/firmware': typeof HqEngFirmwareRoute
   '/eng/hardware': typeof HqEngHardwareRoute
@@ -865,6 +873,7 @@ export interface FileRoutesById {
   '/_hq/admin/it': typeof HqAdminItRoute
   '/_hq/admin/org': typeof HqAdminOrgRoute
   '/_hq/admin/slack': typeof HqAdminSlackRoute
+  '/_hq/eng/board': typeof HqEngBoardRoute
   '/_hq/eng/changes': typeof HqEngChangesRoute
   '/_hq/eng/firmware': typeof HqEngFirmwareRoute
   '/_hq/eng/hardware': typeof HqEngHardwareRoute
@@ -967,6 +976,7 @@ export interface FileRouteTypes {
     | '/admin/it'
     | '/admin/org'
     | '/admin/slack'
+    | '/eng/board'
     | '/eng/changes'
     | '/eng/firmware'
     | '/eng/hardware'
@@ -1066,6 +1076,7 @@ export interface FileRouteTypes {
     | '/admin/it'
     | '/admin/org'
     | '/admin/slack'
+    | '/eng/board'
     | '/eng/changes'
     | '/eng/firmware'
     | '/eng/hardware'
@@ -1167,6 +1178,7 @@ export interface FileRouteTypes {
     | '/_hq/admin/it'
     | '/_hq/admin/org'
     | '/_hq/admin/slack'
+    | '/_hq/eng/board'
     | '/_hq/eng/changes'
     | '/_hq/eng/firmware'
     | '/_hq/eng/hardware'
@@ -1866,6 +1878,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqEngChangesRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/eng/board': {
+      id: '/_hq/eng/board'
+      path: '/eng/board'
+      fullPath: '/eng/board'
+      preLoaderRoute: typeof HqEngBoardRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/admin/slack': {
       id: '/_hq/admin/slack'
       path: '/admin/slack'
@@ -1985,6 +2004,7 @@ interface HqRouteChildren {
   HqAdminItRoute: typeof HqAdminItRoute
   HqAdminOrgRoute: typeof HqAdminOrgRoute
   HqAdminSlackRoute: typeof HqAdminSlackRoute
+  HqEngBoardRoute: typeof HqEngBoardRoute
   HqEngChangesRoute: typeof HqEngChangesRoute
   HqEngFirmwareRoute: typeof HqEngFirmwareRoute
   HqEngHardwareRoute: typeof HqEngHardwareRoute
@@ -2062,6 +2082,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqAdminItRoute: HqAdminItRoute,
   HqAdminOrgRoute: HqAdminOrgRoute,
   HqAdminSlackRoute: HqAdminSlackRoute,
+  HqEngBoardRoute: HqEngBoardRoute,
   HqEngChangesRoute: HqEngChangesRoute,
   HqEngFirmwareRoute: HqEngFirmwareRoute,
   HqEngHardwareRoute: HqEngHardwareRoute,
