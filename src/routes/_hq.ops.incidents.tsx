@@ -144,7 +144,7 @@ function IncidentsPage() {
                   <Detail label="FRP" value={current.frp != null ? `${current.frp} MW` : "—"} />
                   <Detail label="Acreage" value={current.acreage != null ? `${current.acreage}` : "—"} />
                   <Detail label="County" value={current.county ?? "—"} />
-                  <Detail label="Assigned aircraft" value={drones.find((d) => d.id === current.assigned_drone_id)?.name ?? "None"} />
+                  <Detail label="Assigned aircraft" value={drones.find((d) => d.id === current.assigned_drone_id)?.tail_number ?? "None"} />
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
                   {STATUSES.map((s) => (
