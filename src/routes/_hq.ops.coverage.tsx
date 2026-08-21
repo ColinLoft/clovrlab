@@ -77,7 +77,7 @@ function CoveragePage() {
             <Stat label="Regions watched" value={regions.length} icon={MapPin} />
             <Stat label="Detections" value={regions.reduce((n, r) => n + r.detections, 0)} icon={Flame} />
             <Stat label="Confirmed" value={regions.reduce((n, r) => n + r.confirmed, 0)} icon={Flame} tone="warn" />
-            <Stat label="Sorties launched" value={regions.reduce((n, r) => n + r.sorties, 0)} icon={Plane} tone="info" as any />
+            <Stat label="Sorties launched" value={regions.reduce((n, r) => n + r.sorties, 0)} icon={Plane} />
           </StatRow>
 
           <div className="mt-5 grid gap-4 xl:grid-cols-[1.4fr_1fr]">

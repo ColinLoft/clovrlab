@@ -74,6 +74,7 @@ import { Route as HqOpsSitrepRouteImport } from './routes/_hq.ops.sitrep'
 import { Route as HqOpsReadinessRouteImport } from './routes/_hq.ops.readiness'
 import { Route as HqOpsFlightsRouteImport } from './routes/_hq.ops.flights'
 import { Route as HqOpsDetectionsRouteImport } from './routes/_hq.ops.detections'
+import { Route as HqOpsCoverageRouteImport } from './routes/_hq.ops.coverage'
 import { Route as HqOpsControlRouteImport } from './routes/_hq.ops.control'
 import { Route as HqOpsAirspaceRouteImport } from './routes/_hq.ops.airspace'
 import { Route as HqMfgSupplyRouteImport } from './routes/_hq.mfg.supply'
@@ -425,6 +426,11 @@ const HqOpsDetectionsRoute = HqOpsDetectionsRouteImport.update({
   path: '/ops/detections',
   getParentRoute: () => HqRoute,
 } as any)
+const HqOpsCoverageRoute = HqOpsCoverageRouteImport.update({
+  id: '/ops/coverage',
+  path: '/ops/coverage',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqOpsControlRoute = HqOpsControlRouteImport.update({
   id: '/ops/control',
   path: '/ops/control',
@@ -633,6 +639,7 @@ export interface FileRoutesByFullPath {
   '/mfg/supply': typeof HqMfgSupplyRoute
   '/ops/airspace': typeof HqOpsAirspaceRoute
   '/ops/control': typeof HqOpsControlRoute
+  '/ops/coverage': typeof HqOpsCoverageRoute
   '/ops/detections': typeof HqOpsDetectionsRoute
   '/ops/flights': typeof HqOpsFlightsRoute
   '/ops/readiness': typeof HqOpsReadinessRoute
@@ -724,6 +731,7 @@ export interface FileRoutesByTo {
   '/mfg/supply': typeof HqMfgSupplyRoute
   '/ops/airspace': typeof HqOpsAirspaceRoute
   '/ops/control': typeof HqOpsControlRoute
+  '/ops/coverage': typeof HqOpsCoverageRoute
   '/ops/detections': typeof HqOpsDetectionsRoute
   '/ops/flights': typeof HqOpsFlightsRoute
   '/ops/readiness': typeof HqOpsReadinessRoute
@@ -818,6 +826,7 @@ export interface FileRoutesById {
   '/_hq/mfg/supply': typeof HqMfgSupplyRoute
   '/_hq/ops/airspace': typeof HqOpsAirspaceRoute
   '/_hq/ops/control': typeof HqOpsControlRoute
+  '/_hq/ops/coverage': typeof HqOpsCoverageRoute
   '/_hq/ops/detections': typeof HqOpsDetectionsRoute
   '/_hq/ops/flights': typeof HqOpsFlightsRoute
   '/_hq/ops/readiness': typeof HqOpsReadinessRoute
@@ -912,6 +921,7 @@ export interface FileRouteTypes {
     | '/mfg/supply'
     | '/ops/airspace'
     | '/ops/control'
+    | '/ops/coverage'
     | '/ops/detections'
     | '/ops/flights'
     | '/ops/readiness'
@@ -1003,6 +1013,7 @@ export interface FileRouteTypes {
     | '/mfg/supply'
     | '/ops/airspace'
     | '/ops/control'
+    | '/ops/coverage'
     | '/ops/detections'
     | '/ops/flights'
     | '/ops/readiness'
@@ -1096,6 +1107,7 @@ export interface FileRouteTypes {
     | '/_hq/mfg/supply'
     | '/_hq/ops/airspace'
     | '/_hq/ops/control'
+    | '/_hq/ops/coverage'
     | '/_hq/ops/detections'
     | '/_hq/ops/flights'
     | '/_hq/ops/readiness'
@@ -1595,6 +1607,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqOpsDetectionsRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/ops/coverage': {
+      id: '/_hq/ops/coverage'
+      path: '/ops/coverage'
+      fullPath: '/ops/coverage'
+      preLoaderRoute: typeof HqOpsCoverageRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/ops/control': {
       id: '/_hq/ops/control'
       path: '/ops/control'
@@ -1850,6 +1869,7 @@ interface HqRouteChildren {
   HqMfgSupplyRoute: typeof HqMfgSupplyRoute
   HqOpsAirspaceRoute: typeof HqOpsAirspaceRoute
   HqOpsControlRoute: typeof HqOpsControlRoute
+  HqOpsCoverageRoute: typeof HqOpsCoverageRoute
   HqOpsDetectionsRoute: typeof HqOpsDetectionsRoute
   HqOpsFlightsRoute: typeof HqOpsFlightsRoute
   HqOpsReadinessRoute: typeof HqOpsReadinessRoute
@@ -1919,6 +1939,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqMfgSupplyRoute: HqMfgSupplyRoute,
   HqOpsAirspaceRoute: HqOpsAirspaceRoute,
   HqOpsControlRoute: HqOpsControlRoute,
+  HqOpsCoverageRoute: HqOpsCoverageRoute,
   HqOpsDetectionsRoute: HqOpsDetectionsRoute,
   HqOpsFlightsRoute: HqOpsFlightsRoute,
   HqOpsReadinessRoute: HqOpsReadinessRoute,
