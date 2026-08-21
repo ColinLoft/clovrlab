@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_hq/systems/detection")({
       { name: "robots", content: "noindex" },
     ],
   }),
-  component: DetectionSettings;
+  component: DetectionSettings,
 });
 
 const TABS = [
