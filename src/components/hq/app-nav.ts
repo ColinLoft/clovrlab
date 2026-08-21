@@ -9,7 +9,7 @@ import {
   ServerCog, LifeBuoy, Network, Target, HeartHandshake, FileSignature, Coins,
   Gauge, ScrollText, IdCard, UserSearch, GraduationCap, Clock, CalendarDays, Award, Star,
   Building2, BarChart3, Settings, Grip, ArrowLeftRight, Landmark, Receipt, FileBarChart,
-  BookOpen, Users2, ShoppingCart,
+  BookOpen, ShoppingCart,
 } from "lucide-react";
 
 export type AppNavItem = { label: string; to: string; icon: any; badge?: string };
