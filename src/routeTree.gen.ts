@@ -82,6 +82,7 @@ import { Route as HqOpsAirspaceRouteImport } from './routes/_hq.ops.airspace'
 import { Route as HqMfgSupplyRouteImport } from './routes/_hq.mfg.supply'
 import { Route as HqMfgStockRouteImport } from './routes/_hq.mfg.stock'
 import { Route as HqMfgQualityRouteImport } from './routes/_hq.mfg.quality'
+import { Route as HqMfgOrdersRouteImport } from './routes/_hq.mfg.orders'
 import { Route as HqMfgLineRouteImport } from './routes/_hq.mfg.line'
 import { Route as HqFundGrantsRouteImport } from './routes/_hq.fund.grants'
 import { Route as HqFundDonorsRouteImport } from './routes/_hq.fund.donors'
@@ -470,6 +471,11 @@ const HqMfgQualityRoute = HqMfgQualityRouteImport.update({
   path: '/mfg/quality',
   getParentRoute: () => HqRoute,
 } as any)
+const HqMfgOrdersRoute = HqMfgOrdersRouteImport.update({
+  id: '/mfg/orders',
+  path: '/mfg/orders',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqMfgLineRoute = HqMfgLineRouteImport.update({
   id: '/mfg/line',
   path: '/mfg/line',
@@ -660,6 +666,7 @@ export interface FileRoutesByFullPath {
   '/fund/donors': typeof HqFundDonorsRoute
   '/fund/grants': typeof HqFundGrantsRoute
   '/mfg/line': typeof HqMfgLineRoute
+  '/mfg/orders': typeof HqMfgOrdersRoute
   '/mfg/quality': typeof HqMfgQualityRoute
   '/mfg/stock': typeof HqMfgStockRoute
   '/mfg/supply': typeof HqMfgSupplyRoute
@@ -756,6 +763,7 @@ export interface FileRoutesByTo {
   '/fund/donors': typeof HqFundDonorsRoute
   '/fund/grants': typeof HqFundGrantsRoute
   '/mfg/line': typeof HqMfgLineRoute
+  '/mfg/orders': typeof HqMfgOrdersRoute
   '/mfg/quality': typeof HqMfgQualityRoute
   '/mfg/stock': typeof HqMfgStockRoute
   '/mfg/supply': typeof HqMfgSupplyRoute
@@ -855,6 +863,7 @@ export interface FileRoutesById {
   '/_hq/fund/donors': typeof HqFundDonorsRoute
   '/_hq/fund/grants': typeof HqFundGrantsRoute
   '/_hq/mfg/line': typeof HqMfgLineRoute
+  '/_hq/mfg/orders': typeof HqMfgOrdersRoute
   '/_hq/mfg/quality': typeof HqMfgQualityRoute
   '/_hq/mfg/stock': typeof HqMfgStockRoute
   '/_hq/mfg/supply': typeof HqMfgSupplyRoute
@@ -954,6 +963,7 @@ export interface FileRouteTypes {
     | '/fund/donors'
     | '/fund/grants'
     | '/mfg/line'
+    | '/mfg/orders'
     | '/mfg/quality'
     | '/mfg/stock'
     | '/mfg/supply'
@@ -1050,6 +1060,7 @@ export interface FileRouteTypes {
     | '/fund/donors'
     | '/fund/grants'
     | '/mfg/line'
+    | '/mfg/orders'
     | '/mfg/quality'
     | '/mfg/stock'
     | '/mfg/supply'
@@ -1148,6 +1159,7 @@ export interface FileRouteTypes {
     | '/_hq/fund/donors'
     | '/_hq/fund/grants'
     | '/_hq/mfg/line'
+    | '/_hq/mfg/orders'
     | '/_hq/mfg/quality'
     | '/_hq/mfg/stock'
     | '/_hq/mfg/supply'
@@ -1711,6 +1723,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqMfgQualityRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/mfg/orders': {
+      id: '/_hq/mfg/orders'
+      path: '/mfg/orders'
+      fullPath: '/mfg/orders'
+      preLoaderRoute: typeof HqMfgOrdersRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/mfg/line': {
       id: '/_hq/mfg/line'
       path: '/mfg/line'
@@ -1942,6 +1961,7 @@ interface HqRouteChildren {
   HqFundDonorsRoute: typeof HqFundDonorsRoute
   HqFundGrantsRoute: typeof HqFundGrantsRoute
   HqMfgLineRoute: typeof HqMfgLineRoute
+  HqMfgOrdersRoute: typeof HqMfgOrdersRoute
   HqMfgQualityRoute: typeof HqMfgQualityRoute
   HqMfgStockRoute: typeof HqMfgStockRoute
   HqMfgSupplyRoute: typeof HqMfgSupplyRoute
@@ -2016,6 +2036,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqFundDonorsRoute: HqFundDonorsRoute,
   HqFundGrantsRoute: HqFundGrantsRoute,
   HqMfgLineRoute: HqMfgLineRoute,
+  HqMfgOrdersRoute: HqMfgOrdersRoute,
   HqMfgQualityRoute: HqMfgQualityRoute,
   HqMfgStockRoute: HqMfgStockRoute,
   HqMfgSupplyRoute: HqMfgSupplyRoute,
