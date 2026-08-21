@@ -67,6 +67,7 @@ import { Route as HqTeamsSlugRouteImport } from './routes/_hq.teams.$slug'
 import { Route as HqSystemsServicesRouteImport } from './routes/_hq.systems.services'
 import { Route as HqSystemsHelpdeskRouteImport } from './routes/_hq.systems.helpdesk'
 import { Route as HqSystemsAccessRouteImport } from './routes/_hq.systems.access'
+import { Route as HqProductSupportRouteImport } from './routes/_hq.product.support'
 import { Route as HqProductRoadmapRouteImport } from './routes/_hq.product.roadmap'
 import { Route as HqProductReleasesRouteImport } from './routes/_hq.product.releases'
 import { Route as HqProductPortfolioRouteImport } from './routes/_hq.product.portfolio'
@@ -399,6 +400,11 @@ const HqSystemsAccessRoute = HqSystemsAccessRouteImport.update({
   path: '/systems/access',
   getParentRoute: () => HqRoute,
 } as any)
+const HqProductSupportRoute = HqProductSupportRouteImport.update({
+  id: '/product/support',
+  path: '/product/support',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqProductRoadmapRoute = HqProductRoadmapRouteImport.update({
   id: '/product/roadmap',
   path: '/product/roadmap',
@@ -703,6 +709,7 @@ export interface FileRoutesByFullPath {
   '/product/portfolio': typeof HqProductPortfolioRoute
   '/product/releases': typeof HqProductReleasesRoute
   '/product/roadmap': typeof HqProductRoadmapRoute
+  '/product/support': typeof HqProductSupportRoute
   '/systems/access': typeof HqSystemsAccessRoute
   '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
   '/systems/services': typeof HqSystemsServicesRoute
@@ -803,6 +810,7 @@ export interface FileRoutesByTo {
   '/product/portfolio': typeof HqProductPortfolioRoute
   '/product/releases': typeof HqProductReleasesRoute
   '/product/roadmap': typeof HqProductRoadmapRoute
+  '/product/support': typeof HqProductSupportRoute
   '/systems/access': typeof HqSystemsAccessRoute
   '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
   '/systems/services': typeof HqSystemsServicesRoute
@@ -906,6 +914,7 @@ export interface FileRoutesById {
   '/_hq/product/portfolio': typeof HqProductPortfolioRoute
   '/_hq/product/releases': typeof HqProductReleasesRoute
   '/_hq/product/roadmap': typeof HqProductRoadmapRoute
+  '/_hq/product/support': typeof HqProductSupportRoute
   '/_hq/systems/access': typeof HqSystemsAccessRoute
   '/_hq/systems/helpdesk': typeof HqSystemsHelpdeskRoute
   '/_hq/systems/services': typeof HqSystemsServicesRoute
@@ -1009,6 +1018,7 @@ export interface FileRouteTypes {
     | '/product/portfolio'
     | '/product/releases'
     | '/product/roadmap'
+    | '/product/support'
     | '/systems/access'
     | '/systems/helpdesk'
     | '/systems/services'
@@ -1109,6 +1119,7 @@ export interface FileRouteTypes {
     | '/product/portfolio'
     | '/product/releases'
     | '/product/roadmap'
+    | '/product/support'
     | '/systems/access'
     | '/systems/helpdesk'
     | '/systems/services'
@@ -1211,6 +1222,7 @@ export interface FileRouteTypes {
     | '/_hq/product/portfolio'
     | '/_hq/product/releases'
     | '/_hq/product/roadmap'
+    | '/_hq/product/support'
     | '/_hq/systems/access'
     | '/_hq/systems/helpdesk'
     | '/_hq/systems/services'
@@ -1654,6 +1666,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqSystemsAccessRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/product/support': {
+      id: '/_hq/product/support'
+      path: '/product/support'
+      fullPath: '/product/support'
+      preLoaderRoute: typeof HqProductSupportRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/product/roadmap': {
       id: '/_hq/product/roadmap'
       path: '/product/roadmap'
@@ -2037,6 +2056,7 @@ interface HqRouteChildren {
   HqProductPortfolioRoute: typeof HqProductPortfolioRoute
   HqProductReleasesRoute: typeof HqProductReleasesRoute
   HqProductRoadmapRoute: typeof HqProductRoadmapRoute
+  HqProductSupportRoute: typeof HqProductSupportRoute
   HqSystemsAccessRoute: typeof HqSystemsAccessRoute
   HqSystemsHelpdeskRoute: typeof HqSystemsHelpdeskRoute
   HqSystemsServicesRoute: typeof HqSystemsServicesRoute
@@ -2115,6 +2135,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqProductPortfolioRoute: HqProductPortfolioRoute,
   HqProductReleasesRoute: HqProductReleasesRoute,
   HqProductRoadmapRoute: HqProductRoadmapRoute,
+  HqProductSupportRoute: HqProductSupportRoute,
   HqSystemsAccessRoute: HqSystemsAccessRoute,
   HqSystemsHelpdeskRoute: HqSystemsHelpdeskRoute,
   HqSystemsServicesRoute: HqSystemsServicesRoute,
