@@ -1,0 +1,1 @@
+UPDATE public.org_apps SET landing_route = '/dashboard' WHERE landing_route IS DISTINCT FROM '/dashboard';
