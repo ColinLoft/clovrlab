@@ -87,6 +87,7 @@ import { Route as HqMfgLineRouteImport } from './routes/_hq.mfg.line'
 import { Route as HqFundGrantsRouteImport } from './routes/_hq.fund.grants'
 import { Route as HqFundDonorsRouteImport } from './routes/_hq.fund.donors'
 import { Route as HqFundDonationsRouteImport } from './routes/_hq.fund.donations'
+import { Route as HqFundCampaignsRouteImport } from './routes/_hq.fund.campaigns'
 import { Route as HqExecOkrsRouteImport } from './routes/_hq.exec.okrs'
 import { Route as HqExecDecisionsRouteImport } from './routes/_hq.exec.decisions'
 import { Route as HqExecBriefingRouteImport } from './routes/_hq.exec.briefing'
@@ -496,6 +497,11 @@ const HqFundDonationsRoute = HqFundDonationsRouteImport.update({
   path: '/fund/donations',
   getParentRoute: () => HqRoute,
 } as any)
+const HqFundCampaignsRoute = HqFundCampaignsRouteImport.update({
+  id: '/fund/campaigns',
+  path: '/fund/campaigns',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqExecOkrsRoute = HqExecOkrsRouteImport.update({
   id: '/exec/okrs',
   path: '/exec/okrs',
@@ -662,6 +668,7 @@ export interface FileRoutesByFullPath {
   '/exec/briefing': typeof HqExecBriefingRoute
   '/exec/decisions': typeof HqExecDecisionsRoute
   '/exec/okrs': typeof HqExecOkrsRoute
+  '/fund/campaigns': typeof HqFundCampaignsRoute
   '/fund/donations': typeof HqFundDonationsRoute
   '/fund/donors': typeof HqFundDonorsRoute
   '/fund/grants': typeof HqFundGrantsRoute
@@ -759,6 +766,7 @@ export interface FileRoutesByTo {
   '/exec/briefing': typeof HqExecBriefingRoute
   '/exec/decisions': typeof HqExecDecisionsRoute
   '/exec/okrs': typeof HqExecOkrsRoute
+  '/fund/campaigns': typeof HqFundCampaignsRoute
   '/fund/donations': typeof HqFundDonationsRoute
   '/fund/donors': typeof HqFundDonorsRoute
   '/fund/grants': typeof HqFundGrantsRoute
@@ -859,6 +867,7 @@ export interface FileRoutesById {
   '/_hq/exec/briefing': typeof HqExecBriefingRoute
   '/_hq/exec/decisions': typeof HqExecDecisionsRoute
   '/_hq/exec/okrs': typeof HqExecOkrsRoute
+  '/_hq/fund/campaigns': typeof HqFundCampaignsRoute
   '/_hq/fund/donations': typeof HqFundDonationsRoute
   '/_hq/fund/donors': typeof HqFundDonorsRoute
   '/_hq/fund/grants': typeof HqFundGrantsRoute
@@ -959,6 +968,7 @@ export interface FileRouteTypes {
     | '/exec/briefing'
     | '/exec/decisions'
     | '/exec/okrs'
+    | '/fund/campaigns'
     | '/fund/donations'
     | '/fund/donors'
     | '/fund/grants'
@@ -1056,6 +1066,7 @@ export interface FileRouteTypes {
     | '/exec/briefing'
     | '/exec/decisions'
     | '/exec/okrs'
+    | '/fund/campaigns'
     | '/fund/donations'
     | '/fund/donors'
     | '/fund/grants'
@@ -1155,6 +1166,7 @@ export interface FileRouteTypes {
     | '/_hq/exec/briefing'
     | '/_hq/exec/decisions'
     | '/_hq/exec/okrs'
+    | '/_hq/fund/campaigns'
     | '/_hq/fund/donations'
     | '/_hq/fund/donors'
     | '/_hq/fund/grants'
@@ -1758,6 +1770,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqFundDonationsRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/fund/campaigns': {
+      id: '/_hq/fund/campaigns'
+      path: '/fund/campaigns'
+      fullPath: '/fund/campaigns'
+      preLoaderRoute: typeof HqFundCampaignsRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/exec/okrs': {
       id: '/_hq/exec/okrs'
       path: '/exec/okrs'
@@ -1957,6 +1976,7 @@ interface HqRouteChildren {
   HqExecBriefingRoute: typeof HqExecBriefingRoute
   HqExecDecisionsRoute: typeof HqExecDecisionsRoute
   HqExecOkrsRoute: typeof HqExecOkrsRoute
+  HqFundCampaignsRoute: typeof HqFundCampaignsRoute
   HqFundDonationsRoute: typeof HqFundDonationsRoute
   HqFundDonorsRoute: typeof HqFundDonorsRoute
   HqFundGrantsRoute: typeof HqFundGrantsRoute
@@ -2032,6 +2052,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqExecBriefingRoute: HqExecBriefingRoute,
   HqExecDecisionsRoute: HqExecDecisionsRoute,
   HqExecOkrsRoute: HqExecOkrsRoute,
+  HqFundCampaignsRoute: HqFundCampaignsRoute,
   HqFundDonationsRoute: HqFundDonationsRoute,
   HqFundDonorsRoute: HqFundDonorsRoute,
   HqFundGrantsRoute: HqFundGrantsRoute,
