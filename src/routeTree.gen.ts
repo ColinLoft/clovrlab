@@ -69,6 +69,7 @@ import { Route as HqSystemsHelpdeskRouteImport } from './routes/_hq.systems.help
 import { Route as HqSystemsAccessRouteImport } from './routes/_hq.systems.access'
 import { Route as HqProductRoadmapRouteImport } from './routes/_hq.product.roadmap'
 import { Route as HqProductReleasesRouteImport } from './routes/_hq.product.releases'
+import { Route as HqProductPortfolioRouteImport } from './routes/_hq.product.portfolio'
 import { Route as HqProductFeedbackRouteImport } from './routes/_hq.product.feedback'
 import { Route as HqOpsSitrepRouteImport } from './routes/_hq.ops.sitrep'
 import { Route as HqOpsReadinessRouteImport } from './routes/_hq.ops.readiness'
@@ -403,6 +404,11 @@ const HqProductReleasesRoute = HqProductReleasesRouteImport.update({
   path: '/product/releases',
   getParentRoute: () => HqRoute,
 } as any)
+const HqProductPortfolioRoute = HqProductPortfolioRouteImport.update({
+  id: '/product/portfolio',
+  path: '/product/portfolio',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqProductFeedbackRoute = HqProductFeedbackRouteImport.update({
   id: '/product/feedback',
   path: '/product/feedback',
@@ -659,6 +665,7 @@ export interface FileRoutesByFullPath {
   '/ops/readiness': typeof HqOpsReadinessRoute
   '/ops/sitrep': typeof HqOpsSitrepRoute
   '/product/feedback': typeof HqProductFeedbackRoute
+  '/product/portfolio': typeof HqProductPortfolioRoute
   '/product/releases': typeof HqProductReleasesRoute
   '/product/roadmap': typeof HqProductRoadmapRoute
   '/systems/access': typeof HqSystemsAccessRoute
@@ -753,6 +760,7 @@ export interface FileRoutesByTo {
   '/ops/readiness': typeof HqOpsReadinessRoute
   '/ops/sitrep': typeof HqOpsSitrepRoute
   '/product/feedback': typeof HqProductFeedbackRoute
+  '/product/portfolio': typeof HqProductPortfolioRoute
   '/product/releases': typeof HqProductReleasesRoute
   '/product/roadmap': typeof HqProductRoadmapRoute
   '/systems/access': typeof HqSystemsAccessRoute
@@ -850,6 +858,7 @@ export interface FileRoutesById {
   '/_hq/ops/readiness': typeof HqOpsReadinessRoute
   '/_hq/ops/sitrep': typeof HqOpsSitrepRoute
   '/_hq/product/feedback': typeof HqProductFeedbackRoute
+  '/_hq/product/portfolio': typeof HqProductPortfolioRoute
   '/_hq/product/releases': typeof HqProductReleasesRoute
   '/_hq/product/roadmap': typeof HqProductRoadmapRoute
   '/_hq/systems/access': typeof HqSystemsAccessRoute
@@ -947,6 +956,7 @@ export interface FileRouteTypes {
     | '/ops/readiness'
     | '/ops/sitrep'
     | '/product/feedback'
+    | '/product/portfolio'
     | '/product/releases'
     | '/product/roadmap'
     | '/systems/access'
@@ -1041,6 +1051,7 @@ export interface FileRouteTypes {
     | '/ops/readiness'
     | '/ops/sitrep'
     | '/product/feedback'
+    | '/product/portfolio'
     | '/product/releases'
     | '/product/roadmap'
     | '/systems/access'
@@ -1137,6 +1148,7 @@ export interface FileRouteTypes {
     | '/_hq/ops/readiness'
     | '/_hq/ops/sitrep'
     | '/_hq/product/feedback'
+    | '/_hq/product/portfolio'
     | '/_hq/product/releases'
     | '/_hq/product/roadmap'
     | '/_hq/systems/access'
@@ -1596,6 +1608,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqProductReleasesRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/product/portfolio': {
+      id: '/_hq/product/portfolio'
+      path: '/product/portfolio'
+      fullPath: '/product/portfolio'
+      preLoaderRoute: typeof HqProductPortfolioRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/product/feedback': {
       id: '/_hq/product/feedback'
       path: '/product/feedback'
@@ -1915,6 +1934,7 @@ interface HqRouteChildren {
   HqOpsReadinessRoute: typeof HqOpsReadinessRoute
   HqOpsSitrepRoute: typeof HqOpsSitrepRoute
   HqProductFeedbackRoute: typeof HqProductFeedbackRoute
+  HqProductPortfolioRoute: typeof HqProductPortfolioRoute
   HqProductReleasesRoute: typeof HqProductReleasesRoute
   HqProductRoadmapRoute: typeof HqProductRoadmapRoute
   HqSystemsAccessRoute: typeof HqSystemsAccessRoute
@@ -1987,6 +2007,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqOpsReadinessRoute: HqOpsReadinessRoute,
   HqOpsSitrepRoute: HqOpsSitrepRoute,
   HqProductFeedbackRoute: HqProductFeedbackRoute,
+  HqProductPortfolioRoute: HqProductPortfolioRoute,
   HqProductReleasesRoute: HqProductReleasesRoute,
   HqProductRoadmapRoute: HqProductRoadmapRoute,
   HqSystemsAccessRoute: HqSystemsAccessRoute,
