@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+const ONESIGNAL_APP_ID = "496b911f-703d-49f4-a680-ad8bc42ed89e";
+
+
 /**
  * Emails urgent pages to whoever they were routed to. Called every minute by
  * the internal scheduler; only sends for targets that have not been emailed
