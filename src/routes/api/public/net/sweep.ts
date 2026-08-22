@@ -9,10 +9,19 @@ import { inArea } from "@/lib/net/area";
 export const Route = createFileRoute("/api/public/net/sweep")({
   server: {
     handlers: {
-      POST: async () => {
+      POST: async ({ request }) => {
         const apiKey = process.env['LOVABLE_API_KEY'];
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { runSweep } = await import("@/lib/net/sweep.server");
+
+        // Only the internal scheduler may trigger sweeps (paid AI + writes operational data).
+        const presented = request.headers.get("x-cron-secret");
+        if (!presented) return json({ error: "Unauthorized" }, 401);
+        const { data: ok, error: authErr } = await supabaseAdmin.rpc("net_verify_cron_token" as never, {
+          _token: presented,
+        } as never);
+        if (authErr || ok !== true) return json({ error: "Unauthorized" }, 401);
+
 
         const { data: st } = await supabaseAdmin.from("net_settings").select("*").eq("id", true).maybeSingle();
         const s: any = st;
