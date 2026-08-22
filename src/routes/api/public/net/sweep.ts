@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { fetchCameras } from "@/lib/net/alertwest";
-import { haversineMi } from "@/lib/net/area";
+import { inArea } from "@/lib/net/area";
 
 /**
  * Scheduled AI camera sweep. Called by pg_cron.
@@ -59,13 +59,13 @@ export const Route = createFileRoute("/api/public/net/sweep")({
               const p = prefById.get(c.site.id);
               if (p && p.watch === false) return false;
               if (s.sweep_priority_only && !(p && Number(p.priority) > 0)) return false;
-              if (!a || !Number(a.radius_mi)) return true;
-              return (
-                haversineMi(
-                  { lat: Number(a.center_lat), lng: Number(a.center_lng) },
-                  { lat: Number(c.site.latitude), lng: Number(c.site.longitude) },
-                ) <= Number(a.radius_mi)
-              );
+              return inArea(a, {
+                lat: Number(c.site.latitude),
+                lng: Number(c.site.longitude),
+                state: c.site.state,
+                county: c.site.county,
+              });
+
             })
             .sort((x, y) => (prefById.get(y.site.id)?.priority ?? 0) - (prefById.get(x.site.id)?.priority ?? 0));
 

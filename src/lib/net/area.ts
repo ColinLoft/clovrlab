@@ -39,10 +39,32 @@ export async function saveResponseArea(patch: Partial<ResponseArea>) {
   if (error) throw error;
 }
 
-/** True when a point falls inside the configured response radius. */
-export function inArea(area: ResponseArea | null, p: { lat: number; lng: number }) {
+const norm = (v?: string | null) => (v ?? "").trim().toLowerCase().replace(/\s+county$/, "");
+
+/**
+ * True when a point is inside the configured response area.
+ * - "address" mode: radius around the geocoded centre point.
+ * - "region" mode: the point's state / county must be on the subscribed list.
+ * Passing state/county is optional; without them a region area falls back to the radius.
+ */
+export function inArea(
+  area: ResponseArea | null,
+  p: { lat: number; lng: number; state?: string | null; county?: string | null },
+) {
   if (!area) return true;
+
+  if (area.mode === "region") {
+    const states = (area.states ?? []).map(norm).filter(Boolean);
+    const counties = (area.counties ?? []).map(norm).filter(Boolean);
+    if (!states.length && !counties.length) return true;
+    if (p.state == null && p.county == null) return true;
+    const stateOk = !states.length || states.includes(norm(p.state));
+    const countyOk = !counties.length || counties.includes(norm(p.county));
+    return stateOk && countyOk;
+  }
+
   const radius = Number(area.radius_mi) || 0;
   if (radius <= 0) return true;
   return haversineMi({ lat: Number(area.center_lat), lng: Number(area.center_lng) }, p) <= radius;
 }
+
