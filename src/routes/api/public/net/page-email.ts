@@ -23,7 +23,6 @@ export const Route = createFileRoute("/api/public/net/page-email")({
         if (authErr || ok !== true) return json({ error: "Unauthorized" }, 401);
 
         const apiKey = process.env["RESEND_API_KEY"];
-        const pushKey = process.env["ONESIGNAL_REST_API_KEY"];
 
         const { data: targets } = await supabaseAdmin
           .from("page_targets" as never)
@@ -38,13 +37,15 @@ export const Route = createFileRoute("/api/public/net/page-email")({
         const alertIds = Array.from(new Set(rows.map((r) => r.alert_id)));
         const userIds = Array.from(new Set(rows.map((r) => r.user_id)));
 
-        const [{ data: alerts }, { data: profiles }] = await Promise.all([
+        const [{ data: alerts }, { data: profiles }, { data: topics }] = await Promise.all([
           supabaseAdmin.from("page_alerts" as never).select("id, title, body, link, severity, kind, status").in("id", alertIds),
           supabaseAdmin.from("profiles").select("id, email, full_name").in("id", userIds),
+          supabaseAdmin.from("push_topics" as never).select("user_id, topic").in("user_id", userIds),
         ]);
 
         const alertById = new Map((alerts ?? []).map((a: any) => [a.id, a]));
         const emailById = new Map((profiles ?? []).map((p: any) => [p.id, p]));
+        const topicByUser = new Map((topics ?? []).map((t: any) => [t.user_id, t.topic]));
 
         let sent = 0;
         let pushed = 0;
@@ -62,30 +63,22 @@ export const Route = createFileRoute("/api/public/net/page-email")({
             continue;
           }
 
-          // ---- Push (OneSignal) ----
-          if (pushKey && !t.push_sent_at) {
+          // ---- Push (ntfy.sh) ----
+          const topic = topicByUser.get(t.user_id);
+          if (topic && !t.push_sent_at) {
             try {
-              const res = await fetch("https://api.onesignal.com/notifications", {
+              const res = await fetch(`${NTFY_SERVER}/${topic}`, {
                 method: "POST",
                 headers: {
-                  Authorization: `Key ${pushKey}`,
-                  "Content-Type": "application/json",
+                  Title: ascii(`${String(a.severity).toUpperCase()} PAGE - ${a.title}`).slice(0, 180),
+                  Priority: a.severity === "critical" ? "5" : "4",
+                  Tags: "rotating_light",
+                  Click: `https://hq.clovrlab.com${a.link ?? "/ops/paging"}`,
+                  "X-Actions": `view, Acknowledge, https://hq.clovrlab.com${a.link ?? "/ops/paging"}`,
                 },
-                body: JSON.stringify({
-                  app_id: ONESIGNAL_APP_ID,
-                  include_aliases: { external_id: [t.user_id] },
-                  target_channel: "push",
-                  headings: { en: `🚨 ${String(a.severity).toUpperCase()} PAGE` },
-                  contents: { en: `${a.title}${a.body ? ` — ${String(a.body).slice(0, 120)}` : ""}` },
-                  url: `https://hq.clovrlab.com${a.link ?? "/ops/paging"}`,
-                  priority: 10,
-                  ios_interruption_level: "critical",
-                  ios_sound: "default",
-                  android_channel_priority: "high",
-                  collapse_id: String(a.id),
-                }),
+                body: `${a.body ? String(a.body).slice(0, 300) : "Urgent page - acknowledgement required."}\nTier ${t.level} - ${a.kind}`,
               });
-              if (!res.ok) throw new Error(`OneSignal ${res.status}: ${(await res.text()).slice(0, 160)}`);
+              if (!res.ok) throw new Error(`ntfy ${res.status}: ${(await res.text()).slice(0, 160)}`);
               await supabaseAdmin.from("page_targets" as never)
                 .update({ push_sent_at: stamp() } as never).eq("id", t.id);
               pushed++;
@@ -93,6 +86,8 @@ export const Route = createFileRoute("/api/public/net/page-email")({
               errors.push((e as Error).message);
             }
           }
+
+
 
           // ---- Email (Resend) ----
           if (!apiKey || !p?.email || t.email_sent_at) continue;
