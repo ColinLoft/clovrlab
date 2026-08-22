@@ -6648,6 +6648,74 @@ export type Database = {
         }
         Relationships: []
       }
+      oncall_members: {
+        Row: {
+          created_at: string
+          id: string
+          rotation_id: string
+          tier: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rotation_id: string
+          tier?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rotation_id?: string
+          tier?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "oncall_members_rotation_id_fkey"
+            columns: ["rotation_id"]
+            isOneToOne: false
+            referencedRelation: "oncall_rotations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      oncall_rotations: {
+        Row: {
+          active: boolean
+          created_at: string
+          escalation_minutes: number
+          id: string
+          kinds: string[]
+          max_level: number
+          name: string
+          updated_at: string
+          workspace: string | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          escalation_minutes?: number
+          id?: string
+          kinds?: string[]
+          max_level?: number
+          name: string
+          updated_at?: string
+          workspace?: string | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          escalation_minutes?: number
+          id?: string
+          kinds?: string[]
+          max_level?: number
+          name?: string
+          updated_at?: string
+          workspace?: string | null
+        }
+        Relationships: []
+      }
       ops_authorizations: {
         Row: {
           authority: string
@@ -7074,6 +7142,115 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "org_units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      page_alerts: {
+        Row: {
+          acked_at: string | null
+          acked_by: string | null
+          body: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          level: number
+          link: string | null
+          next_escalation_at: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          rotation_id: string | null
+          severity: string
+          source_id: string | null
+          source_table: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          acked_at?: string | null
+          acked_by?: string | null
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          level?: number
+          link?: string | null
+          next_escalation_at?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          rotation_id?: string | null
+          severity?: string
+          source_id?: string | null
+          source_table?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          acked_at?: string | null
+          acked_by?: string | null
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          level?: number
+          link?: string | null
+          next_escalation_at?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          rotation_id?: string | null
+          severity?: string
+          source_id?: string | null
+          source_table?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_alerts_rotation_id_fkey"
+            columns: ["rotation_id"]
+            isOneToOne: false
+            referencedRelation: "oncall_rotations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      page_targets: {
+        Row: {
+          alert_id: string
+          created_at: string
+          email_sent_at: string | null
+          id: string
+          level: number
+          seen_at: string | null
+          user_id: string
+        }
+        Insert: {
+          alert_id: string
+          created_at?: string
+          email_sent_at?: string | null
+          id?: string
+          level?: number
+          seen_at?: string | null
+          user_id: string
+        }
+        Update: {
+          alert_id?: string
+          created_at?: string
+          email_sent_at?: string | null
+          id?: string
+          level?: number
+          seen_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_targets_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "page_alerts"
             referencedColumns: ["id"]
           },
         ]
@@ -7909,6 +8086,24 @@ export type Database = {
           },
         ]
       }
+      user_prefs: {
+        Row: {
+          prefs: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          prefs?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          prefs?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -8066,6 +8261,8 @@ export type Database = {
       }
     }
     Functions: {
+      ack_page: { Args: { _alert_id: string }; Returns: undefined }
+      escalate_pages: { Args: never; Returns: number }
       is_hq_admin: { Args: { _user_id: string }; Returns: boolean }
       my_access: { Args: never; Returns: Json }
       net_verify_cron_token: { Args: { _token: string }; Returns: boolean }
@@ -8078,6 +8275,19 @@ export type Database = {
         Returns: undefined
       }
       onboarding_invite_check: { Args: { _email: string }; Returns: Json }
+      raise_page: {
+        Args: {
+          _body?: string
+          _kind: string
+          _link?: string
+          _severity?: string
+          _source_id?: string
+          _source_table?: string
+          _title: string
+        }
+        Returns: string
+      }
+      resolve_page: { Args: { _alert_id: string }; Returns: undefined }
     }
     Enums: {
       app_role:
