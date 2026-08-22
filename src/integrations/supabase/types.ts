@@ -8068,6 +8068,7 @@ export type Database = {
     Functions: {
       is_hq_admin: { Args: { _user_id: string }; Returns: boolean }
       my_access: { Args: never; Returns: Json }
+      net_verify_cron_token: { Args: { _token: string }; Returns: boolean }
       notify_managers: {
         Args: { _body: string; _link: string; _title: string }
         Returns: undefined
