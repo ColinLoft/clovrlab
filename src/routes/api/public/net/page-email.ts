@@ -139,3 +139,8 @@ function escapeHtml(s: string) {
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 }
+
+/** ntfy headers must be ASCII; strip emoji/accents from titles. */
+function ascii(s: string) {
+  return s.normalize("NFKD").replace(/[^\x20-\x7E]/g, "").trim();
+}
