@@ -6068,6 +6068,36 @@ export type Database = {
         }
         Relationships: []
       }
+      net_camera_prefs: {
+        Row: {
+          camera_id: string
+          camera_name: string | null
+          label: string | null
+          notes: string | null
+          priority: number
+          updated_at: string
+          watch: boolean
+        }
+        Insert: {
+          camera_id: string
+          camera_name?: string | null
+          label?: string | null
+          notes?: string | null
+          priority?: number
+          updated_at?: string
+          watch?: boolean
+        }
+        Update: {
+          camera_id?: string
+          camera_name?: string | null
+          label?: string | null
+          notes?: string | null
+          priority?: number
+          updated_at?: string
+          watch?: boolean
+        }
+        Relationships: []
+      }
       net_drones: {
         Row: {
           airframe_id: string | null
@@ -6397,6 +6427,72 @@ export type Database = {
         }
         Relationships: []
       }
+      net_settings: {
+        Row: {
+          ai_model: string
+          auto_promote: boolean
+          auto_promote_confidence: number
+          dispatch_max_range_mi: number
+          dispatch_min_battery: number
+          id: boolean
+          last_sweep_at: string | null
+          min_confidence: number
+          notify_on_incident: boolean
+          notify_on_suggestion: boolean
+          pause_reason: string | null
+          paused: boolean
+          sweep_batch_size: number
+          sweep_enabled: boolean
+          sweep_interval_hours: number
+          sweep_lock_until: string | null
+          sweep_priority_only: boolean
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          ai_model?: string
+          auto_promote?: boolean
+          auto_promote_confidence?: number
+          dispatch_max_range_mi?: number
+          dispatch_min_battery?: number
+          id?: boolean
+          last_sweep_at?: string | null
+          min_confidence?: number
+          notify_on_incident?: boolean
+          notify_on_suggestion?: boolean
+          pause_reason?: string | null
+          paused?: boolean
+          sweep_batch_size?: number
+          sweep_enabled?: boolean
+          sweep_interval_hours?: number
+          sweep_lock_until?: string | null
+          sweep_priority_only?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          ai_model?: string
+          auto_promote?: boolean
+          auto_promote_confidence?: number
+          dispatch_max_range_mi?: number
+          dispatch_min_battery?: number
+          id?: boolean
+          last_sweep_at?: string | null
+          min_confidence?: number
+          notify_on_incident?: boolean
+          notify_on_suggestion?: boolean
+          pause_reason?: string | null
+          paused?: boolean
+          sweep_batch_size?: number
+          sweep_enabled?: boolean
+          sweep_interval_hours?: number
+          sweep_lock_until?: string | null
+          sweep_priority_only?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       net_suggestions: {
         Row: {
           camera_id: string | null
@@ -6467,6 +6563,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      net_sweep_runs: {
+        Row: {
+          analyzed: number
+          created_at: string
+          created_count: number
+          duration_ms: number | null
+          error_count: number
+          first_error: string | null
+          id: string
+          trigger: string
+        }
+        Insert: {
+          analyzed?: number
+          created_at?: string
+          created_count?: number
+          duration_ms?: number | null
+          error_count?: number
+          first_error?: string | null
+          id?: string
+          trigger?: string
+        }
+        Update: {
+          analyzed?: number
+          created_at?: string
+          created_count?: number
+          duration_ms?: number | null
+          error_count?: number
+          first_error?: string | null
+          id?: string
+          trigger?: string
+        }
+        Relationships: []
       }
       newsletter_signups: {
         Row: {

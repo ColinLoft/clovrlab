@@ -68,6 +68,7 @@ import { Route as HqTeamsIndexRouteImport } from './routes/_hq.teams.index'
 import { Route as HqTeamsSlugRouteImport } from './routes/_hq.teams.$slug'
 import { Route as HqSystemsServicesRouteImport } from './routes/_hq.systems.services'
 import { Route as HqSystemsHelpdeskRouteImport } from './routes/_hq.systems.helpdesk'
+import { Route as HqSystemsDetectionRouteImport } from './routes/_hq.systems.detection'
 import { Route as HqSystemsAssetsRouteImport } from './routes/_hq.systems.assets'
 import { Route as HqSystemsAccessRouteImport } from './routes/_hq.systems.access'
 import { Route as HqProductSupportRouteImport } from './routes/_hq.product.support'
@@ -122,6 +123,7 @@ import { Route as HqAdminCompanyRouteImport } from './routes/_hq.admin.company'
 import { Route as HqAdminAppsRouteImport } from './routes/_hq.admin.apps'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as ApiPublicNetSweepRouteImport } from './routes/api/public/net/sweep'
 
 const WorkspacesRoute = WorkspacesRouteImport.update({
   id: '/workspaces',
@@ -417,6 +419,11 @@ const HqSystemsHelpdeskRoute = HqSystemsHelpdeskRouteImport.update({
   path: '/systems/helpdesk',
   getParentRoute: () => HqRoute,
 } as any)
+const HqSystemsDetectionRoute = HqSystemsDetectionRouteImport.update({
+  id: '/systems/detection',
+  path: '/systems/detection',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqSystemsAssetsRoute = HqSystemsAssetsRouteImport.update({
   id: '/systems/assets',
   path: '/systems/assets',
@@ -687,6 +694,11 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   path: '/lovable/email/auth/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicNetSweepRoute = ApiPublicNetSweepRouteImport.update({
+  id: '/api/public/net/sweep',
+  path: '/api/public/net/sweep',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -795,10 +807,12 @@ export interface FileRoutesByFullPath {
   '/product/support': typeof HqProductSupportRoute
   '/systems/access': typeof HqSystemsAccessRoute
   '/systems/assets': typeof HqSystemsAssetsRoute
+  '/systems/detection': typeof HqSystemsDetectionRoute
   '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/teams/': typeof HqTeamsIndexRoute
+  '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
@@ -908,10 +922,12 @@ export interface FileRoutesByTo {
   '/product/support': typeof HqProductSupportRoute
   '/systems/access': typeof HqSystemsAccessRoute
   '/systems/assets': typeof HqSystemsAssetsRoute
+  '/systems/detection': typeof HqSystemsDetectionRoute
   '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/teams': typeof HqTeamsIndexRoute
+  '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
@@ -1024,10 +1040,12 @@ export interface FileRoutesById {
   '/_hq/product/support': typeof HqProductSupportRoute
   '/_hq/systems/access': typeof HqSystemsAccessRoute
   '/_hq/systems/assets': typeof HqSystemsAssetsRoute
+  '/_hq/systems/detection': typeof HqSystemsDetectionRoute
   '/_hq/systems/helpdesk': typeof HqSystemsHelpdeskRoute
   '/_hq/systems/services': typeof HqSystemsServicesRoute
   '/_hq/teams/$slug': typeof HqTeamsSlugRoute
   '/_hq/teams/': typeof HqTeamsIndexRoute
+  '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
@@ -1140,10 +1158,12 @@ export interface FileRouteTypes {
     | '/product/support'
     | '/systems/access'
     | '/systems/assets'
+    | '/systems/detection'
     | '/systems/helpdesk'
     | '/systems/services'
     | '/teams/$slug'
     | '/teams/'
+    | '/api/public/net/sweep'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -1253,10 +1273,12 @@ export interface FileRouteTypes {
     | '/product/support'
     | '/systems/access'
     | '/systems/assets'
+    | '/systems/detection'
     | '/systems/helpdesk'
     | '/systems/services'
     | '/teams/$slug'
     | '/teams'
+    | '/api/public/net/sweep'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
   id:
@@ -1368,10 +1390,12 @@ export interface FileRouteTypes {
     | '/_hq/product/support'
     | '/_hq/systems/access'
     | '/_hq/systems/assets'
+    | '/_hq/systems/detection'
     | '/_hq/systems/helpdesk'
     | '/_hq/systems/services'
     | '/_hq/teams/$slug'
     | '/_hq/teams/'
+    | '/api/public/net/sweep'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
   fileRoutesById: FileRoutesById
@@ -1399,6 +1423,7 @@ export interface RootRouteChildren {
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   MeetingIdRoute: typeof MeetingIdRoute
+  ApiPublicNetSweepRoute: typeof ApiPublicNetSweepRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
 }
@@ -1818,6 +1843,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqSystemsHelpdeskRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/systems/detection': {
+      id: '/_hq/systems/detection'
+      path: '/systems/detection'
+      fullPath: '/systems/detection'
+      preLoaderRoute: typeof HqSystemsDetectionRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/systems/assets': {
       id: '/_hq/systems/assets'
       path: '/systems/assets'
@@ -2196,6 +2228,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/net/sweep': {
+      id: '/api/public/net/sweep'
+      path: '/api/public/net/sweep'
+      fullPath: '/api/public/net/sweep'
+      preLoaderRoute: typeof ApiPublicNetSweepRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -2298,6 +2337,7 @@ interface HqRouteChildren {
   HqProductSupportRoute: typeof HqProductSupportRoute
   HqSystemsAccessRoute: typeof HqSystemsAccessRoute
   HqSystemsAssetsRoute: typeof HqSystemsAssetsRoute
+  HqSystemsDetectionRoute: typeof HqSystemsDetectionRoute
   HqSystemsHelpdeskRoute: typeof HqSystemsHelpdeskRoute
   HqSystemsServicesRoute: typeof HqSystemsServicesRoute
 }
@@ -2388,6 +2428,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqProductSupportRoute: HqProductSupportRoute,
   HqSystemsAccessRoute: HqSystemsAccessRoute,
   HqSystemsAssetsRoute: HqSystemsAssetsRoute,
+  HqSystemsDetectionRoute: HqSystemsDetectionRoute,
   HqSystemsHelpdeskRoute: HqSystemsHelpdeskRoute,
   HqSystemsServicesRoute: HqSystemsServicesRoute,
 }
@@ -2417,6 +2458,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   MeetingIdRoute: MeetingIdRoute,
+  ApiPublicNetSweepRoute: ApiPublicNetSweepRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
 }

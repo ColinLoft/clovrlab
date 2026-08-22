@@ -139,8 +139,16 @@ export default function LiveMap({
                 pathOptions={{ color: st.color, fillColor: st.color, fillOpacity: 0.9, weight: 1 }}
                 eventHandlers={{ click: () => onSelectCamera?.(c) }}
               >
-                <Popup>
+                <Popup minWidth={240}>
                   <div className="text-xs">
+                    {c.image.url && (
+                      <img
+                        src={c.image.url}
+                        alt={`Latest frame from ${c.name}`}
+                        loading="lazy"
+                        style={{ width: 240, height: 140, objectFit: "cover", borderRadius: 4, marginBottom: 6 }}
+                      />
+                    )}
                     <p className="font-semibold">{c.name}</p>
                     <p>{c.site.county ? `${c.site.county}, ` : ""}{c.site.state ?? ""}</p>
                     <p>{st.label} · {relTime(c.image.time) ?? "no frame"}</p>
