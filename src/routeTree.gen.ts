@@ -67,6 +67,7 @@ import { Route as HqAccountingRouteImport } from './routes/_hq.accounting'
 import { Route as HqTeamsIndexRouteImport } from './routes/_hq.teams.index'
 import { Route as HqTeamsSlugRouteImport } from './routes/_hq.teams.$slug'
 import { Route as HqSystemsServicesRouteImport } from './routes/_hq.systems.services'
+import { Route as HqSystemsPagingRouteImport } from './routes/_hq.systems.paging'
 import { Route as HqSystemsHelpdeskRouteImport } from './routes/_hq.systems.helpdesk'
 import { Route as HqSystemsDetectionRouteImport } from './routes/_hq.systems.detection'
 import { Route as HqSystemsAssetsRouteImport } from './routes/_hq.systems.assets'
@@ -414,6 +415,11 @@ const HqTeamsSlugRoute = HqTeamsSlugRouteImport.update({
 const HqSystemsServicesRoute = HqSystemsServicesRouteImport.update({
   id: '/systems/services',
   path: '/systems/services',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSystemsPagingRoute = HqSystemsPagingRouteImport.update({
+  id: '/systems/paging',
+  path: '/systems/paging',
   getParentRoute: () => HqRoute,
 } as any)
 const HqSystemsHelpdeskRoute = HqSystemsHelpdeskRouteImport.update({
@@ -822,6 +828,7 @@ export interface FileRoutesByFullPath {
   '/systems/assets': typeof HqSystemsAssetsRoute
   '/systems/detection': typeof HqSystemsDetectionRoute
   '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
+  '/systems/paging': typeof HqSystemsPagingRoute
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/teams/': typeof HqTeamsIndexRoute
@@ -939,6 +946,7 @@ export interface FileRoutesByTo {
   '/systems/assets': typeof HqSystemsAssetsRoute
   '/systems/detection': typeof HqSystemsDetectionRoute
   '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
+  '/systems/paging': typeof HqSystemsPagingRoute
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/teams': typeof HqTeamsIndexRoute
@@ -1059,6 +1067,7 @@ export interface FileRoutesById {
   '/_hq/systems/assets': typeof HqSystemsAssetsRoute
   '/_hq/systems/detection': typeof HqSystemsDetectionRoute
   '/_hq/systems/helpdesk': typeof HqSystemsHelpdeskRoute
+  '/_hq/systems/paging': typeof HqSystemsPagingRoute
   '/_hq/systems/services': typeof HqSystemsServicesRoute
   '/_hq/teams/$slug': typeof HqTeamsSlugRoute
   '/_hq/teams/': typeof HqTeamsIndexRoute
@@ -1179,6 +1188,7 @@ export interface FileRouteTypes {
     | '/systems/assets'
     | '/systems/detection'
     | '/systems/helpdesk'
+    | '/systems/paging'
     | '/systems/services'
     | '/teams/$slug'
     | '/teams/'
@@ -1296,6 +1306,7 @@ export interface FileRouteTypes {
     | '/systems/assets'
     | '/systems/detection'
     | '/systems/helpdesk'
+    | '/systems/paging'
     | '/systems/services'
     | '/teams/$slug'
     | '/teams'
@@ -1415,6 +1426,7 @@ export interface FileRouteTypes {
     | '/_hq/systems/assets'
     | '/_hq/systems/detection'
     | '/_hq/systems/helpdesk'
+    | '/_hq/systems/paging'
     | '/_hq/systems/services'
     | '/_hq/teams/$slug'
     | '/_hq/teams/'
@@ -1859,6 +1871,13 @@ declare module '@tanstack/react-router' {
       path: '/systems/services'
       fullPath: '/systems/services'
       preLoaderRoute: typeof HqSystemsServicesRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/systems/paging': {
+      id: '/_hq/systems/paging'
+      path: '/systems/paging'
+      fullPath: '/systems/paging'
+      preLoaderRoute: typeof HqSystemsPagingRouteImport
       parentRoute: typeof HqRoute
     }
     '/_hq/systems/helpdesk': {
@@ -2379,6 +2398,7 @@ interface HqRouteChildren {
   HqSystemsAssetsRoute: typeof HqSystemsAssetsRoute
   HqSystemsDetectionRoute: typeof HqSystemsDetectionRoute
   HqSystemsHelpdeskRoute: typeof HqSystemsHelpdeskRoute
+  HqSystemsPagingRoute: typeof HqSystemsPagingRoute
   HqSystemsServicesRoute: typeof HqSystemsServicesRoute
 }
 
@@ -2471,6 +2491,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqSystemsAssetsRoute: HqSystemsAssetsRoute,
   HqSystemsDetectionRoute: HqSystemsDetectionRoute,
   HqSystemsHelpdeskRoute: HqSystemsHelpdeskRoute,
+  HqSystemsPagingRoute: HqSystemsPagingRoute,
   HqSystemsServicesRoute: HqSystemsServicesRoute,
 }
 
