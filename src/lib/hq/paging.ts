@@ -2,10 +2,13 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type PageSeverity = "critical" | "high" | "info";
 export type PageStatus = "open" | "acked" | "resolved";
+export type PageQueue = "ops" | "systems";
+export type TicketStatus = "open" | "investigating" | "mitigated" | "closed";
 
 export interface PageAlert {
   id: string;
   kind: string;
+  queue: PageQueue;
   severity: PageSeverity;
   title: string;
   body: string | null;
@@ -24,9 +27,38 @@ export interface PageAlert {
   created_at: string;
 }
 
+export interface PageTicket {
+  id: string;
+  ref: string;
+  alert_id: string | null;
+  queue: PageQueue;
+  title: string;
+  summary: string | null;
+  kind: string | null;
+  severity: PageSeverity;
+  status: TicketStatus;
+  assignee_id: string | null;
+  impact: string | null;
+  root_cause: string | null;
+  resolution: string | null;
+  opened_at: string;
+  closed_at: string | null;
+  created_by: string | null;
+  updated_at: string;
+}
+
+export interface TicketNote {
+  id: string;
+  ticket_id: string;
+  author_id: string | null;
+  body: string;
+  created_at: string;
+}
+
 export interface Rotation {
   id: string;
   name: string;
+  queue: PageQueue;
   workspace: string | null;
   kinds: string[];
   escalation_minutes: number;
@@ -42,15 +74,40 @@ export interface RotationMember {
   tier: number;
 }
 
-export const PAGE_KINDS = [
-  { value: "detection", label: "Fire / smoke detection" },
-  { value: "incident", label: "New incident" },
-  { value: "fleet", label: "Aircraft or fleet emergency" },
-  { value: "system", label: "System or service failure" },
-  { value: "manual", label: "Manual page" },
+/** Page kinds, split by which console owns the response. */
+export const QUEUE_KINDS: Record<PageQueue, { value: string; label: string }[]> = {
+  ops: [
+    { value: "detection", label: "Fire / smoke detection" },
+    { value: "incident", label: "New incident" },
+    { value: "fleet", label: "Aircraft or fleet emergency" },
+    { value: "airspace", label: "Airspace conflict" },
+    { value: "manual", label: "Manual page" },
+  ],
+  systems: [
+    { value: "system", label: "Service or platform outage" },
+    { value: "infrastructure", label: "Infrastructure failure" },
+    { value: "security", label: "Security event" },
+    { value: "integration", label: "Integration / data feed down" },
+    { value: "manual", label: "Manual page" },
+  ],
+};
+
+export const PAGE_KINDS = [...QUEUE_KINDS.ops, ...QUEUE_KINDS.systems.filter((k) => k.value !== "manual")];
+
+export const TICKET_STATUSES: { value: TicketStatus; label: string }[] = [
+  { value: "open", label: "Open" },
+  { value: "investigating", label: "Investigating" },
+  { value: "mitigated", label: "Mitigated" },
+  { value: "closed", label: "Closed" },
 ];
 
+export const QUEUE_LABEL: Record<PageQueue, string> = {
+  ops: "Mission Operations",
+  systems: "Enterprise Systems",
+};
+
 const db = supabase as any;
+
 
 export async function fetchPages(status?: PageStatus | "active", limit = 60): Promise<PageAlert[]> {
   let q = db.from("page_alerts").select("*").order("created_at", { ascending: false }).limit(limit);
