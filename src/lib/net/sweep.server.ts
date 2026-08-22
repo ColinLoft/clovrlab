@@ -37,7 +37,19 @@ export class GatewayBlocked extends Error {
   }
 }
 
+/** Camera hosts often block model-side fetching, so inline the frame as a data URL. */
+async function toDataUrl(url: string): Promise<string> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`frame fetch ${res.status}`);
+  const type = res.headers.get("content-type") || "image/jpeg";
+  const buf = new Uint8Array(await res.arrayBuffer());
+  let binary = "";
+  for (let i = 0; i < buf.length; i += 0x8000) binary += String.fromCharCode(...buf.subarray(i, i + 0x8000));
+  return `data:${type};base64,${btoa(binary)}`;
+}
+
 export async function analyzeOne(input: CameraInput, apiKey: string, model: string) {
+  const inlineImage = await toDataUrl(input.image_url);
   const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", "Lovable-API-Key": apiKey },
