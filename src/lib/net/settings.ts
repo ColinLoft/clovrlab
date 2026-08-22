@@ -61,10 +61,14 @@ export async function fetchCameraPrefs(): Promise<Record<string, CameraPref>> {
 }
 
 export async function saveCameraPref(pref: Partial<CameraPref> & { camera_id: string }) {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("net_camera_prefs")
-    .upsert(pref as never, { onConflict: "camera_id" });
+    .upsert(pref as never, { onConflict: "camera_id" })
+    .select()
+    .maybeSingle();
   if (error) throw error;
+  if (!data) throw new Error("Camera preference was not saved — staff access is required.");
+  return data as unknown as CameraPref;
 }
 
 export interface SweepRun {
