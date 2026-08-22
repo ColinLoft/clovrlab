@@ -84,7 +84,7 @@ function PagingPage() {
           {tab === "live" && <PageList rows={live} reload={reload} empty="All quiet — nothing is paging right now." />}
           {tab === "history" && <PageList rows={pages.filter((p) => p.status === "resolved")} reload={reload} empty="No resolved pages yet." />}
           {tab === "roster" && (
-            <Roster rotations={rotations} members={members} people={people} reload={reload} />
+            <Roster rotations={rotations} members={members} people={people.people} reload={reload} />
           )}
         </div>
       )}
@@ -141,10 +141,10 @@ function PageList({ rows, reload, empty }: { rows: PageAlert[]; reload: () => vo
 }
 
 function Roster({ rotations, members, people, reload }: {
-  rotations: Rotation[]; members: RotationMember[]; people: ReturnType<typeof usePeople>; reload: () => void;
+  rotations: Rotation[]; members: RotationMember[]; people: ReturnType<typeof usePeople>["people"]; reload: () => void;
 }) {
   const [busy, setBusy] = useState(false);
-  const list = Array.isArray(people) ? people : ((people as any)?.people ?? []);
+  const list = people;
 
   const run = async (fn: () => Promise<unknown>) => {
     setBusy(true);
