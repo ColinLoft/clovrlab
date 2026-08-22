@@ -2,10 +2,13 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type PageSeverity = "critical" | "high" | "info";
 export type PageStatus = "open" | "acked" | "resolved";
+export type PageQueue = "ops" | "systems";
+export type TicketStatus = "open" | "investigating" | "mitigated" | "closed";
 
 export interface PageAlert {
   id: string;
   kind: string;
+  queue: PageQueue;
   severity: PageSeverity;
   title: string;
   body: string | null;
@@ -24,9 +27,38 @@ export interface PageAlert {
   created_at: string;
 }
 
+export interface PageTicket {
+  id: string;
+  ref: string;
+  alert_id: string | null;
+  queue: PageQueue;
+  title: string;
+  summary: string | null;
+  kind: string | null;
+  severity: PageSeverity;
+  status: TicketStatus;
+  assignee_id: string | null;
+  impact: string | null;
+  root_cause: string | null;
+  resolution: string | null;
+  opened_at: string;
+  closed_at: string | null;
+  created_by: string | null;
+  updated_at: string;
+}
+
+export interface TicketNote {
+  id: string;
+  ticket_id: string;
+  author_id: string | null;
+  body: string;
+  created_at: string;
+}
+
 export interface Rotation {
   id: string;
   name: string;
+  queue: PageQueue;
   workspace: string | null;
   kinds: string[];
   escalation_minutes: number;
@@ -42,18 +74,44 @@ export interface RotationMember {
   tier: number;
 }
 
-export const PAGE_KINDS = [
-  { value: "detection", label: "Fire / smoke detection" },
-  { value: "incident", label: "New incident" },
-  { value: "fleet", label: "Aircraft or fleet emergency" },
-  { value: "system", label: "System or service failure" },
-  { value: "manual", label: "Manual page" },
+/** Page kinds, split by which console owns the response. */
+export const QUEUE_KINDS: Record<PageQueue, { value: string; label: string }[]> = {
+  ops: [
+    { value: "detection", label: "Fire / smoke detection" },
+    { value: "incident", label: "New incident" },
+    { value: "fleet", label: "Aircraft or fleet emergency" },
+    { value: "airspace", label: "Airspace conflict" },
+    { value: "manual", label: "Manual page" },
+  ],
+  systems: [
+    { value: "system", label: "Service or platform outage" },
+    { value: "infrastructure", label: "Infrastructure failure" },
+    { value: "security", label: "Security event" },
+    { value: "integration", label: "Integration / data feed down" },
+    { value: "manual", label: "Manual page" },
+  ],
+};
+
+export const PAGE_KINDS = [...QUEUE_KINDS.ops, ...QUEUE_KINDS.systems.filter((k) => k.value !== "manual")];
+
+export const TICKET_STATUSES: { value: TicketStatus; label: string }[] = [
+  { value: "open", label: "Open" },
+  { value: "investigating", label: "Investigating" },
+  { value: "mitigated", label: "Mitigated" },
+  { value: "closed", label: "Closed" },
 ];
+
+export const QUEUE_LABEL: Record<PageQueue, string> = {
+  ops: "Mission Operations",
+  systems: "Enterprise Systems",
+};
 
 const db = supabase as any;
 
-export async function fetchPages(status?: PageStatus | "active", limit = 60): Promise<PageAlert[]> {
+
+export async function fetchPages(status?: PageStatus | "active", limit = 60, queue?: PageQueue): Promise<PageAlert[]> {
   let q = db.from("page_alerts").select("*").order("created_at", { ascending: false }).limit(limit);
+  if (queue) q = q.eq("queue", queue);
   if (status === "active") q = q.in("status", ["open", "acked"]);
   else if (status) q = q.eq("status", status);
   const { data, error } = await q;
@@ -86,7 +144,7 @@ export async function resolvePage(id: string) {
 }
 
 export async function raisePage(input: {
-  kind: string; title: string; body?: string; link?: string; severity?: PageSeverity;
+  kind: string; title: string; body?: string; link?: string; severity?: PageSeverity; queue?: PageQueue;
 }) {
   const { data, error } = await db.rpc("raise_page", {
     _kind: input.kind,
@@ -96,16 +154,70 @@ export async function raisePage(input: {
     _severity: input.severity ?? "critical",
     _source_table: null,
     _source_id: null,
+    _queue: input.queue ?? null,
   });
   if (error) throw error;
   return data as string;
 }
 
-export async function fetchRotations(): Promise<Rotation[]> {
-  const { data, error } = await db.from("oncall_rotations").select("*").order("created_at");
+// ---------- Tickets ----------
+
+export async function fetchTickets(queue?: PageQueue, limit = 100): Promise<PageTicket[]> {
+  let q = db.from("page_tickets").select("*").order("opened_at", { ascending: false }).limit(limit);
+  if (queue) q = q.eq("queue", queue);
+  const { data, error } = await q;
+  if (error) throw error;
+  return (data ?? []) as PageTicket[];
+}
+
+export async function fetchTicketNotes(ticketIds: string[]): Promise<TicketNote[]> {
+  if (!ticketIds.length) return [];
+  const { data, error } = await db
+    .from("page_ticket_notes").select("*").in("ticket_id", ticketIds).order("created_at");
+  if (error) throw error;
+  return (data ?? []) as TicketNote[];
+}
+
+export async function saveTicket(patch: Partial<PageTicket> & { id: string }) {
+  const body = { ...patch } as any;
+  if (patch.status === "closed" && !patch.closed_at) body.closed_at = new Date().toISOString();
+  if (patch.status && patch.status !== "closed") body.closed_at = null;
+  const { data, error } = await db.from("page_tickets").update(body).eq("id", patch.id).select().maybeSingle();
+  if (error) throw error;
+  if (!data) throw new Error("Nothing saved — you need staff access to edit tickets.");
+  return data as PageTicket;
+}
+
+export async function createTicket(input: { queue: PageQueue; title: string; summary?: string; kind?: string; severity?: PageSeverity }) {
+  const { data: u } = await supabase.auth.getUser();
+  const { data, error } = await db.from("page_tickets").insert({
+    queue: input.queue,
+    title: input.title,
+    summary: input.summary ?? null,
+    kind: input.kind ?? "manual",
+    severity: input.severity ?? "high",
+    created_by: u.user?.id ?? null,
+  }).select().maybeSingle();
+  if (error) throw error;
+  return data as PageTicket;
+}
+
+export async function addTicketNote(ticket_id: string, body: string) {
+  const { data: u } = await supabase.auth.getUser();
+  const { error } = await db.from("page_ticket_notes").insert({
+    ticket_id, body, author_id: u.user?.id ?? null,
+  });
+  if (error) throw error;
+}
+
+export async function fetchRotations(queue?: PageQueue): Promise<Rotation[]> {
+  let q = db.from("oncall_rotations").select("*").order("created_at");
+  if (queue) q = q.eq("queue", queue);
+  const { data, error } = await q;
   if (error) throw error;
   return (data ?? []) as Rotation[];
 }
+
 
 export async function fetchRotationMembers(): Promise<RotationMember[]> {
   const { data, error } = await db.from("oncall_members").select("*").order("tier");

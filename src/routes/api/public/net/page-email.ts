@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+const ONESIGNAL_APP_ID = "496b911f-703d-49f4-a680-ad8bc42ed89e";
+
+
 /**
  * Emails urgent pages to whoever they were routed to. Called every minute by
  * the internal scheduler; only sends for targets that have not been emailed
@@ -19,16 +22,17 @@ export const Route = createFileRoute("/api/public/net/page-email")({
         if (authErr || ok !== true) return json({ error: "Unauthorized" }, 401);
 
         const apiKey = process.env["RESEND_API_KEY"];
-        if (!apiKey) return json({ skipped: "email not configured" });
+        const pushKey = process.env["ONESIGNAL_REST_API_KEY"];
 
         const { data: targets } = await supabaseAdmin
           .from("page_targets" as never)
-          .select("id, user_id, alert_id, level")
-          .is("email_sent_at", null)
+          .select("id, user_id, alert_id, level, email_sent_at, push_sent_at")
+          .or("email_sent_at.is.null,push_sent_at.is.null")
           .limit(50);
 
         const rows = (targets ?? []) as any[];
-        if (!rows.length) return json({ sent: 0 });
+        if (!rows.length) return json({ sent: 0, pushed: 0 });
+
 
         const alertIds = Array.from(new Set(rows.map((r) => r.alert_id)));
         const userIds = Array.from(new Set(rows.map((r) => r.user_id)));
@@ -42,16 +46,55 @@ export const Route = createFileRoute("/api/public/net/page-email")({
         const emailById = new Map((profiles ?? []).map((p: any) => [p.id, p]));
 
         let sent = 0;
+        let pushed = 0;
         const errors: string[] = [];
+        const stamp = () => new Date().toISOString();
 
         for (const t of rows) {
           const a: any = alertById.get(t.alert_id);
           const p: any = emailById.get(t.user_id);
-          if (!a || !p?.email) continue;
+          if (!a) continue;
+
           if (a.status === "resolved") {
-            await supabaseAdmin.from("page_targets" as never).update({ email_sent_at: new Date().toISOString() } as never).eq("id", t.id);
+            await supabaseAdmin.from("page_targets" as never)
+              .update({ email_sent_at: stamp(), push_sent_at: stamp() } as never).eq("id", t.id);
             continue;
           }
+
+          // ---- Push (OneSignal) ----
+          if (pushKey && !t.push_sent_at) {
+            try {
+              const res = await fetch("https://api.onesignal.com/notifications", {
+                method: "POST",
+                headers: {
+                  Authorization: `Key ${pushKey}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  app_id: ONESIGNAL_APP_ID,
+                  include_aliases: { external_id: [t.user_id] },
+                  target_channel: "push",
+                  headings: { en: `🚨 ${String(a.severity).toUpperCase()} PAGE` },
+                  contents: { en: `${a.title}${a.body ? ` — ${String(a.body).slice(0, 120)}` : ""}` },
+                  url: `https://hq.clovrlab.com${a.link ?? "/ops/paging"}`,
+                  priority: 10,
+                  ios_interruption_level: "critical",
+                  ios_sound: "default",
+                  android_channel_priority: "high",
+                  collapse_id: String(a.id),
+                }),
+              });
+              if (!res.ok) throw new Error(`OneSignal ${res.status}: ${(await res.text()).slice(0, 160)}`);
+              await supabaseAdmin.from("page_targets" as never)
+                .update({ push_sent_at: stamp() } as never).eq("id", t.id);
+              pushed++;
+            } catch (e) {
+              errors.push((e as Error).message);
+            }
+          }
+
+          // ---- Email (Resend) ----
+          if (!apiKey || !p?.email || t.email_sent_at) continue;
 
           try {
             const res = await fetch("https://api.resend.com/emails", {
@@ -79,14 +122,15 @@ export const Route = createFileRoute("/api/public/net/page-email")({
               }),
             });
             if (!res.ok) throw new Error(`Resend ${res.status}: ${(await res.text()).slice(0, 160)}`);
-            await supabaseAdmin.from("page_targets" as never).update({ email_sent_at: new Date().toISOString() } as never).eq("id", t.id);
+            await supabaseAdmin.from("page_targets" as never).update({ email_sent_at: stamp() } as never).eq("id", t.id);
             sent++;
           } catch (e) {
             errors.push((e as Error).message);
           }
         }
 
-        return json({ sent, errors: errors.slice(0, 3) });
+        return json({ sent, pushed, errors: errors.slice(0, 3) });
+
       },
     },
   },

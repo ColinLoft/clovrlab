@@ -67,26 +67,64 @@ export function playIncomingRing() {
 }
 
 /**
- * Loud, urgent two-tone siren for pages. Deliberately harsh and loud enough
- * to wake an on-call operator. Runs until stopSound("siren") is called.
+ * Harsh emergency siren for pages. A detuned dual-oscillator sweep pushed
+ * through a distortion curve — closer to a real alarm panel than a chime.
+ * Runs until stopSound("siren") is called.
  */
+function sweep(from: number, to: number, dur: number, delay: number, gain: number) {
+  const a = ac(); if (!a) return;
+  const t0 = a.currentTime + delay;
+
+  const shaper = a.createWaveShaper();
+  const n = 256;
+  const curve = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const x = (i / (n - 1)) * 2 - 1;
+    curve[i] = Math.tanh(x * 6); // hard clip → buzzy, metallic edge
+  }
+  shaper.curve = curve;
+  shaper.oversample = "4x";
+
+  const g = a.createGain();
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(gain, t0 + 0.008);
+  g.gain.setValueAtTime(gain, t0 + dur - 0.03);
+  g.gain.linearRampToValueAtTime(0, t0 + dur);
+
+  // two detuned saws beating against each other = siren "grind"
+  for (const detune of [0, 11]) {
+    const osc = a.createOscillator();
+    osc.type = "sawtooth";
+    osc.detune.setValueAtTime(detune, t0);
+    osc.frequency.setValueAtTime(from, t0);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(40, to), t0 + dur);
+    osc.connect(shaper);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.02);
+  }
+  shaper.connect(g).connect(a.destination);
+}
+
 export function playSiren() {
   stopSound("siren");
   const a = ac(); if (!a) return;
   let cancelled = false;
   const cycle = () => {
     if (cancelled) return;
-    tone(880, 0.42, { gain: 0.5, type: "square", attack: 0.005, release: 0.02 });
-    tone(660, 0.42, { gain: 0.5, type: "square", delay: 0.44, attack: 0.005, release: 0.02 });
-    tone(1180, 0.3, { gain: 0.32, type: "sawtooth", delay: 0.9, attack: 0.005, release: 0.02 });
-    const id = window.setTimeout(cycle, 1400);
+    // rising wail, falling wail, then two stabbing bursts
+    sweep(520, 1180, 0.5, 0, 0.42);
+    sweep(1180, 520, 0.5, 0.5, 0.42);
+    sweep(1400, 1400, 0.13, 1.06, 0.4);
+    sweep(1400, 1400, 0.13, 1.24, 0.4);
+    const id = window.setTimeout(cycle, 1600);
     loops.set("siren", { stop: () => { cancelled = true; clearTimeout(id); } });
   };
   cycle();
   if (typeof navigator !== "undefined" && navigator.vibrate) {
-    try { navigator.vibrate([400, 200, 400, 200, 400]); } catch {}
+    try { navigator.vibrate([500, 120, 500, 120, 200, 100, 200]); } catch {}
   }
 }
+
 
 export function stopSound(name: "ringback" | "incoming" | "siren" | string) {
   const l = loops.get(name);

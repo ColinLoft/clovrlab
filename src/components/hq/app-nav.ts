@@ -127,7 +127,8 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
         { label: "Support Desk", to: "/systems/helpdesk", icon: LifeBuoy },
         { label: "Access & Identity", to: "/systems/access", icon: ShieldCheck },
         { label: "Application Register", to: "/systems/assets", icon: Boxes },
-        { label: "Paging & On-Call", to: "/ops/paging", icon: BellRing },
+        { label: "Paging & On-Call", to: "/systems/paging", icon: BellRing },
+
         { label: "Systems Console", to: "/admin/it", icon: ServerCog },
         { label: "Slack Admin", to: "/admin/slack", icon: Grip },
       ],

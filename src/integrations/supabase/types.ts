@@ -6689,6 +6689,7 @@ export type Database = {
           kinds: string[]
           max_level: number
           name: string
+          queue: string
           updated_at: string
           workspace: string | null
         }
@@ -6700,6 +6701,7 @@ export type Database = {
           kinds?: string[]
           max_level?: number
           name: string
+          queue?: string
           updated_at?: string
           workspace?: string | null
         }
@@ -6711,6 +6713,7 @@ export type Database = {
           kinds?: string[]
           max_level?: number
           name?: string
+          queue?: string
           updated_at?: string
           workspace?: string | null
         }
@@ -7158,6 +7161,7 @@ export type Database = {
           level: number
           link: string | null
           next_escalation_at: string | null
+          queue: string
           resolved_at: string | null
           resolved_by: string | null
           rotation_id: string | null
@@ -7178,6 +7182,7 @@ export type Database = {
           level?: number
           link?: string | null
           next_escalation_at?: string | null
+          queue?: string
           resolved_at?: string | null
           resolved_by?: string | null
           rotation_id?: string | null
@@ -7198,6 +7203,7 @@ export type Database = {
           level?: number
           link?: string | null
           next_escalation_at?: string | null
+          queue?: string
           resolved_at?: string | null
           resolved_by?: string | null
           rotation_id?: string | null
@@ -7224,6 +7230,7 @@ export type Database = {
           email_sent_at: string | null
           id: string
           level: number
+          push_sent_at: string | null
           seen_at: string | null
           user_id: string
         }
@@ -7233,6 +7240,7 @@ export type Database = {
           email_sent_at?: string | null
           id?: string
           level?: number
+          push_sent_at?: string | null
           seen_at?: string | null
           user_id: string
         }
@@ -7242,6 +7250,7 @@ export type Database = {
           email_sent_at?: string | null
           id?: string
           level?: number
+          push_sent_at?: string | null
           seen_at?: string | null
           user_id?: string
         }
@@ -7250,6 +7259,106 @@ export type Database = {
             foreignKeyName: "page_targets_alert_id_fkey"
             columns: ["alert_id"]
             isOneToOne: false
+            referencedRelation: "page_alerts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      page_ticket_notes: {
+        Row: {
+          author_id: string | null
+          body: string
+          created_at: string
+          id: string
+          ticket_id: string
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          created_at?: string
+          id?: string
+          ticket_id: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          created_at?: string
+          id?: string
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_ticket_notes_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "page_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      page_tickets: {
+        Row: {
+          alert_id: string | null
+          assignee_id: string | null
+          closed_at: string | null
+          created_by: string | null
+          id: string
+          impact: string | null
+          kind: string | null
+          opened_at: string
+          queue: string
+          ref: string
+          resolution: string | null
+          root_cause: string | null
+          severity: string
+          status: string
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          alert_id?: string | null
+          assignee_id?: string | null
+          closed_at?: string | null
+          created_by?: string | null
+          id?: string
+          impact?: string | null
+          kind?: string | null
+          opened_at?: string
+          queue?: string
+          ref?: string
+          resolution?: string | null
+          root_cause?: string | null
+          severity?: string
+          status?: string
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          alert_id?: string | null
+          assignee_id?: string | null
+          closed_at?: string | null
+          created_by?: string | null
+          id?: string
+          impact?: string | null
+          kind?: string | null
+          opened_at?: string
+          queue?: string
+          ref?: string
+          resolution?: string | null
+          root_cause?: string | null
+          severity?: string
+          status?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_tickets_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: true
             referencedRelation: "page_alerts"
             referencedColumns: ["id"]
           },
@@ -8280,6 +8389,7 @@ export type Database = {
           _body?: string
           _kind: string
           _link?: string
+          _queue?: string
           _severity?: string
           _source_id?: string
           _source_table?: string

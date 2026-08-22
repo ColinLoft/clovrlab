@@ -42,7 +42,10 @@ export function HQShell() {
 
   useEffect(() => {
     applyTheme(getStoredTheme());
+    // Bind this device to the signed-in operator for push paging (no prompt here).
+    import("@/lib/hq/push").then((m) => m.initPush()).catch(() => {});
   }, []);
+
 
   const setHiddenPersist = (v: boolean) => {
     setHidden(v);
