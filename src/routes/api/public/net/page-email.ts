@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-const ONESIGNAL_APP_ID = "496b911f-703d-49f4-a680-ad8bc42ed89e";
+const NTFY_SERVER = "https://ntfy.sh";
+
 
 
 /**
