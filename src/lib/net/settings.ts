@@ -33,12 +33,15 @@ export async function fetchSettings(): Promise<NetSettings | null> {
   return (data as unknown as NetSettings) ?? null;
 }
 
-export async function saveSettings(patch: Partial<NetSettings>) {
-  const { error } = await supabase
+export async function saveSettings(patch: Partial<NetSettings>): Promise<NetSettings> {
+  const { data, error } = await supabase
     .from("net_settings")
-    .update(patch as never)
-    .eq("id", true);
+    .upsert({ id: true, ...patch } as never, { onConflict: "id" })
+    .select()
+    .maybeSingle();
   if (error) throw error;
+  if (!data) throw new Error("Nothing was saved — admin access is required to change detection settings.");
+  return data as unknown as NetSettings;
 }
 
 export interface CameraPref {
