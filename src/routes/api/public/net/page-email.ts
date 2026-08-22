@@ -19,16 +19,17 @@ export const Route = createFileRoute("/api/public/net/page-email")({
         if (authErr || ok !== true) return json({ error: "Unauthorized" }, 401);
 
         const apiKey = process.env["RESEND_API_KEY"];
-        if (!apiKey) return json({ skipped: "email not configured" });
+        const pushKey = process.env["ONESIGNAL_REST_API_KEY"];
 
         const { data: targets } = await supabaseAdmin
           .from("page_targets" as never)
-          .select("id, user_id, alert_id, level")
-          .is("email_sent_at", null)
+          .select("id, user_id, alert_id, level, email_sent_at, push_sent_at")
+          .or("email_sent_at.is.null,push_sent_at.is.null")
           .limit(50);
 
         const rows = (targets ?? []) as any[];
-        if (!rows.length) return json({ sent: 0 });
+        if (!rows.length) return json({ sent: 0, pushed: 0 });
+
 
         const alertIds = Array.from(new Set(rows.map((r) => r.alert_id)));
         const userIds = Array.from(new Set(rows.map((r) => r.user_id)));
