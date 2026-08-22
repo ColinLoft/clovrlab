@@ -52,7 +52,7 @@ export async function initPush(): Promise<boolean> {
         allowLocalhostAsSecureOrigin: true,
         // We drive the permission request ourselves from the alert settings UI.
         autoResume: true,
-        notifyButton: { enable: false },
+        notifyButton: { enable: false } as any,
       });
       initialized = true;
 
