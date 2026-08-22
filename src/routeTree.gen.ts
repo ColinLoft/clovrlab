@@ -79,6 +79,7 @@ import { Route as HqProductInsightsRouteImport } from './routes/_hq.product.insi
 import { Route as HqProductFeedbackRouteImport } from './routes/_hq.product.feedback'
 import { Route as HqOpsSitrepRouteImport } from './routes/_hq.ops.sitrep'
 import { Route as HqOpsReadinessRouteImport } from './routes/_hq.ops.readiness'
+import { Route as HqOpsPagingRouteImport } from './routes/_hq.ops.paging'
 import { Route as HqOpsNetworkFleetRouteImport } from './routes/_hq.ops.network-fleet'
 import { Route as HqOpsMaintenanceRouteImport } from './routes/_hq.ops.maintenance'
 import { Route as HqOpsLiveMapRouteImport } from './routes/_hq.ops.live-map'
@@ -474,6 +475,11 @@ const HqOpsReadinessRoute = HqOpsReadinessRouteImport.update({
   path: '/ops/readiness',
   getParentRoute: () => HqRoute,
 } as any)
+const HqOpsPagingRoute = HqOpsPagingRouteImport.update({
+  id: '/ops/paging',
+  path: '/ops/paging',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqOpsNetworkFleetRoute = HqOpsNetworkFleetRouteImport.update({
   id: '/ops/network-fleet',
   path: '/ops/network-fleet',
@@ -797,6 +803,7 @@ export interface FileRoutesByFullPath {
   '/ops/live-map': typeof HqOpsLiveMapRoute
   '/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/ops/network-fleet': typeof HqOpsNetworkFleetRoute
+  '/ops/paging': typeof HqOpsPagingRoute
   '/ops/readiness': typeof HqOpsReadinessRoute
   '/ops/sitrep': typeof HqOpsSitrepRoute
   '/product/feedback': typeof HqProductFeedbackRoute
@@ -912,6 +919,7 @@ export interface FileRoutesByTo {
   '/ops/live-map': typeof HqOpsLiveMapRoute
   '/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/ops/network-fleet': typeof HqOpsNetworkFleetRoute
+  '/ops/paging': typeof HqOpsPagingRoute
   '/ops/readiness': typeof HqOpsReadinessRoute
   '/ops/sitrep': typeof HqOpsSitrepRoute
   '/product/feedback': typeof HqProductFeedbackRoute
@@ -1030,6 +1038,7 @@ export interface FileRoutesById {
   '/_hq/ops/live-map': typeof HqOpsLiveMapRoute
   '/_hq/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/_hq/ops/network-fleet': typeof HqOpsNetworkFleetRoute
+  '/_hq/ops/paging': typeof HqOpsPagingRoute
   '/_hq/ops/readiness': typeof HqOpsReadinessRoute
   '/_hq/ops/sitrep': typeof HqOpsSitrepRoute
   '/_hq/product/feedback': typeof HqProductFeedbackRoute
@@ -1148,6 +1157,7 @@ export interface FileRouteTypes {
     | '/ops/live-map'
     | '/ops/maintenance'
     | '/ops/network-fleet'
+    | '/ops/paging'
     | '/ops/readiness'
     | '/ops/sitrep'
     | '/product/feedback'
@@ -1263,6 +1273,7 @@ export interface FileRouteTypes {
     | '/ops/live-map'
     | '/ops/maintenance'
     | '/ops/network-fleet'
+    | '/ops/paging'
     | '/ops/readiness'
     | '/ops/sitrep'
     | '/product/feedback'
@@ -1380,6 +1391,7 @@ export interface FileRouteTypes {
     | '/_hq/ops/live-map'
     | '/_hq/ops/maintenance'
     | '/_hq/ops/network-fleet'
+    | '/_hq/ops/paging'
     | '/_hq/ops/readiness'
     | '/_hq/ops/sitrep'
     | '/_hq/product/feedback'
@@ -1920,6 +1932,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqOpsReadinessRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/ops/paging': {
+      id: '/_hq/ops/paging'
+      path: '/ops/paging'
+      fullPath: '/ops/paging'
+      preLoaderRoute: typeof HqOpsPagingRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/ops/network-fleet': {
       id: '/_hq/ops/network-fleet'
       path: '/ops/network-fleet'
@@ -2327,6 +2346,7 @@ interface HqRouteChildren {
   HqOpsLiveMapRoute: typeof HqOpsLiveMapRoute
   HqOpsMaintenanceRoute: typeof HqOpsMaintenanceRoute
   HqOpsNetworkFleetRoute: typeof HqOpsNetworkFleetRoute
+  HqOpsPagingRoute: typeof HqOpsPagingRoute
   HqOpsReadinessRoute: typeof HqOpsReadinessRoute
   HqOpsSitrepRoute: typeof HqOpsSitrepRoute
   HqProductFeedbackRoute: typeof HqProductFeedbackRoute
@@ -2418,6 +2438,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqOpsLiveMapRoute: HqOpsLiveMapRoute,
   HqOpsMaintenanceRoute: HqOpsMaintenanceRoute,
   HqOpsNetworkFleetRoute: HqOpsNetworkFleetRoute,
+  HqOpsPagingRoute: HqOpsPagingRoute,
   HqOpsReadinessRoute: HqOpsReadinessRoute,
   HqOpsSitrepRoute: HqOpsSitrepRoute,
   HqProductFeedbackRoute: HqProductFeedbackRoute,
