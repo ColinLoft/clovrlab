@@ -31,12 +31,15 @@ export async function fetchResponseArea(): Promise<ResponseArea | null> {
   return (data as unknown as ResponseArea) ?? null;
 }
 
-export async function saveResponseArea(patch: Partial<ResponseArea>) {
-  const { error } = await supabase
+export async function saveResponseArea(patch: Partial<ResponseArea>): Promise<ResponseArea> {
+  const { data, error } = await supabase
     .from("net_response_area")
-    .update(patch as never)
-    .eq("id", true);
+    .upsert({ id: true, ...patch } as never, { onConflict: "id" })
+    .select()
+    .maybeSingle();
   if (error) throw error;
+  if (!data) throw new Error("Nothing was saved — admin access is required to change the service area.");
+  return data as unknown as ResponseArea;
 }
 
 const norm = (v?: string | null) => (v ?? "").trim().toLowerCase().replace(/\s+county$/, "");
