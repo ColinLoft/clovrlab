@@ -202,6 +202,7 @@ function SettingsPage() {
               <ToggleRow label="Mentions & replies" value={prefs.notifyMentions} onChange={(v) => updatePref("notifyMentions", v)} />
               <ToggleRow label="Company announcements" value={prefs.notifyAnnouncements} onChange={(v) => updatePref("notifyAnnouncements", v)} />
               <ToggleRow label="Notification sound" value={prefs.soundOn} onChange={(v) => updatePref("soundOn", v)} />
+              <ToggleRow label="Pager alarm" hint="Loud repeating siren for urgent pages, even overnight." value={prefs.pagerSound} onChange={(v) => updatePref("pagerSound", v)} />
               <SelectRow
                 label="Email digest"
                 value={prefs.notifyDigest}

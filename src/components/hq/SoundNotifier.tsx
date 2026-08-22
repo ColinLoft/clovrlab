@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { playSound } from "@/lib/hq/sounds";
 import { bodyMentions } from "@/lib/hq/mentions";
+import { cachedPrefs } from "@/lib/hq/prefs";
 
 /**
  * Site-wide sound effects + browser notifications. Subscribes to realtime
@@ -25,6 +26,7 @@ export function SoundNotifier() {
     window.addEventListener("keydown", askPerm, { once: true });
 
     const showNotif = (title: string, body?: string) => {
+      if (!cachedPrefs().notifyDesktop) return;
       if (typeof Notification !== "undefined" && Notification.permission === "granted" && document.visibilityState !== "visible") {
         try { new Notification(title, { body: body?.slice(0, 200), silent: true }); } catch {}
       }
@@ -39,7 +41,7 @@ export function SoundNotifier() {
         .channel(`sfx:notif:${uid}`)
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${uid}` }, (p: any) => {
           const row = p.new || {};
-          playSound("notification");
+          if (cachedPrefs().soundOn) playSound("notification");
           showNotif(row.title || "New notification", row.body || undefined);
         })
         .subscribe();
@@ -50,7 +52,7 @@ export function SoundNotifier() {
           const row = p.new || {};
           if (row.sender_id === uid) return;
           if (row.recipient_id && row.recipient_id !== uid) return;
-          playSound("message");
+          if (cachedPrefs().soundOn) playSound("message");
         })
         .subscribe();
 
@@ -63,10 +65,11 @@ export function SoundNotifier() {
           const mentioned =
             (Array.isArray(row.mentions) && row.mentions.includes(uid)) ||
             bodyMentions(row.body, uid);
+          const sound = cachedPrefs().soundOn;
           if (mentioned) {
-            playSound("notification");
+            if (sound) playSound("notification");
             showNotif("You were mentioned", row.body);
-          } else {
+          } else if (sound) {
             playSound("message");
           }
         })
