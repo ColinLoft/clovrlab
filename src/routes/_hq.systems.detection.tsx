@@ -137,7 +137,132 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
   );
 }
 
+function Chips({ items, onRemove }: { items: string[]; onRemove: (v: string) => void }) {
+  if (!items.length) return <p className="text-xs text-muted-foreground">None yet — the whole network stays out of scope until you add one.</p>;
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {items.map((v) => (
+        <button key={v} type="button" onClick={() => onRemove(v)}
+          className="rounded-full border border-border px-2.5 py-1 text-xs hover:border-destructive hover:text-destructive">
+          {v} ×
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ChipInput({ placeholder, onAdd }: { placeholder: string; onAdd: (v: string) => void }) {
+  const [v, setV] = useState("");
+  const commit = () => { const t = v.trim(); if (t) { onAdd(t); setV(""); } };
+  return (
+    <div className="mt-2 flex gap-1.5">
+      <input value={v} onChange={(e) => setV(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commit(); } }}
+        placeholder={placeholder}
+        className="flex-1 rounded border border-border bg-background px-2 py-1 text-sm" />
+      <Btn onClick={commit}><Plus className="h-3.5 w-3.5" /> Add</Btn>
+    </div>
+  );
+}
+
+function AreaCard({ area, setArea, persist, saving }: {
+  area: ResponseArea | null; setArea: (v: ResponseArea | null) => void;
+  persist: (p: Partial<NetSettings>, a?: Partial<ResponseArea>) => Promise<void>;
+  saving: boolean;
+}) {
+  const [geo, setGeo] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [cams, setCams] = useState<Camera[] | null>(null);
+
+  useEffect(() => { fetchCameras().then(setCams).catch(() => setCams([])); }, []);
+
+  if (!area) return <Card title="Response area"><Loading /></Card>;
+
+  const mode = area.mode === "region" ? "region" : "address";
+  const states = area.states ?? [];
+  const counties = area.counties ?? [];
+  const inScope = (cams ?? []).filter((c) =>
+    inArea(area, { lat: Number(c.site.latitude), lng: Number(c.site.longitude), state: c.site.state, county: c.site.county })
+  ).length;
+
+  const lookup = async () => {
+    if (!area.address?.trim()) return;
+    setBusy(true); setGeo(null);
+    try {
+      const r = await geocode(area.address);
+      if (!r) { setGeo("No match found — try a fuller address."); return; }
+      setArea({ ...area, address: r.display_name, center_lat: r.lat, center_lng: r.lng });
+      setGeo(`Matched: ${r.display_name}`);
+    } finally { setBusy(false); }
+  };
+
+  return (
+    <Card title="Service area" hint="The only ground we monitor. Cameras, hazards and sweeps outside it are ignored.">
+      <Row label="Area type" hint="Address radius for a single customer site, or named regions for county/state contracts">
+        <Select
+          value={mode}
+          onChange={(v) => setArea({ ...area, mode: v as ResponseArea["mode"] })}
+          options={[
+            { value: "address", label: "Address + radius" },
+            { value: "region", label: "Specific counties / states" },
+          ]}
+          className="w-56"
+        />
+      </Row>
+
+      {mode === "address" ? (
+        <>
+          <Row label="Address or place" hint="Search to set the centre point automatically">
+            <span className="flex gap-1.5">
+              <input value={area.address ?? ""} onChange={(e) => setArea({ ...area, address: e.target.value })}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void lookup(); } }}
+                className="w-60 rounded border border-border bg-background px-2 py-1 text-sm" placeholder="1200 K St, Sacramento, CA" />
+              <Btn onClick={lookup} disabled={busy}><Search className="h-3.5 w-3.5" /> {busy ? "Finding…" : "Find"}</Btn>
+            </span>
+          </Row>
+          {geo && <p className="pb-2 text-xs text-muted-foreground">{geo}</p>}
+          <Row label="Centre latitude"><Num value={Number(area.center_lat ?? 0)} onChange={(v) => setArea({ ...area, center_lat: v })} width="w-32" /></Row>
+          <Row label="Centre longitude"><Num value={Number(area.center_lng ?? 0)} onChange={(v) => setArea({ ...area, center_lng: v })} width="w-32" /></Row>
+          <Row label="Radius" hint="0 means the whole camera network is in scope">
+            <Num value={Number(area.radius_mi ?? 0)} onChange={(v) => setArea({ ...area, radius_mi: v })} suffix="mi" />
+          </Row>
+        </>
+      ) : (
+        <div className="space-y-4 py-3">
+          <div>
+            <p className="text-sm font-medium">States</p>
+            <p className="mb-2 text-xs text-muted-foreground">Two-letter codes as the camera network reports them, e.g. CA.</p>
+            <Chips items={states} onRemove={(v) => setArea({ ...area, states: states.filter((x) => x !== v) })} />
+            <ChipInput placeholder="CA" onAdd={(v) => setArea({ ...area, states: Array.from(new Set([...states, v.toUpperCase()])) })} />
+          </div>
+          <div>
+            <p className="text-sm font-medium">Counties</p>
+            <p className="mb-2 text-xs text-muted-foreground">Leave empty to cover every county in the listed states.</p>
+            <Chips items={counties} onRemove={(v) => setArea({ ...area, counties: counties.filter((x) => x !== v) })} />
+            <ChipInput placeholder="El Dorado" onAdd={(v) => setArea({ ...area, counties: Array.from(new Set([...counties, v])) })} />
+          </div>
+        </div>
+      )}
+
+      <div className="flex items-center gap-3 pt-3">
+        <Btn variant="primary" disabled={saving}
+          onClick={() => persist({}, {
+            mode: area.mode, address: area.address,
+            center_lat: area.center_lat, center_lng: area.center_lng, radius_mi: area.radius_mi,
+            states, counties,
+          })}>
+          <Save className="h-3.5 w-3.5" /> Save service area
+        </Btn>
+        <span className="text-xs text-muted-foreground">
+          {cams === null ? "Counting cameras…" : `${inScope} of ${cams.length} cameras in scope`}
+        </span>
+      </div>
+    </Card>
+  );
+}
+
 /* ---------- tabs ---------- */
+
 
 function AiTab({ s, setS, area, setArea, persist, saving, runs }: {
   s: NetSettings; setS: (v: NetSettings) => void;
