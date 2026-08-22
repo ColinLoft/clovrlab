@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { fetchCameras } from "@/lib/net/alertwest";
-import { haversineMi } from "@/lib/net/area";
+import { inArea } from "@/lib/net/area";
 
 /**
  * Scheduled AI camera sweep. Called by pg_cron.
