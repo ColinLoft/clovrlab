@@ -148,27 +148,8 @@ function AiTab({ s, setS, area, setArea, persist, saving, runs }: {
   return (
     <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
       <div className="space-y-4">
-        <Card title="Response area" hint="Only cameras and hazards inside this circle are screened">
-          <Row label="Reference address" hint="Free text — used as a label for the centre point">
-            <input value={area?.address ?? ""} onChange={(e) => area && setArea({ ...area, address: e.target.value })}
-              className="w-64 rounded border border-border bg-background px-2 py-1 text-sm" placeholder="Sacramento, CA" />
-          </Row>
-          <Row label="Centre latitude">
-            <Num value={Number(area?.center_lat ?? 0)} onChange={(v) => area && setArea({ ...area, center_lat: v })} width="w-32" />
-          </Row>
-          <Row label="Centre longitude">
-            <Num value={Number(area?.center_lng ?? 0)} onChange={(v) => area && setArea({ ...area, center_lng: v })} width="w-32" />
-          </Row>
-          <Row label="Radius" hint="0 means the whole camera network is in scope">
-            <Num value={Number(area?.radius_mi ?? 0)} onChange={(v) => area && setArea({ ...area, radius_mi: v })} suffix="mi" />
-          </Row>
-          <div className="pt-3">
-            <Btn variant="primary" disabled={saving || !area}
-              onClick={() => persist({}, { address: area!.address, center_lat: area!.center_lat, center_lng: area!.center_lng, radius_mi: area!.radius_mi })}>
-              <Save className="h-3.5 w-3.5" /> Save response area
-            </Btn>
-          </div>
-        </Card>
+        <AreaCard area={area} setArea={setArea} persist={persist} saving={saving} />
+
 
         <Card title="AI triage" hint="How camera frames are screened before a human sees them">
           <Row label="Vision model">
