@@ -79,6 +79,7 @@ import { Route as HqProductInsightsRouteImport } from './routes/_hq.product.insi
 import { Route as HqProductFeedbackRouteImport } from './routes/_hq.product.feedback'
 import { Route as HqOpsSitrepRouteImport } from './routes/_hq.ops.sitrep'
 import { Route as HqOpsReadinessRouteImport } from './routes/_hq.ops.readiness'
+import { Route as HqOpsPagingRouteImport } from './routes/_hq.ops.paging'
 import { Route as HqOpsNetworkFleetRouteImport } from './routes/_hq.ops.network-fleet'
 import { Route as HqOpsMaintenanceRouteImport } from './routes/_hq.ops.maintenance'
 import { Route as HqOpsLiveMapRouteImport } from './routes/_hq.ops.live-map'
@@ -124,6 +125,7 @@ import { Route as HqAdminAppsRouteImport } from './routes/_hq.admin.apps'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicNetSweepRouteImport } from './routes/api/public/net/sweep'
+import { Route as ApiPublicNetPageEmailRouteImport } from './routes/api/public/net/page-email'
 
 const WorkspacesRoute = WorkspacesRouteImport.update({
   id: '/workspaces',
@@ -474,6 +476,11 @@ const HqOpsReadinessRoute = HqOpsReadinessRouteImport.update({
   path: '/ops/readiness',
   getParentRoute: () => HqRoute,
 } as any)
+const HqOpsPagingRoute = HqOpsPagingRouteImport.update({
+  id: '/ops/paging',
+  path: '/ops/paging',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqOpsNetworkFleetRoute = HqOpsNetworkFleetRouteImport.update({
   id: '/ops/network-fleet',
   path: '/ops/network-fleet',
@@ -699,6 +706,11 @@ const ApiPublicNetSweepRoute = ApiPublicNetSweepRouteImport.update({
   path: '/api/public/net/sweep',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicNetPageEmailRoute = ApiPublicNetPageEmailRouteImport.update({
+  id: '/api/public/net/page-email',
+  path: '/api/public/net/page-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -797,6 +809,7 @@ export interface FileRoutesByFullPath {
   '/ops/live-map': typeof HqOpsLiveMapRoute
   '/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/ops/network-fleet': typeof HqOpsNetworkFleetRoute
+  '/ops/paging': typeof HqOpsPagingRoute
   '/ops/readiness': typeof HqOpsReadinessRoute
   '/ops/sitrep': typeof HqOpsSitrepRoute
   '/product/feedback': typeof HqProductFeedbackRoute
@@ -812,6 +825,7 @@ export interface FileRoutesByFullPath {
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/teams/': typeof HqTeamsIndexRoute
+  '/api/public/net/page-email': typeof ApiPublicNetPageEmailRoute
   '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -912,6 +926,7 @@ export interface FileRoutesByTo {
   '/ops/live-map': typeof HqOpsLiveMapRoute
   '/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/ops/network-fleet': typeof HqOpsNetworkFleetRoute
+  '/ops/paging': typeof HqOpsPagingRoute
   '/ops/readiness': typeof HqOpsReadinessRoute
   '/ops/sitrep': typeof HqOpsSitrepRoute
   '/product/feedback': typeof HqProductFeedbackRoute
@@ -927,6 +942,7 @@ export interface FileRoutesByTo {
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/teams': typeof HqTeamsIndexRoute
+  '/api/public/net/page-email': typeof ApiPublicNetPageEmailRoute
   '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -1030,6 +1046,7 @@ export interface FileRoutesById {
   '/_hq/ops/live-map': typeof HqOpsLiveMapRoute
   '/_hq/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/_hq/ops/network-fleet': typeof HqOpsNetworkFleetRoute
+  '/_hq/ops/paging': typeof HqOpsPagingRoute
   '/_hq/ops/readiness': typeof HqOpsReadinessRoute
   '/_hq/ops/sitrep': typeof HqOpsSitrepRoute
   '/_hq/product/feedback': typeof HqProductFeedbackRoute
@@ -1045,6 +1062,7 @@ export interface FileRoutesById {
   '/_hq/systems/services': typeof HqSystemsServicesRoute
   '/_hq/teams/$slug': typeof HqTeamsSlugRoute
   '/_hq/teams/': typeof HqTeamsIndexRoute
+  '/api/public/net/page-email': typeof ApiPublicNetPageEmailRoute
   '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -1148,6 +1166,7 @@ export interface FileRouteTypes {
     | '/ops/live-map'
     | '/ops/maintenance'
     | '/ops/network-fleet'
+    | '/ops/paging'
     | '/ops/readiness'
     | '/ops/sitrep'
     | '/product/feedback'
@@ -1163,6 +1182,7 @@ export interface FileRouteTypes {
     | '/systems/services'
     | '/teams/$slug'
     | '/teams/'
+    | '/api/public/net/page-email'
     | '/api/public/net/sweep'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -1263,6 +1283,7 @@ export interface FileRouteTypes {
     | '/ops/live-map'
     | '/ops/maintenance'
     | '/ops/network-fleet'
+    | '/ops/paging'
     | '/ops/readiness'
     | '/ops/sitrep'
     | '/product/feedback'
@@ -1278,6 +1299,7 @@ export interface FileRouteTypes {
     | '/systems/services'
     | '/teams/$slug'
     | '/teams'
+    | '/api/public/net/page-email'
     | '/api/public/net/sweep'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -1380,6 +1402,7 @@ export interface FileRouteTypes {
     | '/_hq/ops/live-map'
     | '/_hq/ops/maintenance'
     | '/_hq/ops/network-fleet'
+    | '/_hq/ops/paging'
     | '/_hq/ops/readiness'
     | '/_hq/ops/sitrep'
     | '/_hq/product/feedback'
@@ -1395,6 +1418,7 @@ export interface FileRouteTypes {
     | '/_hq/systems/services'
     | '/_hq/teams/$slug'
     | '/_hq/teams/'
+    | '/api/public/net/page-email'
     | '/api/public/net/sweep'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -1423,6 +1447,7 @@ export interface RootRouteChildren {
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   MeetingIdRoute: typeof MeetingIdRoute
+  ApiPublicNetPageEmailRoute: typeof ApiPublicNetPageEmailRoute
   ApiPublicNetSweepRoute: typeof ApiPublicNetSweepRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -1920,6 +1945,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqOpsReadinessRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/ops/paging': {
+      id: '/_hq/ops/paging'
+      path: '/ops/paging'
+      fullPath: '/ops/paging'
+      preLoaderRoute: typeof HqOpsPagingRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/ops/network-fleet': {
       id: '/_hq/ops/network-fleet'
       path: '/ops/network-fleet'
@@ -2235,6 +2267,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNetSweepRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/net/page-email': {
+      id: '/api/public/net/page-email'
+      path: '/api/public/net/page-email'
+      fullPath: '/api/public/net/page-email'
+      preLoaderRoute: typeof ApiPublicNetPageEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -2327,6 +2366,7 @@ interface HqRouteChildren {
   HqOpsLiveMapRoute: typeof HqOpsLiveMapRoute
   HqOpsMaintenanceRoute: typeof HqOpsMaintenanceRoute
   HqOpsNetworkFleetRoute: typeof HqOpsNetworkFleetRoute
+  HqOpsPagingRoute: typeof HqOpsPagingRoute
   HqOpsReadinessRoute: typeof HqOpsReadinessRoute
   HqOpsSitrepRoute: typeof HqOpsSitrepRoute
   HqProductFeedbackRoute: typeof HqProductFeedbackRoute
@@ -2418,6 +2458,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqOpsLiveMapRoute: HqOpsLiveMapRoute,
   HqOpsMaintenanceRoute: HqOpsMaintenanceRoute,
   HqOpsNetworkFleetRoute: HqOpsNetworkFleetRoute,
+  HqOpsPagingRoute: HqOpsPagingRoute,
   HqOpsReadinessRoute: HqOpsReadinessRoute,
   HqOpsSitrepRoute: HqOpsSitrepRoute,
   HqProductFeedbackRoute: HqProductFeedbackRoute,
@@ -2458,6 +2499,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   MeetingIdRoute: MeetingIdRoute,
+  ApiPublicNetPageEmailRoute: ApiPublicNetPageEmailRoute,
   ApiPublicNetSweepRoute: ApiPublicNetSweepRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User as UserIcon, Settings as SettingsIcon, Bell, Palette, Shield, Globe, LogOut } from "lucide-react";
 import { useHQTheme, type HQTheme } from "@/lib/hq/theme";
+import { applyPrefs, cachedPrefs, loadPrefs, savePrefs, type Prefs } from "@/lib/hq/prefs";
 
 export const Route = createFileRoute("/_hq/settings")({
   head: () => ({ meta: [{ title: "Settings — Clovr HQ" }, { name: "robots", content: "noindex" }] }),
@@ -11,66 +12,14 @@ export const Route = createFileRoute("/_hq/settings")({
 
 type Section = "profile" | "appearance" | "notifications" | "security" | "preferences";
 
-const PREF_KEY = "hq-prefs";
-
-type Prefs = {
-  density: "comfortable" | "compact";
-  accent: "orange" | "blue" | "green" | "violet";
-  language: "en" | "es" | "fr" | "de";
-  timezone: string;
-  timeFormat: "12h" | "24h";
-  weekStart: "sunday" | "monday";
-  notifyEmail: boolean;
-  notifyDesktop: boolean;
-  notifyMentions: boolean;
-  notifyAnnouncements: boolean;
-  notifyDigest: "off" | "daily" | "weekly";
-  soundOn: boolean;
-  sidebarCollapsed: boolean;
-  showKeyboardHints: boolean;
-  betaFeatures: boolean;
-};
-
-const DEFAULT_PREFS: Prefs = {
-  density: "comfortable",
-  accent: "orange",
-  language: "en",
-  timezone: "America/New_York",
-  timeFormat: "12h",
-  weekStart: "sunday",
-  notifyEmail: true,
-  notifyDesktop: true,
-  notifyMentions: true,
-  notifyAnnouncements: true,
-  notifyDigest: "daily",
-  soundOn: true,
-  sidebarCollapsed: false,
-  showKeyboardHints: true,
-  betaFeatures: false,
-};
-
-function loadPrefs(): Prefs {
-  if (typeof window === "undefined") return DEFAULT_PREFS;
-  try {
-    const raw = window.localStorage.getItem(PREF_KEY);
-    return raw ? { ...DEFAULT_PREFS, ...JSON.parse(raw) } : DEFAULT_PREFS;
-  } catch {
-    return DEFAULT_PREFS;
-  }
-}
-
-function savePrefs(p: Prefs) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(PREF_KEY, JSON.stringify(p));
-}
-
 function SettingsPage() {
   const [section, setSection] = useState<Section>("profile");
   const [profile, setProfile] = useState<any>(null);
   const [roles, setRoles] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
-  const [prefs, setPrefs] = useState<Prefs>(() => loadPrefs());
+  const [prefs, setPrefs] = useState<Prefs>(() => cachedPrefs());
+  const [prefMsg, setPrefMsg] = useState<string | null>(null);
   const { theme, setTheme } = useHQTheme();
 
   useEffect(() => {
@@ -84,10 +33,19 @@ function SettingsPage() {
     })();
   }, []);
 
+  useEffect(() => {
+    loadPrefs().then((p) => { setPrefs(p); applyPrefs(p); }).catch(() => {});
+  }, []);
+
   const updatePref = <K extends keyof Prefs>(k: K, v: Prefs[K]) => {
     const next = { ...prefs, [k]: v };
     setPrefs(next);
-    savePrefs(next);
+    applyPrefs(next);
+    setPrefMsg("Saving…");
+    savePrefs(next)
+      .then(() => setPrefMsg("Saved to your account"))
+      .catch((e) => setPrefMsg(e.message))
+      .finally(() => setTimeout(() => setPrefMsg(null), 2500));
   };
 
   const saveProfile = async () => {
@@ -153,6 +111,9 @@ function SettingsPage() {
         </nav>
 
         <div className="min-w-0">
+          {prefMsg && (
+            <p className="mb-3 rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">{prefMsg}</p>
+          )}
           {section === "profile" && profile && (
             <Card title="Your profile" description={`Signed in as ${profile.email}`}>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -241,6 +202,7 @@ function SettingsPage() {
               <ToggleRow label="Mentions & replies" value={prefs.notifyMentions} onChange={(v) => updatePref("notifyMentions", v)} />
               <ToggleRow label="Company announcements" value={prefs.notifyAnnouncements} onChange={(v) => updatePref("notifyAnnouncements", v)} />
               <ToggleRow label="Notification sound" value={prefs.soundOn} onChange={(v) => updatePref("soundOn", v)} />
+              <ToggleRow label="Pager alarm" hint="Loud repeating siren for urgent pages, even overnight." value={prefs.pagerSound} onChange={(v) => updatePref("pagerSound", v)} />
               <SelectRow
                 label="Email digest"
                 value={prefs.notifyDigest}

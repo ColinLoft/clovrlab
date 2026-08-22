@@ -9,7 +9,7 @@ import {
   ServerCog, LifeBuoy, Network, Target, HeartHandshake, FileSignature, Coins,
   Gauge, ScrollText, IdCard, UserSearch, GraduationCap, Clock, CalendarDays, Award, Star,
   Building2, BarChart3, Settings, Grip, ArrowLeftRight, Landmark, Receipt, FileBarChart,
-  BookOpen, ShoppingCart,
+  BookOpen, ShoppingCart, BellRing,
 } from "lucide-react";
 
 export type AppNavItem = { label: string; to: string; icon: any; badge?: string };
@@ -64,6 +64,7 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
         { label: "Situation Report", to: "/ops/sitrep", icon: ScrollText },
         { label: "Coverage Map", to: "/ops/coverage", icon: MapIcon },
         { label: "Maintenance", to: "/ops/maintenance", icon: Wrench },
+        { label: "Paging & On-Call", to: "/ops/paging", icon: BellRing },
       ],
     },
     handoffs,
@@ -126,6 +127,7 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
         { label: "Support Desk", to: "/systems/helpdesk", icon: LifeBuoy },
         { label: "Access & Identity", to: "/systems/access", icon: ShieldCheck },
         { label: "Application Register", to: "/systems/assets", icon: Boxes },
+        { label: "Paging & On-Call", to: "/ops/paging", icon: BellRing },
         { label: "Systems Console", to: "/admin/it", icon: ServerCog },
         { label: "Slack Admin", to: "/admin/slack", icon: Grip },
       ],

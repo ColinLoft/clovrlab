@@ -66,7 +66,29 @@ export function playIncomingRing() {
   cycle();
 }
 
-export function stopSound(name: "ringback" | "incoming" | string) {
+/**
+ * Loud, urgent two-tone siren for pages. Deliberately harsh and loud enough
+ * to wake an on-call operator. Runs until stopSound("siren") is called.
+ */
+export function playSiren() {
+  stopSound("siren");
+  const a = ac(); if (!a) return;
+  let cancelled = false;
+  const cycle = () => {
+    if (cancelled) return;
+    tone(880, 0.42, { gain: 0.5, type: "square", attack: 0.005, release: 0.02 });
+    tone(660, 0.42, { gain: 0.5, type: "square", delay: 0.44, attack: 0.005, release: 0.02 });
+    tone(1180, 0.3, { gain: 0.32, type: "sawtooth", delay: 0.9, attack: 0.005, release: 0.02 });
+    const id = window.setTimeout(cycle, 1400);
+    loops.set("siren", { stop: () => { cancelled = true; clearTimeout(id); } });
+  };
+  cycle();
+  if (typeof navigator !== "undefined" && navigator.vibrate) {
+    try { navigator.vibrate([400, 200, 400, 200, 400]); } catch {}
+  }
+}
+
+export function stopSound(name: "ringback" | "incoming" | "siren" | string) {
   const l = loops.get(name);
   if (l) { l.stop(); loops.delete(name); }
 }
