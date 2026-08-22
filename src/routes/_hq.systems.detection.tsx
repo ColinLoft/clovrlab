@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Cpu, MapPin, Plane, Camera as CameraIcon, Radio, Save, PlayCircle, PauseCircle, History } from "lucide-react";
+import { Cpu, MapPin, Plane, Camera as CameraIcon, Radio, Save, PlayCircle, PauseCircle, History, Plus, Search } from "lucide-react";
 import {
   WorkPage, Card, Btn, Pill, Empty, Loading, Stat, StatRow, Select, Toolbar,
   NewButton, RecordDialog, useRows, statusTone, dt, type Field,
@@ -8,6 +8,7 @@ import {
 import { fetchSettings, saveSettings, fetchSweepRuns, fetchCameraPrefs, saveCameraPref, AI_MODELS, type NetSettings, type SweepRun, type CameraPref } from "@/lib/net/settings";
 import { fetchResponseArea, saveResponseArea, inArea, type ResponseArea } from "@/lib/net/area";
 import { fetchCameras, getStatus, type Camera } from "@/lib/net/alertwest";
+import { geocode } from "@/lib/net/geo";
 
 export const Route = createFileRoute("/_hq/systems/detection")({
   head: () => ({
@@ -81,7 +82,7 @@ function DetectionSettings() {
         <Stat label="Scheduled sweeps" value={s.sweep_enabled ? `Every ${s.sweep_interval_hours}h` : "Off"} icon={History} tone={s.sweep_enabled ? "good" : "default"} />
         <Stat label="Last sweep" value={s.last_sweep_at ? dt(s.last_sweep_at) : "Never"} />
         <Stat label="Automation" value={s.paused ? "Paused" : "Active"} tone={s.paused ? "risk" : "good"} hint={s.pause_reason ?? undefined} />
-        <Stat label="Watch radius" value={area ? `${Math.round(Number(area.radius_mi))} mi` : "—"} icon={MapPin} />
+        <Stat label="Service area" value={area ? (area.mode === "region" ? `${(area.states ?? []).length + (area.counties ?? []).length} regions` : `${Math.round(Number(area.radius_mi))} mi radius`) : "—"} icon={MapPin} hint={area?.mode === "region" ? [...(area.counties ?? []), ...(area.states ?? [])].join(", ") || undefined : area?.address ?? undefined} />
       </StatRow>
 
       <div className="mt-5 flex flex-wrap gap-1.5 border-b border-border pb-2">
@@ -361,7 +362,7 @@ function CamerasTab({ area }: { area: ResponseArea | null }) {
   }, []);
 
   const list = useMemo(() => {
-    const inside = cameras.filter((c) => inArea(area, { lat: Number(c.site.latitude), lng: Number(c.site.longitude) }));
+    const inside = cameras.filter((c) => inArea(area, { lat: Number(c.site.latitude), lng: Number(c.site.longitude), state: c.site.state, county: c.site.county }));
     const s = q.toLowerCase();
     const filtered = s ? inside.filter((c) => `${c.name} ${c.site.county ?? ""} ${c.site.state ?? ""}`.toLowerCase().includes(s)) : inside;
     return filtered

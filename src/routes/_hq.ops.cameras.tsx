@@ -79,7 +79,7 @@ function CamerasPage() {
   }, [refreshSec]);
 
   const inRange = useMemo(
-    () => cameras.filter((c) => inArea(area, { lat: Number(c.site.latitude), lng: Number(c.site.longitude) })),
+    () => cameras.filter((c) => inArea(area, { lat: Number(c.site.latitude), lng: Number(c.site.longitude), state: c.site.state, county: c.site.county })),
     [cameras, area],
   );
 
