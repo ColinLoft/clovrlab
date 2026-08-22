@@ -61,7 +61,7 @@ export async function analyzeOne(input: CameraInput, apiKey: string, model: stri
           role: "user",
           content: [
             { type: "text", text: `Camera ${input.camera_name} at ${input.lat.toFixed(3)}, ${input.lng.toFixed(3)}. Analyze for smoke or fire.` },
-            { type: "image_url", image_url: { url: input.image_url } },
+            { type: "image_url", image_url: { url: inlineImage } },
           ],
         },
       ],
