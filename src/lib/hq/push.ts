@@ -1,129 +1,99 @@
-import OneSignal from "react-onesignal";
 import { supabase } from "@/integrations/supabase/client";
 
 /**
- * OneSignal push notifications (web + iOS/Android home-screen PWA).
+ * ntfy.sh push notifications for on-call paging.
  *
- * The signed-in HQ user id is used as the OneSignal external id, so the
- * paging backend can push to a specific on-call operator by user id.
+ * Every operator gets a private, hard-to-guess topic. They subscribe to it in
+ * the ntfy app (iOS / Android) or the ntfy web app, and the paging worker
+ * publishes urgent pages straight to that topic.
  */
-export const ONESIGNAL_APP_ID = "496b911f-703d-49f4-a680-ad8bc42ed89e";
+export const NTFY_SERVER = "https://ntfy.sh";
 
-let initPromise: Promise<boolean> | null = null;
-let initialized = false;
-
-export function pushReady() {
-  return initialized;
+export function topicUrl(topic: string) {
+  return `${NTFY_SERVER}/${topic}`;
 }
 
-export function pushSupported() {
-  return (
-    typeof window !== "undefined" &&
-    "serviceWorker" in navigator &&
-    "PushManager" in window &&
-    "Notification" in window
-  );
+/** Deep link that opens the ntfy mobile app straight on the subscribe screen. */
+export function topicAppLink(topic: string) {
+  return `ntfy://ntfy.sh/${topic}`;
 }
 
-/** True once iOS users have installed the app to the home screen. */
-export function isStandalone() {
-  if (typeof window === "undefined") return false;
-  return (
-    window.matchMedia?.("(display-mode: standalone)").matches ||
-    (window.navigator as any).standalone === true
-  );
+function randomTopic() {
+  const bytes = new Uint8Array(12);
+  (globalThis.crypto ?? window.crypto).getRandomValues(bytes);
+  const suffix = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  return `clovr-oncall-${suffix}`;
+}
+
+/** Read this operator's topic, if they already have one. */
+export async function getMyTopic(): Promise<string | null> {
+  const { data: auth } = await supabase.auth.getUser();
+  const uid = auth.user?.id;
+  if (!uid) return null;
+  const { data } = await (supabase as any)
+    .from("push_topics")
+    .select("topic")
+    .eq("user_id", uid)
+    .maybeSingle();
+  return (data?.topic as string) ?? null;
+}
+
+/** Read or create this operator's topic. */
+export async function ensureMyTopic(): Promise<string | null> {
+  const existing = await getMyTopic();
+  if (existing) return existing;
+
+  const { data: auth } = await supabase.auth.getUser();
+  const uid = auth.user?.id;
+  if (!uid) return null;
+
+  const topic = randomTopic();
+  const { data, error } = await (supabase as any)
+    .from("push_topics")
+    .upsert({ user_id: uid, topic }, { onConflict: "user_id" })
+    .select("topic")
+    .maybeSingle();
+  if (error) throw error;
+  return (data?.topic as string) ?? topic;
+}
+
+/** Issue a brand new topic (old subscriptions stop receiving pages). */
+export async function rotateMyTopic(): Promise<string | null> {
+  const { data: auth } = await supabase.auth.getUser();
+  const uid = auth.user?.id;
+  if (!uid) return null;
+  const topic = randomTopic();
+  const { error } = await (supabase as any)
+    .from("push_topics")
+    .upsert({ user_id: uid, topic }, { onConflict: "user_id" });
+  if (error) throw error;
+  return topic;
+}
+
+/** Stop receiving pushes: delete the topic mapping. */
+export async function clearMyTopic() {
+  const { data: auth } = await supabase.auth.getUser();
+  const uid = auth.user?.id;
+  if (!uid) return;
+  await (supabase as any).from("push_topics").delete().eq("user_id", uid);
+}
+
+/** Publish a test page to the operator's own topic. */
+export async function sendTestPush(topic: string) {
+  const res = await fetch(topicUrl(topic), {
+    method: "POST",
+    headers: {
+      Title: "Test page - Clovr Labs",
+      Priority: "5",
+      Tags: "rotating_light",
+    },
+    body: "If you can see this, on-call push is working on this device.",
+  });
+  if (!res.ok) throw new Error(`ntfy ${res.status}`);
 }
 
 export function isIOS() {
   if (typeof navigator === "undefined") return false;
   return /iP(hone|ad|od)/.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && (navigator as any).maxTouchPoints > 1);
-}
-
-/** Initialise the SDK once per page load and bind the current user. */
-export async function initPush(): Promise<boolean> {
-  if (typeof window === "undefined" || !pushSupported()) return false;
-  if (initPromise) return initPromise;
-
-  initPromise = (async () => {
-    try {
-      await OneSignal.init({
-        appId: ONESIGNAL_APP_ID,
-        allowLocalhostAsSecureOrigin: true,
-        // We drive the permission request ourselves from the alert settings UI.
-        autoResume: true,
-        notifyButton: { enable: false } as any,
-      });
-      initialized = true;
-
-      const { data } = await supabase.auth.getUser();
-      const uid = data.user?.id;
-      if (uid) {
-        try { await OneSignal.login(uid); } catch {}
-        if (data.user?.email) {
-          try { OneSignal.User.addAlias("email_addr", data.user.email); } catch {}
-        }
-      }
-      return true;
-    } catch {
-      initialized = false;
-      return false;
-    }
-  })();
-
-  return initPromise;
-}
-
-/** Ask the browser for notification permission and opt the device in. */
-export async function enablePush(): Promise<{ ok: boolean; reason?: string }> {
-  if (!pushSupported()) return { ok: false, reason: "This browser can't receive push notifications." };
-  if (isIOS() && !isStandalone()) {
-    return {
-      ok: false,
-      reason: "On iPhone, open Share → Add to Home Screen, then turn push on from the installed app.",
-    };
-  }
-  const ready = await initPush();
-  if (!ready) return { ok: false, reason: "Push service failed to load." };
-
-  try {
-    await OneSignal.Notifications.requestPermission();
-  } catch {
-    /* user dismissed */
-  }
-  if (!OneSignal.Notifications.permission) {
-    return { ok: false, reason: "Notification permission was not granted." };
-  }
-  try { await OneSignal.User.PushSubscription.optIn(); } catch {}
-  return { ok: true };
-}
-
-export async function disablePush() {
-  if (!initialized) return;
-  try { await OneSignal.User.PushSubscription.optOut(); } catch {}
-}
-
-/** Tag the device with which paging queues it should receive. */
-export async function setPushQueues(queues: string[]) {
-  if (!initialized) return;
-  try {
-    OneSignal.User.addTags({
-      queue_ops: queues.includes("ops") ? "1" : "0",
-      queue_systems: queues.includes("systems") ? "1" : "0",
-    });
-  } catch {}
-}
-
-export function pushStatus() {
-  if (!initialized) return { subscribed: false, permission: false, id: null as string | null };
-  return {
-    subscribed: !!OneSignal.User?.PushSubscription?.optedIn,
-    permission: !!OneSignal.Notifications?.permission,
-    id: OneSignal.User?.PushSubscription?.id ?? null,
-  };
-}
-
-export async function logoutPush() {
-  if (!initialized) return;
-  try { await OneSignal.logout(); } catch {}
 }
