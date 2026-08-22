@@ -8384,32 +8384,19 @@ export type Database = {
         Returns: undefined
       }
       onboarding_invite_check: { Args: { _email: string }; Returns: Json }
-      raise_page:
-        | {
-            Args: {
-              _body?: string
-              _kind: string
-              _link?: string
-              _severity?: string
-              _source_id?: string
-              _source_table?: string
-              _title: string
-            }
-            Returns: string
-          }
-        | {
-            Args: {
-              _body?: string
-              _kind: string
-              _link?: string
-              _queue?: string
-              _severity?: string
-              _source_id?: string
-              _source_table?: string
-              _title: string
-            }
-            Returns: string
-          }
+      raise_page: {
+        Args: {
+          _body?: string
+          _kind: string
+          _link?: string
+          _queue?: string
+          _severity?: string
+          _source_id?: string
+          _source_table?: string
+          _title: string
+        }
+        Returns: string
+      }
       resolve_page: { Args: { _alert_id: string }; Returns: undefined }
     }
     Enums: {

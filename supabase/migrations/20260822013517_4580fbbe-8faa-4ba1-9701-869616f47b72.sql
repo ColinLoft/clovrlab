@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.raise_page(text,text,text,text,text,text,uuid);
