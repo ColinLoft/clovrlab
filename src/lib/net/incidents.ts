@@ -144,4 +144,10 @@ export async function updateIncidentStatus(id: string, status: IncidentStatus) {
     event_type: "status_change",
     message: `Status → ${status}`,
   });
+  await logDetectionEvent({
+    kind: "incident_status",
+    incident_id: id,
+    message: `Operator set incident status to ${STATUS_META[status]?.label ?? status}`,
+  });
 }
+
