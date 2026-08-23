@@ -213,15 +213,20 @@ function AreaCard({ area, setArea, persist, saving }: {
 
       {mode === "address" ? (
         <>
-          <Row label="Address or place" hint="Search to set the centre point automatically">
-            <span className="flex gap-1.5">
-              <input value={area.address ?? ""} onChange={(e) => setArea({ ...area, address: e.target.value })}
-                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void lookup(); } }}
-                className="w-60 rounded border border-border bg-background px-2 py-1 text-sm" placeholder="1200 K St, Sacramento, CA" />
-              <Btn onClick={lookup} disabled={busy}><Search className="h-3.5 w-3.5" /> {busy ? "Finding…" : "Find"}</Btn>
-            </span>
+          <Row label="Address or place" hint="Start typing — pick a suggestion to set the centre point exactly">
+            <AddressAutocomplete
+              value={area.address ?? ""}
+              busy={busy}
+              onText={(v) => setArea({ ...area, address: v })}
+              onPick={(sug) => {
+                setArea({ ...area, address: sug.display_name, center_lat: sug.lat, center_lng: sug.lng });
+                setGeo(`Matched: ${sug.display_name}`);
+              }}
+              onLookup={lookup}
+            />
           </Row>
           {geo && <p className="pb-2 text-xs text-muted-foreground">{geo}</p>}
+
           <Row label="Centre latitude"><Num value={Number(area.center_lat ?? 0)} onChange={(v) => setArea({ ...area, center_lat: v })} width="w-32" /></Row>
           <Row label="Centre longitude"><Num value={Number(area.center_lng ?? 0)} onChange={(v) => setArea({ ...area, center_lng: v })} width="w-32" /></Row>
           <Row label="Radius" hint="0 means the whole camera network is in scope">
