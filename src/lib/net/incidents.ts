@@ -27,9 +27,47 @@ export interface IncidentRow {
   acked_by: string | null;
   acked_at: string | null;
   suggestion_id: string | null;
+  camera_id: string | null;
+  camera_name: string | null;
+  snapshot_url: string | null;
+  high_risk: boolean;
+  assigned_to: string | null;
+  assigned_at: string | null;
+  resolution: string | null;
+  resolution_notes: string | null;
+  resolved_at: string | null;
+  resolved_by: string | null;
+  closed_at: string | null;
+  closed_by: string | null;
+  review_cause: string | null;
+  review_actions: string | null;
+  review_lessons: string | null;
+  review_completed_at: string | null;
+  review_by: string | null;
   created_at: string;
   updated_at: string;
 }
+
+export interface IncidentMedia {
+  id: string;
+  incident_id: string;
+  kind: string;
+  url: string;
+  caption: string | null;
+  captured_at: string | null;
+  created_by: string | null;
+  created_at: string;
+}
+
+export const RESOLUTIONS = [
+  { value: "confirmed_fire", label: "Confirmed fire — responders dispatched" },
+  { value: "controlled_burn", label: "Controlled / prescribed burn" },
+  { value: "no_fire", label: "No fire found on scene" },
+  { value: "false_positive", label: "False positive (cloud, dust, glare)" },
+  { value: "duplicate", label: "Duplicate of another incident" },
+  { value: "other", label: "Other" },
+];
+
 
 
 export interface IncidentEvent {
