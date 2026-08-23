@@ -291,7 +291,7 @@ function AiTab({ s, setS, area, setArea, persist, saving, runs }: {
             </Btn>
           </div>
 
-          </div>
+
         </Card>
 
         <Card title="Scheduled sweeps" hint="Operators can always sweep manually from the camera console">
