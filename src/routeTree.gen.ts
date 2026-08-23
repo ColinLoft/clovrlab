@@ -83,9 +83,9 @@ import { Route as HqOpsReadinessRouteImport } from './routes/_hq.ops.readiness'
 import { Route as HqOpsPagingRouteImport } from './routes/_hq.ops.paging'
 import { Route as HqOpsNetworkFleetRouteImport } from './routes/_hq.ops.network-fleet'
 import { Route as HqOpsMaintenanceRouteImport } from './routes/_hq.ops.maintenance'
+import { Route as HqOpsLogsRouteImport } from './routes/_hq.ops.logs'
 import { Route as HqOpsLiveMapRouteImport } from './routes/_hq.ops.live-map'
 import { Route as HqOpsIncidentsRouteImport } from './routes/_hq.ops.incidents'
-import { Route as HqOpsHazardsRouteImport } from './routes/_hq.ops.hazards'
 import { Route as HqOpsFlightsRouteImport } from './routes/_hq.ops.flights'
 import { Route as HqOpsDetectionsRouteImport } from './routes/_hq.ops.detections'
 import { Route as HqOpsCoverageRouteImport } from './routes/_hq.ops.coverage'
@@ -127,6 +127,7 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicNetSweepRouteImport } from './routes/api/public/net/sweep'
 import { Route as ApiPublicNetPageEmailRouteImport } from './routes/api/public/net/page-email'
+import { Route as ApiPublicNetPageAckRouteImport } from './routes/api/public/net/page-ack'
 
 const WorkspacesRoute = WorkspacesRouteImport.update({
   id: '/workspaces',
@@ -497,6 +498,11 @@ const HqOpsMaintenanceRoute = HqOpsMaintenanceRouteImport.update({
   path: '/ops/maintenance',
   getParentRoute: () => HqRoute,
 } as any)
+const HqOpsLogsRoute = HqOpsLogsRouteImport.update({
+  id: '/ops/logs',
+  path: '/ops/logs',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqOpsLiveMapRoute = HqOpsLiveMapRouteImport.update({
   id: '/ops/live-map',
   path: '/ops/live-map',
@@ -505,11 +511,6 @@ const HqOpsLiveMapRoute = HqOpsLiveMapRouteImport.update({
 const HqOpsIncidentsRoute = HqOpsIncidentsRouteImport.update({
   id: '/ops/incidents',
   path: '/ops/incidents',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsHazardsRoute = HqOpsHazardsRouteImport.update({
-  id: '/ops/hazards',
-  path: '/ops/hazards',
   getParentRoute: () => HqRoute,
 } as any)
 const HqOpsFlightsRoute = HqOpsFlightsRouteImport.update({
@@ -717,6 +718,11 @@ const ApiPublicNetPageEmailRoute = ApiPublicNetPageEmailRouteImport.update({
   path: '/api/public/net/page-email',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicNetPageAckRoute = ApiPublicNetPageAckRouteImport.update({
+  id: '/api/public/net/page-ack',
+  path: '/api/public/net/page-ack',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -810,9 +816,9 @@ export interface FileRoutesByFullPath {
   '/ops/coverage': typeof HqOpsCoverageRoute
   '/ops/detections': typeof HqOpsDetectionsRoute
   '/ops/flights': typeof HqOpsFlightsRoute
-  '/ops/hazards': typeof HqOpsHazardsRoute
   '/ops/incidents': typeof HqOpsIncidentsRoute
   '/ops/live-map': typeof HqOpsLiveMapRoute
+  '/ops/logs': typeof HqOpsLogsRoute
   '/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/ops/network-fleet': typeof HqOpsNetworkFleetRoute
   '/ops/paging': typeof HqOpsPagingRoute
@@ -832,6 +838,7 @@ export interface FileRoutesByFullPath {
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/teams/': typeof HqTeamsIndexRoute
+  '/api/public/net/page-ack': typeof ApiPublicNetPageAckRoute
   '/api/public/net/page-email': typeof ApiPublicNetPageEmailRoute
   '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -928,9 +935,9 @@ export interface FileRoutesByTo {
   '/ops/coverage': typeof HqOpsCoverageRoute
   '/ops/detections': typeof HqOpsDetectionsRoute
   '/ops/flights': typeof HqOpsFlightsRoute
-  '/ops/hazards': typeof HqOpsHazardsRoute
   '/ops/incidents': typeof HqOpsIncidentsRoute
   '/ops/live-map': typeof HqOpsLiveMapRoute
+  '/ops/logs': typeof HqOpsLogsRoute
   '/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/ops/network-fleet': typeof HqOpsNetworkFleetRoute
   '/ops/paging': typeof HqOpsPagingRoute
@@ -950,6 +957,7 @@ export interface FileRoutesByTo {
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/teams': typeof HqTeamsIndexRoute
+  '/api/public/net/page-ack': typeof ApiPublicNetPageAckRoute
   '/api/public/net/page-email': typeof ApiPublicNetPageEmailRoute
   '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -1049,9 +1057,9 @@ export interface FileRoutesById {
   '/_hq/ops/coverage': typeof HqOpsCoverageRoute
   '/_hq/ops/detections': typeof HqOpsDetectionsRoute
   '/_hq/ops/flights': typeof HqOpsFlightsRoute
-  '/_hq/ops/hazards': typeof HqOpsHazardsRoute
   '/_hq/ops/incidents': typeof HqOpsIncidentsRoute
   '/_hq/ops/live-map': typeof HqOpsLiveMapRoute
+  '/_hq/ops/logs': typeof HqOpsLogsRoute
   '/_hq/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/_hq/ops/network-fleet': typeof HqOpsNetworkFleetRoute
   '/_hq/ops/paging': typeof HqOpsPagingRoute
@@ -1071,6 +1079,7 @@ export interface FileRoutesById {
   '/_hq/systems/services': typeof HqSystemsServicesRoute
   '/_hq/teams/$slug': typeof HqTeamsSlugRoute
   '/_hq/teams/': typeof HqTeamsIndexRoute
+  '/api/public/net/page-ack': typeof ApiPublicNetPageAckRoute
   '/api/public/net/page-email': typeof ApiPublicNetPageEmailRoute
   '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -1170,9 +1179,9 @@ export interface FileRouteTypes {
     | '/ops/coverage'
     | '/ops/detections'
     | '/ops/flights'
-    | '/ops/hazards'
     | '/ops/incidents'
     | '/ops/live-map'
+    | '/ops/logs'
     | '/ops/maintenance'
     | '/ops/network-fleet'
     | '/ops/paging'
@@ -1192,6 +1201,7 @@ export interface FileRouteTypes {
     | '/systems/services'
     | '/teams/$slug'
     | '/teams/'
+    | '/api/public/net/page-ack'
     | '/api/public/net/page-email'
     | '/api/public/net/sweep'
     | '/lovable/email/auth/preview'
@@ -1288,9 +1298,9 @@ export interface FileRouteTypes {
     | '/ops/coverage'
     | '/ops/detections'
     | '/ops/flights'
-    | '/ops/hazards'
     | '/ops/incidents'
     | '/ops/live-map'
+    | '/ops/logs'
     | '/ops/maintenance'
     | '/ops/network-fleet'
     | '/ops/paging'
@@ -1310,6 +1320,7 @@ export interface FileRouteTypes {
     | '/systems/services'
     | '/teams/$slug'
     | '/teams'
+    | '/api/public/net/page-ack'
     | '/api/public/net/page-email'
     | '/api/public/net/sweep'
     | '/lovable/email/auth/preview'
@@ -1408,9 +1419,9 @@ export interface FileRouteTypes {
     | '/_hq/ops/coverage'
     | '/_hq/ops/detections'
     | '/_hq/ops/flights'
-    | '/_hq/ops/hazards'
     | '/_hq/ops/incidents'
     | '/_hq/ops/live-map'
+    | '/_hq/ops/logs'
     | '/_hq/ops/maintenance'
     | '/_hq/ops/network-fleet'
     | '/_hq/ops/paging'
@@ -1430,6 +1441,7 @@ export interface FileRouteTypes {
     | '/_hq/systems/services'
     | '/_hq/teams/$slug'
     | '/_hq/teams/'
+    | '/api/public/net/page-ack'
     | '/api/public/net/page-email'
     | '/api/public/net/sweep'
     | '/lovable/email/auth/preview'
@@ -1459,6 +1471,7 @@ export interface RootRouteChildren {
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   MeetingIdRoute: typeof MeetingIdRoute
+  ApiPublicNetPageAckRoute: typeof ApiPublicNetPageAckRoute
   ApiPublicNetPageEmailRoute: typeof ApiPublicNetPageEmailRoute
   ApiPublicNetSweepRoute: typeof ApiPublicNetSweepRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -1985,6 +1998,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqOpsMaintenanceRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/ops/logs': {
+      id: '/_hq/ops/logs'
+      path: '/ops/logs'
+      fullPath: '/ops/logs'
+      preLoaderRoute: typeof HqOpsLogsRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/ops/live-map': {
       id: '/_hq/ops/live-map'
       path: '/ops/live-map'
@@ -1997,13 +2017,6 @@ declare module '@tanstack/react-router' {
       path: '/ops/incidents'
       fullPath: '/ops/incidents'
       preLoaderRoute: typeof HqOpsIncidentsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/hazards': {
-      id: '/_hq/ops/hazards'
-      path: '/ops/hazards'
-      fullPath: '/ops/hazards'
-      preLoaderRoute: typeof HqOpsHazardsRouteImport
       parentRoute: typeof HqRoute
     }
     '/_hq/ops/flights': {
@@ -2293,6 +2306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNetPageEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/net/page-ack': {
+      id: '/api/public/net/page-ack'
+      path: '/api/public/net/page-ack'
+      fullPath: '/api/public/net/page-ack'
+      preLoaderRoute: typeof ApiPublicNetPageAckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -2380,9 +2400,9 @@ interface HqRouteChildren {
   HqOpsCoverageRoute: typeof HqOpsCoverageRoute
   HqOpsDetectionsRoute: typeof HqOpsDetectionsRoute
   HqOpsFlightsRoute: typeof HqOpsFlightsRoute
-  HqOpsHazardsRoute: typeof HqOpsHazardsRoute
   HqOpsIncidentsRoute: typeof HqOpsIncidentsRoute
   HqOpsLiveMapRoute: typeof HqOpsLiveMapRoute
+  HqOpsLogsRoute: typeof HqOpsLogsRoute
   HqOpsMaintenanceRoute: typeof HqOpsMaintenanceRoute
   HqOpsNetworkFleetRoute: typeof HqOpsNetworkFleetRoute
   HqOpsPagingRoute: typeof HqOpsPagingRoute
@@ -2473,9 +2493,9 @@ const HqRouteChildren: HqRouteChildren = {
   HqOpsCoverageRoute: HqOpsCoverageRoute,
   HqOpsDetectionsRoute: HqOpsDetectionsRoute,
   HqOpsFlightsRoute: HqOpsFlightsRoute,
-  HqOpsHazardsRoute: HqOpsHazardsRoute,
   HqOpsIncidentsRoute: HqOpsIncidentsRoute,
   HqOpsLiveMapRoute: HqOpsLiveMapRoute,
+  HqOpsLogsRoute: HqOpsLogsRoute,
   HqOpsMaintenanceRoute: HqOpsMaintenanceRoute,
   HqOpsNetworkFleetRoute: HqOpsNetworkFleetRoute,
   HqOpsPagingRoute: HqOpsPagingRoute,
@@ -2520,6 +2540,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   MeetingIdRoute: MeetingIdRoute,
+  ApiPublicNetPageAckRoute: ApiPublicNetPageAckRoute,
   ApiPublicNetPageEmailRoute: ApiPublicNetPageEmailRoute,
   ApiPublicNetSweepRoute: ApiPublicNetSweepRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,

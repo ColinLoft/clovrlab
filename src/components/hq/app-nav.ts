@@ -44,20 +44,20 @@ export const APP_NAV: Record<string, AppNavGroup[]> = {
   ops: [
     core(),
     {
-      label: "Detection Network",
+      label: "Mission Operations",
       items: [
+        { label: "Mission Control", to: "/ops/control", icon: Radar },
         { label: "Live Map", to: "/ops/live-map", icon: MapIcon },
         { label: "Camera Network", to: "/ops/cameras", icon: Radar },
         { label: "Incidents & Dispatch", to: "/ops/incidents", icon: Activity },
-        { label: "Hazard Feeds", to: "/ops/hazards", icon: Target },
-        { label: "Response Fleet", to: "/ops/network-fleet", icon: Plane },
+        { label: "Detections", to: "/ops/detections", icon: Activity },
+        { label: "Detection Logs", to: "/ops/logs", icon: ScrollText },
       ],
     },
     {
       label: "Flight Operations",
       items: [
-        { label: "Mission Control", to: "/ops/control", icon: Radar },
-        { label: "Detections", to: "/ops/detections", icon: Activity },
+        { label: "Response Fleet", to: "/ops/network-fleet", icon: Plane },
         { label: "Flight Log", to: "/ops/flights", icon: Plane },
         { label: "Airspace & Approvals", to: "/ops/airspace", icon: ShieldCheck },
         { label: "Fleet Readiness", to: "/ops/readiness", icon: Gauge },

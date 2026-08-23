@@ -249,3 +249,49 @@ export async function removeRotationMember(id: string) {
   const { error } = await db.from("oncall_members").delete().eq("id", id);
   if (error) throw error;
 }
+
+// ---------- Delivery timeline ----------
+
+export type DeliveryChannel = "ntfy" | "email" | "app";
+export type DeliveryStatus = "sent" | "failed" | "skipped" | "acknowledged";
+
+export interface PageDelivery {
+  id: string;
+  alert_id: string | null;
+  target_id: string | null;
+  user_id: string | null;
+  channel: DeliveryChannel;
+  status: DeliveryStatus;
+  detail: string | null;
+  created_at: string;
+}
+
+/** Everything the paging worker attempted, newest first. */
+export async function fetchDeliveries(limit = 120, alertId?: string): Promise<PageDelivery[]> {
+  let q = db.from("page_deliveries").select("*").order("created_at", { ascending: false }).limit(limit);
+  if (alertId) q = q.eq("alert_id", alertId);
+  const { data, error } = await q;
+  if (error) throw error;
+  return (data ?? []) as PageDelivery[];
+}
+
+export interface PageTargetRow {
+  id: string;
+  alert_id: string;
+  user_id: string;
+  level: number;
+  push_sent_at: string | null;
+  email_sent_at: string | null;
+  seen_at: string | null;
+  acked_at: string | null;
+}
+
+export async function fetchTargets(alertIds: string[]): Promise<PageTargetRow[]> {
+  if (!alertIds.length) return [];
+  const { data, error } = await db
+    .from("page_targets")
+    .select("id, alert_id, user_id, level, push_sent_at, email_sent_at, seen_at, acked_at")
+    .in("alert_id", alertIds);
+  if (error) throw error;
+  return (data ?? []) as PageTargetRow[];
+}

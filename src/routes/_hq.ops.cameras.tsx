@@ -5,12 +5,13 @@ import {
   WorkPage, Card, Btn, Pill, Empty, Loading, Stat, StatRow, Toolbar, Modal, Select,
 } from "@/components/hq/work/kit";
 import { fetchCameras, getStatus, relTime, type Camera } from "@/lib/net/alertwest";
+import { ScanPanel } from "@/components/net/ScanPanel";
 import { sweepCameras } from "@/lib/net/ai-detect.functions";
 import {
   fetchPendingSuggestions, fetchSweepStatus, promoteSuggestion, dismissSuggestion,
   markFalsePositive, muteCamera, type SuggestionRow, type SweepStatus,
 } from "@/lib/net/suggestions";
-import { fetchResponseArea, inArea, type ResponseArea } from "@/lib/net/area";
+import { fetchResponseArea, haversineMi, inArea, type ResponseArea } from "@/lib/net/area";
 import { fetchSettings, fetchCameraPrefs, saveCameraPref, type NetSettings, type CameraPref } from "@/lib/net/settings";
 
 export const Route = createFileRoute("/_hq/ops/cameras")({
@@ -78,6 +79,19 @@ function CamerasPage() {
     return () => clearInterval(id);
   }, [refreshSec]);
 
+  const center = useMemo(
+    () => (area ? { lat: Number(area.center_lat), lng: Number(area.center_lng) } : null),
+    [area],
+  );
+
+  const distanceOf = useCallback(
+    (c: Camera) =>
+      center
+        ? haversineMi(center, { lat: Number(c.site.latitude), lng: Number(c.site.longitude) })
+        : Number.POSITIVE_INFINITY,
+    [center],
+  );
+
   const inRange = useMemo(
     () => cameras.filter((c) => inArea(area, { lat: Number(c.site.latitude), lng: Number(c.site.longitude), state: c.site.state, county: c.site.county })),
     [cameras, area],
@@ -89,10 +103,15 @@ function CamerasPage() {
       ? inRange.filter((c) => `${c.name} ${c.site.county ?? ""} ${c.site.state ?? ""}`.toLowerCase().includes(s))
       : inRange;
     if (onlyPriority) list = list.filter((c) => (prefs[c.site.id]?.priority ?? 0) > 0);
-    return list
-      .slice()
-      .sort((a, b) => (prefs[b.site.id]?.priority ?? 0) - (prefs[a.site.id]?.priority ?? 0));
-  }, [inRange, q, onlyPriority, prefs]);
+    // Closest cameras to the configured response-area centre come first, with
+    // starred cameras always pinned above the rest.
+    return list.slice().sort((a, b) => {
+      const pri = (prefs[b.site.id]?.priority ?? 0) - (prefs[a.site.id]?.priority ?? 0);
+      if (pri) return pri;
+      if (!center) return a.name.localeCompare(b.name);
+      return distanceOf(a) - distanceOf(b);
+    });
+  }, [inRange, q, onlyPriority, prefs, center, distanceOf]);
 
   const wall = useMemo(() => filtered.filter((c) => c.image.url).slice(0, 60), [filtered]);
 
@@ -155,9 +174,6 @@ function CamerasPage() {
         <>
           <Select value={refreshSec} onChange={setRefreshSec} options={REFRESH_OPTIONS} className="w-40" />
           <Btn onClick={() => { setStamp(Date.now()); setTick((t) => t + 1); }}><RefreshCw className="h-3.5 w-3.5" /> Refresh</Btn>
-          <Btn variant="primary" onClick={() => doSweep(filtered, "Sweep")} disabled={running || settings?.paused}>
-            <Sparkles className="h-3.5 w-3.5" /> {running ? "Sweeping…" : "Run AI sweep"}
-          </Btn>
         </>
       }
     >
@@ -177,6 +193,15 @@ function CamerasPage() {
           hint={sweep?.last_run_at ? `Last suggestion ${relTime(sweep.last_run_at)}` : "No sweeps yet"}
         />
       </StatRow>
+
+      <div className="mt-4">
+        <ScanPanel
+          cameras={filtered}
+          scope={area?.address ? `nearest first from ${area.address}` : "response area"}
+          disabled={settings?.paused || running}
+          onChanged={() => setTick((t) => t + 1)}
+        />
+      </div>
 
       <div className="mt-5 flex flex-wrap items-center gap-2">
         <div className="flex gap-1.5">
