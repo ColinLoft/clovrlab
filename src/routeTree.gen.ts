@@ -83,6 +83,7 @@ import { Route as HqOpsReadinessRouteImport } from './routes/_hq.ops.readiness'
 import { Route as HqOpsPagingRouteImport } from './routes/_hq.ops.paging'
 import { Route as HqOpsNetworkFleetRouteImport } from './routes/_hq.ops.network-fleet'
 import { Route as HqOpsMaintenanceRouteImport } from './routes/_hq.ops.maintenance'
+import { Route as HqOpsLogsRouteImport } from './routes/_hq.ops.logs'
 import { Route as HqOpsLiveMapRouteImport } from './routes/_hq.ops.live-map'
 import { Route as HqOpsIncidentsRouteImport } from './routes/_hq.ops.incidents'
 import { Route as HqOpsFlightsRouteImport } from './routes/_hq.ops.flights'
@@ -497,6 +498,11 @@ const HqOpsMaintenanceRoute = HqOpsMaintenanceRouteImport.update({
   path: '/ops/maintenance',
   getParentRoute: () => HqRoute,
 } as any)
+const HqOpsLogsRoute = HqOpsLogsRouteImport.update({
+  id: '/ops/logs',
+  path: '/ops/logs',
+  getParentRoute: () => HqRoute,
+} as any)
 const HqOpsLiveMapRoute = HqOpsLiveMapRouteImport.update({
   id: '/ops/live-map',
   path: '/ops/live-map',
@@ -812,6 +818,7 @@ export interface FileRoutesByFullPath {
   '/ops/flights': typeof HqOpsFlightsRoute
   '/ops/incidents': typeof HqOpsIncidentsRoute
   '/ops/live-map': typeof HqOpsLiveMapRoute
+  '/ops/logs': typeof HqOpsLogsRoute
   '/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/ops/network-fleet': typeof HqOpsNetworkFleetRoute
   '/ops/paging': typeof HqOpsPagingRoute
@@ -930,6 +937,7 @@ export interface FileRoutesByTo {
   '/ops/flights': typeof HqOpsFlightsRoute
   '/ops/incidents': typeof HqOpsIncidentsRoute
   '/ops/live-map': typeof HqOpsLiveMapRoute
+  '/ops/logs': typeof HqOpsLogsRoute
   '/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/ops/network-fleet': typeof HqOpsNetworkFleetRoute
   '/ops/paging': typeof HqOpsPagingRoute
@@ -1051,6 +1059,7 @@ export interface FileRoutesById {
   '/_hq/ops/flights': typeof HqOpsFlightsRoute
   '/_hq/ops/incidents': typeof HqOpsIncidentsRoute
   '/_hq/ops/live-map': typeof HqOpsLiveMapRoute
+  '/_hq/ops/logs': typeof HqOpsLogsRoute
   '/_hq/ops/maintenance': typeof HqOpsMaintenanceRoute
   '/_hq/ops/network-fleet': typeof HqOpsNetworkFleetRoute
   '/_hq/ops/paging': typeof HqOpsPagingRoute
@@ -1172,6 +1181,7 @@ export interface FileRouteTypes {
     | '/ops/flights'
     | '/ops/incidents'
     | '/ops/live-map'
+    | '/ops/logs'
     | '/ops/maintenance'
     | '/ops/network-fleet'
     | '/ops/paging'
@@ -1290,6 +1300,7 @@ export interface FileRouteTypes {
     | '/ops/flights'
     | '/ops/incidents'
     | '/ops/live-map'
+    | '/ops/logs'
     | '/ops/maintenance'
     | '/ops/network-fleet'
     | '/ops/paging'
@@ -1410,6 +1421,7 @@ export interface FileRouteTypes {
     | '/_hq/ops/flights'
     | '/_hq/ops/incidents'
     | '/_hq/ops/live-map'
+    | '/_hq/ops/logs'
     | '/_hq/ops/maintenance'
     | '/_hq/ops/network-fleet'
     | '/_hq/ops/paging'
@@ -1986,6 +1998,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqOpsMaintenanceRouteImport
       parentRoute: typeof HqRoute
     }
+    '/_hq/ops/logs': {
+      id: '/_hq/ops/logs'
+      path: '/ops/logs'
+      fullPath: '/ops/logs'
+      preLoaderRoute: typeof HqOpsLogsRouteImport
+      parentRoute: typeof HqRoute
+    }
     '/_hq/ops/live-map': {
       id: '/_hq/ops/live-map'
       path: '/ops/live-map'
@@ -2383,6 +2402,7 @@ interface HqRouteChildren {
   HqOpsFlightsRoute: typeof HqOpsFlightsRoute
   HqOpsIncidentsRoute: typeof HqOpsIncidentsRoute
   HqOpsLiveMapRoute: typeof HqOpsLiveMapRoute
+  HqOpsLogsRoute: typeof HqOpsLogsRoute
   HqOpsMaintenanceRoute: typeof HqOpsMaintenanceRoute
   HqOpsNetworkFleetRoute: typeof HqOpsNetworkFleetRoute
   HqOpsPagingRoute: typeof HqOpsPagingRoute
@@ -2475,6 +2495,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqOpsFlightsRoute: HqOpsFlightsRoute,
   HqOpsIncidentsRoute: HqOpsIncidentsRoute,
   HqOpsLiveMapRoute: HqOpsLiveMapRoute,
+  HqOpsLogsRoute: HqOpsLogsRoute,
   HqOpsMaintenanceRoute: HqOpsMaintenanceRoute,
   HqOpsNetworkFleetRoute: HqOpsNetworkFleetRoute,
   HqOpsPagingRoute: HqOpsPagingRoute,
