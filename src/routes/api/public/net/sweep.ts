@@ -52,10 +52,11 @@ export const Route = createFileRoute("/api/public/net/sweep")({
           .eq("id", true);
 
         try {
-          const [{ data: area }, { data: prefs }, { data: muted }] = await Promise.all([
+          const [{ data: area }, { data: prefs }, { data: muted }, { data: openInc }] = await Promise.all([
             supabaseAdmin.from("net_response_area").select("*").eq("id", true).maybeSingle(),
-            supabaseAdmin.from("net_camera_prefs").select("camera_id, watch, priority"),
+            supabaseAdmin.from("net_camera_prefs").select("camera_id, watch, priority, high_risk"),
             supabaseAdmin.from("net_muted_cameras").select("camera_id, muted_until"),
+            supabaseAdmin.from("net_incidents").select("camera_id").not("status", "in", "(closed,false_positive)"),
           ]);
 
           const mutedIds = new Set(
@@ -63,14 +64,17 @@ export const Route = createFileRoute("/api/public/net/sweep")({
               .filter((m) => !m.muted_until || new Date(m.muted_until).getTime() > now)
               .map((m) => m.camera_id),
           );
+          // A camera with an open incident is already being worked — don't re-scan it
+          const busyIds = new Set(((openInc ?? []) as any[]).map((i) => i.camera_id).filter(Boolean));
           const prefById = new Map(((prefs ?? []) as any[]).map((p) => [p.camera_id, p]));
 
           const a: any = area;
           const cameras = (await fetchCameras())
-            .filter((c) => c.image.url && !mutedIds.has(c.site.id))
+            .filter((c) => c.image.url && !mutedIds.has(c.site.id) && !busyIds.has(c.site.id))
             .filter((c) => {
               const p = prefById.get(c.site.id);
               if (p && p.watch === false) return false;
+              if (highRiskOnly && !(p && p.high_risk)) return false;
               if (s.sweep_priority_only && !(p && Number(p.priority) > 0)) return false;
               return inArea(a, {
                 lat: Number(c.site.latitude),
@@ -80,7 +84,15 @@ export const Route = createFileRoute("/api/public/net/sweep")({
               });
 
             })
-            .sort((x, y) => (prefById.get(y.site.id)?.priority ?? 0) - (prefById.get(x.site.id)?.priority ?? 0));
+            .sort((x, y) => {
+              const px = prefById.get(x.site.id);
+              const py = prefById.get(y.site.id);
+              return (
+                Number(!!py?.high_risk) - Number(!!px?.high_risk) ||
+                (py?.priority ?? 0) - (px?.priority ?? 0)
+              );
+            });
+
 
           const cap = probeOnly ? 1 : Math.max(1, Math.min(50, Number(s.sweep_batch_size || 25)));
           const batch = cameras.slice(0, cap).map((c) => ({
