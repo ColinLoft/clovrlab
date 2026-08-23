@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { Flame, Radio, Plane, Clock, RefreshCw } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Flame, Radio, Plane, Clock, RefreshCw, Download, Printer, Image as ImageIcon, Trash2, AlertTriangle, ClipboardCheck, Send } from "lucide-react";
 import {
   WorkPage, Card, Btn, Pill, Empty, Loading, Stat, StatRow, Toolbar, Select, dt,
 } from "@/components/hq/work/kit";
@@ -8,10 +8,16 @@ import { UserMention } from "@/components/hq/UserMention";
 
 import {
   fetchIncidents, fetchIncidentEvents, updateIncidentStatus,
-  STATUS_META, PRIORITY_META, type IncidentRow, type IncidentEvent, type IncidentStatus,
+  fetchIncidentMedia, addIncidentMedia, deleteIncidentMedia, addIncidentNote,
+  resolveIncident, closeIncident, reopenIncident, saveIncidentReview, setIncidentHighRisk,
+  RESOLUTIONS,
+  STATUS_META, PRIORITY_META,
+  type IncidentRow, type IncidentEvent, type IncidentStatus, type IncidentMedia,
 } from "@/lib/net/incidents";
+import { downloadCsv, printReport } from "@/lib/net/export";
 import { fetchDrones, type DroneRow } from "@/lib/net/drones";
 import { rankCandidates, assignDroneToIncident, releaseDroneFromIncident, markDroneInflight } from "@/lib/net/dispatch";
+
 
 export const Route = createFileRoute("/_hq/ops/incidents")({
   validateSearch: (s: Record<string, unknown>) => ({ id: typeof s['id'] === "string" ? s['id'] : undefined }),
