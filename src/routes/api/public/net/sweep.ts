@@ -36,11 +36,15 @@ export const Route = createFileRoute("/api/public/net/sweep")({
         if (s.sweep_lock_until && new Date(s.sweep_lock_until).getTime() > now) {
           return json({ skipped: "another sweep is running" });
         }
-        // Interval guard
-        const dueAfter = s.last_sweep_at
-          ? new Date(s.last_sweep_at).getTime() + Number(s.sweep_interval_hours || 6) * 3600_000
-          : 0;
-        if (!probeOnly && now < dueAfter) return json({ skipped: "not due yet" });
+        // Interval guard — minutes based, with a faster cadence for high-risk cameras
+        const baseMin = Math.max(1, Number(s.sweep_interval_minutes ?? (s.sweep_interval_hours || 1) * 60));
+        const riskMin = Math.max(1, Math.min(baseMin, Number(s.high_risk_interval_minutes ?? baseMin)));
+        const last = s.last_sweep_at ? new Date(s.last_sweep_at).getTime() : 0;
+        const fullDue = !last || now >= last + baseMin * 60_000;
+        const riskDue = !last || now >= last + riskMin * 60_000;
+        if (!probeOnly && !fullDue && !riskDue) return json({ skipped: "not due yet" });
+        const highRiskOnly = !probeOnly && !fullDue && riskDue;
+
 
         await supabaseAdmin
           .from("net_settings")
