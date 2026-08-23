@@ -12,6 +12,7 @@ import { fetchDrones, type DroneRow } from "@/lib/net/drones";
 import { rankCandidates, assignDroneToIncident, releaseDroneFromIncident, markDroneInflight } from "@/lib/net/dispatch";
 
 export const Route = createFileRoute("/_hq/ops/incidents")({
+  validateSearch: (s: Record<string, unknown>) => ({ id: typeof s['id'] === "string" ? s['id'] : undefined }),
   head: () => ({
     meta: [
       { title: "Incidents & Dispatch — Clovr Labs" },
@@ -25,14 +26,16 @@ export const Route = createFileRoute("/_hq/ops/incidents")({
 const STATUSES = Object.keys(STATUS_META) as IncidentStatus[];
 
 function IncidentsPage() {
+  const search = Route.useSearch();
   const [incidents, setIncidents] = useState<IncidentRow[]>([]);
   const [drones, setDrones] = useState<DroneRow[]>([]);
   const [events, setEvents] = useState<IncidentEvent[]>([]);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(search.id ?? null);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
-  const [status, setStatus] = useState("open");
+  const [status, setStatus] = useState(search.id ? "all" : "open");
   const [tick, setTick] = useState(0);
+
 
   useEffect(() => {
     let alive = true;
