@@ -703,3 +703,34 @@ function AddressAutocomplete({ value, busy, onText, onPick, onLookup }: {
     </span>
   );
 }
+
+/** Interval field that lets an operator work in minutes or hours. */
+function Interval({ minutes, onChange }: { minutes: number; onChange: (m: number) => void }) {
+  const useHours = minutes >= 60 && minutes % 60 === 0;
+  const [unit, setUnit] = useState<"m" | "h">(useHours ? "h" : "m");
+  const shown = unit === "h" ? Math.max(1, Math.round(minutes / 60)) : Math.max(1, minutes);
+  return (
+    <span className="flex items-center gap-1.5">
+      <input
+        type="number"
+        min={1}
+        value={shown}
+        onChange={(e) => {
+          const n = Math.max(1, Number(e.target.value) || 1);
+          onChange(unit === "h" ? n * 60 : n);
+        }}
+        className="w-20 rounded border border-border bg-background px-2 py-1 text-sm tabular-nums"
+      />
+      <Select
+        value={unit}
+        className="w-28"
+        onChange={(v) => {
+          const u = v as "m" | "h";
+          setUnit(u);
+          onChange(u === "h" ? Math.max(60, Math.round(minutes / 60) * 60) : minutes);
+        }}
+        options={[{ value: "m", label: "minutes" }, { value: "h", label: "hours" }]}
+      />
+    </span>
+  );
+}
