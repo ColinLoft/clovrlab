@@ -127,6 +127,7 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicNetSweepRouteImport } from './routes/api/public/net/sweep'
 import { Route as ApiPublicNetPageEmailRouteImport } from './routes/api/public/net/page-email'
+import { Route as ApiPublicNetPageAckRouteImport } from './routes/api/public/net/page-ack'
 
 const WorkspacesRoute = WorkspacesRouteImport.update({
   id: '/workspaces',
@@ -717,6 +718,11 @@ const ApiPublicNetPageEmailRoute = ApiPublicNetPageEmailRouteImport.update({
   path: '/api/public/net/page-email',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicNetPageAckRoute = ApiPublicNetPageAckRouteImport.update({
+  id: '/api/public/net/page-ack',
+  path: '/api/public/net/page-ack',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -832,6 +838,7 @@ export interface FileRoutesByFullPath {
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/teams/': typeof HqTeamsIndexRoute
+  '/api/public/net/page-ack': typeof ApiPublicNetPageAckRoute
   '/api/public/net/page-email': typeof ApiPublicNetPageEmailRoute
   '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -950,6 +957,7 @@ export interface FileRoutesByTo {
   '/systems/services': typeof HqSystemsServicesRoute
   '/teams/$slug': typeof HqTeamsSlugRoute
   '/teams': typeof HqTeamsIndexRoute
+  '/api/public/net/page-ack': typeof ApiPublicNetPageAckRoute
   '/api/public/net/page-email': typeof ApiPublicNetPageEmailRoute
   '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -1071,6 +1079,7 @@ export interface FileRoutesById {
   '/_hq/systems/services': typeof HqSystemsServicesRoute
   '/_hq/teams/$slug': typeof HqTeamsSlugRoute
   '/_hq/teams/': typeof HqTeamsIndexRoute
+  '/api/public/net/page-ack': typeof ApiPublicNetPageAckRoute
   '/api/public/net/page-email': typeof ApiPublicNetPageEmailRoute
   '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -1192,6 +1201,7 @@ export interface FileRouteTypes {
     | '/systems/services'
     | '/teams/$slug'
     | '/teams/'
+    | '/api/public/net/page-ack'
     | '/api/public/net/page-email'
     | '/api/public/net/sweep'
     | '/lovable/email/auth/preview'
@@ -1310,6 +1320,7 @@ export interface FileRouteTypes {
     | '/systems/services'
     | '/teams/$slug'
     | '/teams'
+    | '/api/public/net/page-ack'
     | '/api/public/net/page-email'
     | '/api/public/net/sweep'
     | '/lovable/email/auth/preview'
@@ -1430,6 +1441,7 @@ export interface FileRouteTypes {
     | '/_hq/systems/services'
     | '/_hq/teams/$slug'
     | '/_hq/teams/'
+    | '/api/public/net/page-ack'
     | '/api/public/net/page-email'
     | '/api/public/net/sweep'
     | '/lovable/email/auth/preview'
@@ -1459,6 +1471,7 @@ export interface RootRouteChildren {
   LegalPrivacyRoute: typeof LegalPrivacyRoute
   LegalTermsRoute: typeof LegalTermsRoute
   MeetingIdRoute: typeof MeetingIdRoute
+  ApiPublicNetPageAckRoute: typeof ApiPublicNetPageAckRoute
   ApiPublicNetPageEmailRoute: typeof ApiPublicNetPageEmailRoute
   ApiPublicNetSweepRoute: typeof ApiPublicNetSweepRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -2293,6 +2306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNetPageEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/net/page-ack': {
+      id: '/api/public/net/page-ack'
+      path: '/api/public/net/page-ack'
+      fullPath: '/api/public/net/page-ack'
+      preLoaderRoute: typeof ApiPublicNetPageAckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -2520,6 +2540,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalPrivacyRoute: LegalPrivacyRoute,
   LegalTermsRoute: LegalTermsRoute,
   MeetingIdRoute: MeetingIdRoute,
+  ApiPublicNetPageAckRoute: ApiPublicNetPageAckRoute,
   ApiPublicNetPageEmailRoute: ApiPublicNetPageEmailRoute,
   ApiPublicNetSweepRoute: ApiPublicNetSweepRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
