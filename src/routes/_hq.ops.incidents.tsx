@@ -149,6 +149,23 @@ function IncidentsPage() {
                   <Detail label="County" value={current.county ?? "—"} />
                   <Detail label="Assigned aircraft" value={drones.find((d) => d.id === current.assigned_drone_id)?.tail_number ?? "None"} />
                 </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2 rounded-md border border-border px-3 py-2 text-xs">
+                  <Pill tone={current.acked_at ? "good" : current.alert_id ? "risk" : "muted"}>
+                    {current.acked_at ? "Page acknowledged" : current.alert_id ? "Awaiting acknowledgement" : "No page raised"}
+                  </Pill>
+                  {current.acked_at && (
+                    <span className="flex items-center gap-1.5 text-muted-foreground">
+                      {dt(current.acked_at)} by{" "}
+                      {current.acked_by
+                        ? <UserMention userId={current.acked_by} name="teammate" size="xs" />
+                        : "an operator"}
+                    </span>
+                  )}
+                  {!current.acked_at && current.alert_id && (
+                    <span className="text-muted-foreground">On-call is being paged; escalation continues until someone acknowledges.</span>
+                  )}
+                </div>
+
                 <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
                   {STATUSES.map((s) => (
                     <Btn key={s} variant={current.status === s ? "primary" : "ghost"}
