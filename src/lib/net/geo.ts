@@ -96,3 +96,54 @@ export async function geocode(query: string): Promise<GeocodeResult | null> {
   }
   return null;
 }
+
+export interface GeocodeSuggestion extends GeocodeResult {
+  short: string;
+}
+
+/** Type-ahead suggestions for an address search box (Photon first, Nominatim fallback). */
+export async function geocodeSuggest(query: string, limit = 6): Promise<GeocodeSuggestion[]> {
+  const q = query.trim();
+  if (q.length < 3) return [];
+
+  const norm = (name: string, lat: number, lng: number): GeocodeSuggestion => ({
+    display_name: name,
+    short: name,
+    lat,
+    lng,
+  });
+
+  try {
+    const url = `https://photon.komoot.io/api/?limit=${limit}&lang=en&q=${encodeURIComponent(q)}`;
+    const res = await fetch(url, { headers: { Accept: "application/json" } });
+    if (res.ok) {
+      const data: any = await res.json();
+      const out: GeocodeSuggestion[] = [];
+      for (const f of data?.features ?? []) {
+        const c = f?.geometry?.coordinates;
+        if (!c) continue;
+        const p = f.properties ?? {};
+        const line = [
+          [p.housenumber, p.street].filter(Boolean).join(" ") || p.name,
+          p.city || p.county,
+          p.state,
+          p.postcode,
+          p.countrycode === "US" ? "USA" : p.country,
+        ].filter(Boolean).join(", ");
+        out.push(norm(line, c[1], c[0]));
+      }
+      if (out.length) return out;
+    }
+  } catch { /* fall through */ }
+
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=${limit}&countrycodes=us&q=${encodeURIComponent(q)}`;
+    const res = await fetch(url, { headers: { Accept: "application/json" } });
+    if (res.ok) {
+      const data = (await res.json()) as Array<{ display_name: string; lat: string; lon: string }>;
+      return data.map((d) => norm(d.display_name, parseFloat(d.lat), parseFloat(d.lon)));
+    }
+  } catch { /* ignore */ }
+
+  return [];
+}
