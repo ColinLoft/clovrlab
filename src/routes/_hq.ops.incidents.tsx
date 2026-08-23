@@ -71,11 +71,43 @@ function IncidentsPage() {
   const current = filtered.find((i) => i.id === selected) ?? filtered[0] ?? null;
 
   useEffect(() => {
-    if (!current) { setEvents([]); return; }
+    if (!current) { setEvents([]); setMedia([]); return; }
     let alive = true;
     fetchIncidentEvents(current.id).then((e) => alive && setEvents(e)).catch(() => setEvents([]));
+    fetchIncidentMedia(current.id).then((m) => alive && setMedia(m)).catch(() => setMedia([]));
     return () => { alive = false; };
   }, [current?.id, tick]);
+
+  const refresh = useCallback(() => setTick((t) => t + 1), []);
+
+  const exportTimeline = (mode: "csv" | "pdf") => {
+    if (!current) return;
+    const columns = [
+      { key: "time", label: "Time (UTC)" },
+      { key: "type", label: "Event" },
+      { key: "message", label: "Detail" },
+    ];
+    const rows = [...events].reverse().map((e) => ({
+      time: new Date(e.created_at).toISOString(),
+      type: e.event_type.replace(/_/g, " "),
+      message: e.message ?? "",
+    }));
+    const slug = current.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+    if (mode === "csv") return downloadCsv(`incident-${slug}`, columns, rows);
+    printReport({
+      title: `Incident report — ${current.title}`,
+      subtitle: `${current.source.toUpperCase()} · ${STATUS_META[current.status]?.label} · discovered ${dt(current.discovered_at)}`,
+      columns,
+      rows,
+      summary: [
+        { label: "Priority", value: PRIORITY_META[current.priority]?.label ?? current.priority },
+        { label: "Coordinates", value: `${Number(current.lat).toFixed(4)}, ${Number(current.lng).toFixed(4)}` },
+        { label: "Camera", value: current.camera_name ?? "—" },
+        { label: "Resolution", value: current.resolution?.replace(/_/g, " ") ?? "Open" },
+      ],
+    });
+  };
+
 
   const candidates = useMemo(() => (current ? rankCandidates(drones, current) : []), [drones, current]);
 
