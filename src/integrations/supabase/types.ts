@@ -7223,8 +7223,51 @@ export type Database = {
           },
         ]
       }
+      page_deliveries: {
+        Row: {
+          alert_id: string | null
+          channel: string
+          created_at: string
+          detail: string | null
+          id: string
+          status: string
+          target_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          alert_id?: string | null
+          channel: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          status: string
+          target_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          alert_id?: string | null
+          channel?: string
+          created_at?: string
+          detail?: string | null
+          id?: string
+          status?: string
+          target_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_deliveries_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "page_alerts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       page_targets: {
         Row: {
+          ack_token: string
+          acked_at: string | null
           alert_id: string
           created_at: string
           email_sent_at: string | null
@@ -7235,6 +7278,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          ack_token?: string
+          acked_at?: string | null
           alert_id: string
           created_at?: string
           email_sent_at?: string | null
@@ -7245,6 +7290,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          ack_token?: string
+          acked_at?: string | null
           alert_id?: string
           created_at?: string
           email_sent_at?: string | null
@@ -7298,6 +7345,8 @@ export type Database = {
       }
       page_tickets: {
         Row: {
+          acked_at: string | null
+          acked_by: string | null
           alert_id: string | null
           assignee_id: string | null
           closed_at: string | null
@@ -7317,6 +7366,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          acked_at?: string | null
+          acked_by?: string | null
           alert_id?: string | null
           assignee_id?: string | null
           closed_at?: string | null
@@ -7336,6 +7387,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          acked_at?: string | null
+          acked_by?: string | null
           alert_id?: string | null
           assignee_id?: string | null
           closed_at?: string | null
@@ -7655,18 +7708,27 @@ export type Database = {
       push_topics: {
         Row: {
           created_at: string
+          last_ack_at: string | null
+          last_sent_at: string | null
+          revoked: boolean
           topic: string
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          last_ack_at?: string | null
+          last_sent_at?: string | null
+          revoked?: boolean
           topic: string
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
+          last_ack_at?: string | null
+          last_sent_at?: string | null
+          revoked?: boolean
           topic?: string
           updated_at?: string
           user_id?: string
@@ -8392,6 +8454,7 @@ export type Database = {
     }
     Functions: {
       ack_page: { Args: { _alert_id: string }; Returns: undefined }
+      ack_page_by_token: { Args: { _token: string }; Returns: Json }
       escalate_pages: { Args: never; Returns: number }
       is_hq_admin: { Args: { _user_id: string }; Returns: boolean }
       my_access: { Args: never; Returns: Json }
