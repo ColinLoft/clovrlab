@@ -1,4 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
+import { logDetectionEvent } from "./detection-log";
+
 
 export type IncidentStatus = "new" | "triaging" | "dispatched" | "onscene" | "contained" | "closed" | "false_positive";
 export type IncidentPriority = "p1" | "p2" | "p3" | "p4";
@@ -21,9 +23,14 @@ export interface IncidentRow {
   frp: number | null;
   assigned_drone_id: string | null;
   notes: string | null;
+  alert_id: string | null;
+  acked_by: string | null;
+  acked_at: string | null;
+  suggestion_id: string | null;
   created_at: string;
   updated_at: string;
 }
+
 
 export interface IncidentEvent {
   id: string;
@@ -139,4 +146,10 @@ export async function updateIncidentStatus(id: string, status: IncidentStatus) {
     event_type: "status_change",
     message: `Status → ${status}`,
   });
+  await logDetectionEvent({
+    kind: "incident_status",
+    incident_id: id,
+    message: `Operator set incident status to ${STATUS_META[status]?.label ?? status}`,
+  });
 }
+

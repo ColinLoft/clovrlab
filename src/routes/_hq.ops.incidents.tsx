@@ -4,6 +4,8 @@ import { Flame, Radio, Plane, Clock, RefreshCw } from "lucide-react";
 import {
   WorkPage, Card, Btn, Pill, Empty, Loading, Stat, StatRow, Toolbar, Select, dt,
 } from "@/components/hq/work/kit";
+import { UserMention } from "@/components/hq/UserMention";
+
 import {
   fetchIncidents, fetchIncidentEvents, updateIncidentStatus,
   STATUS_META, PRIORITY_META, type IncidentRow, type IncidentEvent, type IncidentStatus,
@@ -12,6 +14,7 @@ import { fetchDrones, type DroneRow } from "@/lib/net/drones";
 import { rankCandidates, assignDroneToIncident, releaseDroneFromIncident, markDroneInflight } from "@/lib/net/dispatch";
 
 export const Route = createFileRoute("/_hq/ops/incidents")({
+  validateSearch: (s: Record<string, unknown>) => ({ id: typeof s['id'] === "string" ? s['id'] : undefined }),
   head: () => ({
     meta: [
       { title: "Incidents & Dispatch — Clovr Labs" },
@@ -25,14 +28,16 @@ export const Route = createFileRoute("/_hq/ops/incidents")({
 const STATUSES = Object.keys(STATUS_META) as IncidentStatus[];
 
 function IncidentsPage() {
+  const search = Route.useSearch();
   const [incidents, setIncidents] = useState<IncidentRow[]>([]);
   const [drones, setDrones] = useState<DroneRow[]>([]);
   const [events, setEvents] = useState<IncidentEvent[]>([]);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(search.id ?? null);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
-  const [status, setStatus] = useState("open");
+  const [status, setStatus] = useState(search.id ? "all" : "open");
   const [tick, setTick] = useState(0);
+
 
   useEffect(() => {
     let alive = true;
@@ -146,6 +151,23 @@ function IncidentsPage() {
                   <Detail label="County" value={current.county ?? "—"} />
                   <Detail label="Assigned aircraft" value={drones.find((d) => d.id === current.assigned_drone_id)?.tail_number ?? "None"} />
                 </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2 rounded-md border border-border px-3 py-2 text-xs">
+                  <Pill tone={current.acked_at ? "good" : current.alert_id ? "risk" : "muted"}>
+                    {current.acked_at ? "Page acknowledged" : current.alert_id ? "Awaiting acknowledgement" : "No page raised"}
+                  </Pill>
+                  {current.acked_at && (
+                    <span className="flex items-center gap-1.5 text-muted-foreground">
+                      {dt(current.acked_at)} by{" "}
+                      {current.acked_by
+                        ? <UserMention userId={current.acked_by} name="teammate" size="xs" />
+                        : "an operator"}
+                    </span>
+                  )}
+                  {!current.acked_at && current.alert_id && (
+                    <span className="text-muted-foreground">On-call is being paged; escalation continues until someone acknowledges.</span>
+                  )}
+                </div>
+
                 <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
                   {STATUSES.map((s) => (
                     <Btn key={s} variant={current.status === s ? "primary" : "ghost"}

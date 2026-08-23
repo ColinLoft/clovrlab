@@ -6098,6 +6098,57 @@ export type Database = {
         }
         Relationships: []
       }
+      net_detection_events: {
+        Row: {
+          actor: string | null
+          camera_id: string | null
+          camera_name: string | null
+          confidence: number | null
+          created_at: string
+          detail: Json
+          id: string
+          incident_id: string | null
+          kind: string
+          label: string | null
+          message: string | null
+          suggestion_id: string | null
+          sweep_run_id: string | null
+          trigger: string | null
+        }
+        Insert: {
+          actor?: string | null
+          camera_id?: string | null
+          camera_name?: string | null
+          confidence?: number | null
+          created_at?: string
+          detail?: Json
+          id?: string
+          incident_id?: string | null
+          kind: string
+          label?: string | null
+          message?: string | null
+          suggestion_id?: string | null
+          sweep_run_id?: string | null
+          trigger?: string | null
+        }
+        Update: {
+          actor?: string | null
+          camera_id?: string | null
+          camera_name?: string | null
+          confidence?: number | null
+          created_at?: string
+          detail?: Json
+          id?: string
+          incident_id?: string | null
+          kind?: string
+          label?: string | null
+          message?: string | null
+          suggestion_id?: string | null
+          sweep_run_id?: string | null
+          trigger?: string | null
+        }
+        Relationships: []
+      }
       net_drones: {
         Row: {
           airframe_id: string | null
@@ -6251,7 +6302,10 @@ export type Database = {
       }
       net_incidents: {
         Row: {
+          acked_at: string | null
+          acked_by: string | null
           acreage: number | null
+          alert_id: string | null
           assigned_drone_id: string | null
           confidence: number | null
           county: string | null
@@ -6268,11 +6322,15 @@ export type Database = {
           source: Database["public"]["Enums"]["net_incident_source"]
           state: string | null
           status: Database["public"]["Enums"]["net_incident_status"]
+          suggestion_id: string | null
           title: string
           updated_at: string
         }
         Insert: {
+          acked_at?: string | null
+          acked_by?: string | null
           acreage?: number | null
+          alert_id?: string | null
           assigned_drone_id?: string | null
           confidence?: number | null
           county?: string | null
@@ -6289,11 +6347,15 @@ export type Database = {
           source?: Database["public"]["Enums"]["net_incident_source"]
           state?: string | null
           status?: Database["public"]["Enums"]["net_incident_status"]
+          suggestion_id?: string | null
           title: string
           updated_at?: string
         }
         Update: {
+          acked_at?: string | null
+          acked_by?: string | null
           acreage?: number | null
+          alert_id?: string | null
           assigned_drone_id?: string | null
           confidence?: number | null
           county?: string | null
@@ -6310,6 +6372,7 @@ export type Database = {
           source?: Database["public"]["Enums"]["net_incident_source"]
           state?: string | null
           status?: Database["public"]["Enums"]["net_incident_status"]
+          suggestion_id?: string | null
           title?: string
           updated_at?: string
         }
@@ -6690,6 +6753,7 @@ export type Database = {
           max_level: number
           name: string
           queue: string
+          repeat_minutes: number
           updated_at: string
           workspace: string | null
         }
@@ -6702,6 +6766,7 @@ export type Database = {
           max_level?: number
           name: string
           queue?: string
+          repeat_minutes?: number
           updated_at?: string
           workspace?: string | null
         }
@@ -6714,6 +6779,7 @@ export type Database = {
           max_level?: number
           name?: string
           queue?: string
+          repeat_minutes?: number
           updated_at?: string
           workspace?: string | null
         }
@@ -8453,10 +8519,18 @@ export type Database = {
       }
     }
     Functions: {
+      ack_incident_for_alert: {
+        Args: { _alert_id: string; _channel: string; _user_id: string }
+        Returns: undefined
+      }
       ack_page: { Args: { _alert_id: string }; Returns: undefined }
       ack_page_by_token: { Args: { _token: string }; Returns: Json }
       escalate_pages: { Args: never; Returns: number }
       is_hq_admin: { Args: { _user_id: string }; Returns: boolean }
+      log_incident_escalation: {
+        Args: { _alert_id: string; _level: number }
+        Returns: undefined
+      }
       my_access: { Args: never; Returns: Json }
       net_verify_cron_token: { Args: { _token: string }; Returns: boolean }
       notify_managers: {

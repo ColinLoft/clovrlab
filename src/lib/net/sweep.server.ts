@@ -87,12 +87,15 @@ export async function analyzeOne(input: CameraInput, apiKey: string, model: stri
 export interface RunSweepOptions {
   minConfidence: number;
   model: string;
-  autoPromote: boolean;
-  autoPromoteConfidence: number;
   trigger: "manual" | "scheduled";
 }
 
-/** Analyse a bounded batch of camera frames and queue suggestions. Shared by manual + scheduled sweeps. */
+/**
+ * Analyse a bounded batch of camera frames and queue suggestions.
+ * Every flagged frame is turned into an incident by the database trigger on
+ * net_suggestions, so this function only records verdicts and the sweep audit
+ * trail (net_sweep_runs + net_detection_events).
+ */
 export async function runSweep(
   supabase: SupabaseClient<any, any, any>,
   cameras: CameraInput[],
@@ -105,6 +108,25 @@ export async function runSweep(
   let created = 0;
   let analyzed = 0;
   let blocked: GatewayBlocked | null = null;
+
+  // Open the run row first so the logs show a sweep in progress.
+  const { data: runRow } = await supabase
+    .from("net_sweep_runs")
+    .insert({ trigger: opts.trigger, analyzed: 0, created_count: 0, error_count: 0 })
+    .select("id")
+    .single();
+  const runId: string | null = (runRow as any)?.id ?? null;
+
+  const logEvent = async (row: Record<string, unknown>) => {
+    try { await supabase.from("net_detection_events").insert({ sweep_run_id: runId, trigger: opts.trigger, ...row }); }
+    catch { /* logging must never break a sweep */ }
+  };
+
+  await logEvent({
+    kind: "sweep_start",
+    message: `${opts.trigger === "manual" ? "Manual" : "Scheduled"} sweep started across ${cameras.length} camera${cameras.length === 1 ? "" : "s"}`,
+    detail: { model: opts.model, min_confidence: opts.minConfidence, cameras: cameras.length },
+  });
 
   const BATCH = 5;
   for (let i = 0; i < cameras.length && !blocked; i += BATCH) {
@@ -139,20 +161,18 @@ export async function runSweep(
           } else if (row) {
             created++;
             queued = true;
-            if (opts.autoPromote && result.confidence >= opts.autoPromoteConfidence) {
-              await promoteServerSide(supabase, {
-                suggestion_id: row.id,
-                label: result.label,
-                confidence: result.confidence,
-                camera_name: cam.camera_name,
-                lat: cam.lat,
-                lng: cam.lng,
-                state: cam.state ?? null,
-                county: cam.county ?? null,
-                reasoning: result.reasoning,
-              });
-            }
           }
+        } else {
+          // Flagged frames are logged by the database trigger; log the quiet ones here.
+          await logEvent({
+            kind: "verdict",
+            camera_id: cam.camera_id,
+            camera_name: cam.camera_name,
+            label: result.label,
+            confidence: result.confidence,
+            message: result.reasoning,
+            detail: { below_threshold: result.label !== "clear" },
+          });
         }
         results.push({
           camera_id: cam.camera_id,
@@ -188,51 +208,27 @@ export async function runSweep(
     });
   }
 
-  await supabase.from("net_sweep_runs").insert({
-    trigger: opts.trigger,
-    analyzed,
-    created_count: created,
-    error_count: errors.length,
-    first_error: errors[0] ?? null,
-    duration_ms: Date.now() - started,
+  const duration = Date.now() - started;
+  if (runId) {
+    await supabase
+      .from("net_sweep_runs")
+      .update({
+        analyzed,
+        created_count: created,
+        error_count: errors.length,
+        first_error: errors[0] ?? null,
+        duration_ms: duration,
+      })
+      .eq("id", runId);
+  }
+
+  await logEvent({
+    kind: blocked ? "sweep_blocked" : "sweep_end",
+    message: blocked
+      ? `Sweep halted: ${(blocked as GatewayBlocked).message}`
+      : `Sweep finished — ${analyzed} frame${analyzed === 1 ? "" : "s"} screened, ${created} flagged, ${errors.length} error${errors.length === 1 ? "" : "s"}`,
+    detail: { analyzed, created, errors: errors.slice(0, 3), duration_ms: duration },
   });
 
-  return { created, analyzed, errors: errors.slice(0, 5), results, blocked: blocked as GatewayBlocked | null };
-}
-
-async function promoteServerSide(
-  supabase: SupabaseClient<any, any, any>,
-  s: {
-    suggestion_id: string; label: string; confidence: number; camera_name: string;
-    lat: number; lng: number; state: string | null; county: string | null; reasoning: string;
-  },
-) {
-  const priority = s.label === "fire" ? (s.confidence >= 80 ? "p1" : "p2") : "p3";
-  const { data: inc } = await supabase
-    .from("net_incidents")
-    .insert({
-      title: `${s.label === "fire" ? "Fire" : "Smoke"} – ${s.camera_name}`,
-      source: "alertwest",
-      status: "new",
-      priority,
-      confidence: s.confidence,
-      lat: s.lat,
-      lng: s.lng,
-      state: s.state,
-      county: s.county,
-      external_id: s.suggestion_id,
-      notes: s.reasoning,
-    })
-    .select("id")
-    .single();
-  if (!inc) return;
-  await supabase
-    .from("net_suggestions")
-    .update({ status: "promoted", incident_id: inc.id, resolved_at: new Date().toISOString() })
-    .eq("id", s.suggestion_id);
-  await supabase.from("net_incident_events").insert({
-    incident_id: inc.id,
-    event_type: "created",
-    message: `Auto-promoted from AI camera detection (${s.label}, ${s.confidence}%)`,
-  });
+  return { created, analyzed, errors: errors.slice(0, 5), results, runId, blocked: blocked as GatewayBlocked | null };
 }
