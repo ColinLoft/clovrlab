@@ -7,6 +7,8 @@ import {
 } from "@/components/hq/work/kit";
 import { UserMention } from "@/components/hq/UserMention";
 import { PushSettingsCard } from "@/components/hq/PushSettingsCard";
+import { OperatorTopics } from "@/components/hq/OperatorTopics";
+import { DeliveryTimeline } from "@/components/hq/DeliveryTimeline";
 import { playSiren, stopSound } from "@/lib/hq/sounds";
 import {
   ackPage, addRotationMember, addTicketNote, createTicket, deleteRotation, fetchPages,
@@ -16,7 +18,7 @@ import {
   type PageAlert, type PageQueue, type PageTicket, type Rotation, type RotationMember, type TicketNote,
 } from "@/lib/hq/paging";
 
-type Tab = "live" | "tickets" | "history" | "roster";
+type Tab = "live" | "tickets" | "delivery" | "history" | "roster";
 
 export function PagingConsole({ queue, lede }: { queue: PageQueue; lede: string }) {
   const [tab, setTab] = useState<Tab>("live");
@@ -76,7 +78,7 @@ export function PagingConsole({ queue, lede }: { queue: PageQueue; lede: string 
       </StatRow>
 
       <div className="mt-5 flex flex-wrap gap-1.5 border-b border-border pb-2">
-        {([["live", "Live pages"], ["tickets", "Tickets"], ["history", "History"], ["roster", "On-call roster"]] as const).map(([k, label]) => (
+        {([["live", "Live pages"], ["tickets", "Tickets"], ["delivery", "Delivery log"], ["history", "History"], ["roster", "On-call roster"]] as const).map(([k, label]) => (
           <button key={k} onClick={() => setTab(k)}
             className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${tab === k ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent"}`}>
             {label}
@@ -90,12 +92,14 @@ export function PagingConsole({ queue, lede }: { queue: PageQueue; lede: string 
         <div className="mt-4">
           {tab === "live" && <PageList rows={live} reload={reload} empty="All quiet — nothing is paging right now." />}
           {tab === "history" && <PageList rows={pages.filter((p) => p.status === "resolved")} reload={reload} empty="No resolved pages yet." />}
+          {tab === "delivery" && <DeliveryTimeline alertIds={new Set(pages.map((p) => p.id))} />}
           {tab === "tickets" && (
             <Tickets queue={queue} tickets={tickets} notes={notes} people={people.people} reload={reload} />
           )}
           {tab === "roster" && (
             <div className="space-y-4">
               <PushSettingsCard queue={queue} />
+              <OperatorTopics />
               <Roster queue={queue} rotations={rotations} members={members} people={people.people} reload={reload} />
             </div>
           )}
