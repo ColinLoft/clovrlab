@@ -740,3 +740,10 @@ function Interval({ minutes, onChange }: { minutes: number; onChange: (m: number
     </span>
   );
 }
+
+function fmtEvery(minutes: number) {
+  const m = Math.max(1, Math.round(minutes));
+  if (m % 60 === 0) return `Every ${m / 60}h`;
+  if (m > 60) return `Every ${Math.floor(m / 60)}h ${m % 60}m`;
+  return `Every ${m}m`;
+}
