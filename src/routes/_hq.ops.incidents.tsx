@@ -180,14 +180,29 @@ function IncidentsPage() {
 
           {current ? (
             <div className="space-y-4">
-              <Card title={current.title} hint={`${current.source.toUpperCase()} · discovered ${dt(current.discovered_at)}`}>
+              <Card
+                title={current.title}
+                hint={`${current.source.toUpperCase()} · discovered ${dt(current.discovered_at)}`}
+                actions={
+                  <span className="flex flex-wrap gap-1.5">
+                    <Btn onClick={() => exportTimeline("csv")}><Download className="h-3.5 w-3.5" /> CSV</Btn>
+                    <Btn onClick={() => exportTimeline("pdf")}><Printer className="h-3.5 w-3.5" /> PDF</Btn>
+                    <Btn
+                      variant={current.high_risk ? "primary" : "ghost"}
+                      onClick={async () => { await setIncidentHighRisk(current.id, !current.high_risk); refresh(); }}
+                    >
+                      <AlertTriangle className="h-3.5 w-3.5" /> {current.high_risk ? "High risk" : "Flag high risk"}
+                    </Btn>
+                  </span>
+                }
+              >
                 <div className="grid gap-3 sm:grid-cols-4">
                   <Detail label="Status" value={STATUS_META[current.status]?.label ?? current.status} />
                   <Detail label="Priority" value={PRIORITY_META[current.priority]?.label ?? current.priority} />
                   <Detail label="Coordinates" value={`${Number(current.lat).toFixed(3)}, ${Number(current.lng).toFixed(3)}`} />
                   <Detail label="Confidence" value={current.confidence != null ? `${Math.round(current.confidence)}%` : "—"} />
+                  <Detail label="Camera" value={current.camera_name ?? "—"} />
                   <Detail label="FRP" value={current.frp != null ? `${current.frp} MW` : "—"} />
-                  <Detail label="Acreage" value={current.acreage != null ? `${current.acreage}` : "—"} />
                   <Detail label="County" value={current.county ?? "—"} />
                   <Detail label="Assigned aircraft" value={drones.find((d) => d.id === current.assigned_drone_id)?.tail_number ?? "None"} />
                 </div>
@@ -211,18 +226,26 @@ function IncidentsPage() {
                 <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
                   {STATUSES.map((s) => (
                     <Btn key={s} variant={current.status === s ? "primary" : "ghost"}
-                      onClick={async () => { await updateIncidentStatus(current.id, s); setTick((t) => t + 1); }}>
+                      onClick={async () => { await updateIncidentStatus(current.id, s); refresh(); }}>
                       {STATUS_META[s].label}
                     </Btn>
                   ))}
                   {current.assigned_drone_id && (
                     <>
-                      <Btn onClick={async () => { await markDroneInflight(current.assigned_drone_id!, current.id); setTick((t) => t + 1); }}>Mark in flight</Btn>
-                      <Btn variant="danger" onClick={async () => { await releaseDroneFromIncident(current.id, current.assigned_drone_id); setTick((t) => t + 1); }}>Release aircraft</Btn>
+                      <Btn onClick={async () => { await markDroneInflight(current.assigned_drone_id!, current.id); refresh(); }}>Mark in flight</Btn>
+                      <Btn variant="danger" onClick={async () => { await releaseDroneFromIncident(current.id, current.assigned_drone_id); refresh(); }}>Release aircraft</Btn>
                     </>
                   )}
                 </div>
               </Card>
+
+              <div className="grid gap-4 lg:grid-cols-2">
+                <ResolutionCard incident={current} refresh={refresh} />
+                <MediaCard incident={current} media={media} refresh={refresh} />
+              </div>
+
+              <ReviewCard incident={current} refresh={refresh} />
+
 
               <div className="grid gap-4 lg:grid-cols-2">
                 <Card pad={false} title="Dispatch candidates" hint="Ranked by ETA, range and battery">
