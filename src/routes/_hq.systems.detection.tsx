@@ -381,7 +381,7 @@ function CamerasTab({ area }: { area: ResponseArea | null }) {
   }, [cameras, area, q, prefs]);
 
   const update = async (id: string, name: string, patch: Partial<CameraPref>) => {
-    const base: CameraPref = prefs[id] ?? { camera_id: id, camera_name: name, watch: true, priority: 0, label: null, notes: null };
+    const base: CameraPref = prefs[id] ?? { camera_id: id, camera_name: name, watch: true, priority: 0, high_risk: false, label: null, notes: null };
     const next: CameraPref = { ...base, camera_id: id, camera_name: name, ...patch };
     setPrefs({ ...prefs, [id]: next });
     await saveCameraPref(next);
