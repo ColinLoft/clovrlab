@@ -395,24 +395,26 @@ function CamerasTab({ area }: { area: ResponseArea | null }) {
         <Stat label="Cameras in area" value={list.length} icon={CameraIcon} />
         <Stat label="On watch list" value={watching} tone="good" />
         <Stat label="Priority flagged" value={Object.values(prefs).filter((p) => p.priority > 0).length} />
+        <Stat label="High risk" value={Object.values(prefs).filter((p) => p.high_risk).length} tone="warn" />
         <Stat label="Muted" value={muted.length} tone={muted.length ? "warn" : "default"} />
       </StatRow>
 
       <Toolbar q={q} setQ={setQ} placeholder="Search cameras, counties…" />
 
       {loading ? <Loading /> : (
-        <Card pad={false} title="Watch list" hint="Priority cameras are swept first, and exclusively when priority-only is on">
+        <Card pad={false} title="Watch list" hint="Priority cameras are swept first; high-risk cameras are also re-swept on the faster cadence set under scheduled sweeps">
           <div className="max-h-[62vh] overflow-y-auto">
             <table className="w-full text-sm">
               <thead className="sticky top-0 border-b border-border bg-muted/60 text-left text-[11px] uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th className="px-4 py-2.5">Camera</th><th className="px-4 py-2.5">Location</th>
                   <th className="px-4 py-2.5">Status</th><th className="px-4 py-2.5">Label</th>
-                  <th className="px-4 py-2.5">Priority</th><th className="px-4 py-2.5 text-right">Watch</th>
+                  <th className="px-4 py-2.5">Priority</th><th className="px-4 py-2.5">High risk</th>
+                  <th className="px-4 py-2.5 text-right">Watch</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {list.length === 0 && <tr><td colSpan={6}><Empty>No cameras match.</Empty></td></tr>}
+                {list.length === 0 && <tr><td colSpan={7}><Empty>No cameras match.</Empty></td></tr>}
                 {list.map((c) => {
                   const p = prefs[c.site.id];
                   const st = getStatus(c);
@@ -431,12 +433,16 @@ function CamerasTab({ area }: { area: ResponseArea | null }) {
                           onChange={(v) => update(c.site.id, c.name, { priority: Number(v) })}
                           options={[{ value: "0", label: "Standard" }, { value: "1", label: "Priority" }, { value: "2", label: "Critical" }]} />
                       </td>
+                      <td className="px-4 py-2">
+                        <Toggle on={!!p?.high_risk} onChange={(v) => update(c.site.id, c.name, { high_risk: v })} />
+                      </td>
                       <td className="px-4 py-2 text-right">
                         <Toggle on={p?.watch !== false} onChange={(v) => update(c.site.id, c.name, { watch: v })} />
                       </td>
                     </tr>
                   );
                 })}
+
               </tbody>
             </table>
           </div>
