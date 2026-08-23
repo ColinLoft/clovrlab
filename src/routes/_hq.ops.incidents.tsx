@@ -38,6 +38,8 @@ function IncidentsPage() {
   const [incidents, setIncidents] = useState<IncidentRow[]>([]);
   const [drones, setDrones] = useState<DroneRow[]>([]);
   const [events, setEvents] = useState<IncidentEvent[]>([]);
+  const [media, setMedia] = useState<IncidentMedia[]>([]);
+
   const [selected, setSelected] = useState<string | null>(search.id ?? null);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
