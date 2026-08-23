@@ -8,7 +8,7 @@ import {
 import { fetchSettings, saveSettings, fetchSweepRuns, fetchCameraPrefs, saveCameraPref, AI_MODELS, type NetSettings, type SweepRun, type CameraPref } from "@/lib/net/settings";
 import { fetchResponseArea, saveResponseArea, inArea, type ResponseArea } from "@/lib/net/area";
 import { fetchCameras, getStatus, type Camera } from "@/lib/net/alertwest";
-import { geocode } from "@/lib/net/geo";
+import { geocode, geocodeSuggest, type GeocodeSuggestion } from "@/lib/net/geo";
 
 export const Route = createFileRoute("/_hq/systems/detection")({
   head: () => ({
