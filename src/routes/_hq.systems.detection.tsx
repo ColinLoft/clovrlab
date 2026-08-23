@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Cpu, MapPin, Plane, Camera as CameraIcon, Radio, Save, PlayCircle, PauseCircle, History, Plus, Search } from "lucide-react";
 import {
   WorkPage, Card, Btn, Pill, Empty, Loading, Stat, StatRow, Select, Toolbar,
@@ -606,5 +606,90 @@ function DispatchTab({ s, setS, persist, saving }: {
         </div>
       </Card>
     </div>
+  );
+}
+
+/** Type-ahead address field: debounced suggestions with an exact-format dropdown. */
+function AddressAutocomplete({ value, busy, onText, onPick, onLookup }: {
+  value: string;
+  busy: boolean;
+  onText: (v: string) => void;
+  onPick: (s: GeocodeSuggestion) => void;
+  onLookup: () => void | Promise<void>;
+}) {
+  const [items, setItems] = useState<GeocodeSuggestion[]>([]);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [hi, setHi] = useState(0);
+  const typed = useRef(false);
+
+  useEffect(() => {
+    if (!typed.current) return;
+    const q = value.trim();
+    if (q.length < 3) { setItems([]); return; }
+    setLoading(true);
+    const t = setTimeout(async () => {
+      try {
+        const res = await geocodeSuggest(q);
+        setItems(res);
+        setOpen(res.length > 0);
+        setHi(0);
+      } finally { setLoading(false); }
+    }, 280);
+    return () => clearTimeout(t);
+  }, [value]);
+
+  const choose = (s: GeocodeSuggestion) => { typed.current = false; onPick(s); setOpen(false); setItems([]); };
+
+  return (
+    <span className="relative flex gap-1.5">
+      <span className="relative">
+        <input
+          value={value}
+          onChange={(e) => { typed.current = true; onText(e.target.value); }}
+          onFocus={() => items.length && setOpen(true)}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onKeyDown={(e) => {
+            if (!open || !items.length) {
+              if (e.key === "Enter") { e.preventDefault(); void onLookup(); }
+              return;
+            }
+            if (e.key === "ArrowDown") { e.preventDefault(); setHi((h) => Math.min(h + 1, items.length - 1)); }
+            else if (e.key === "ArrowUp") { e.preventDefault(); setHi((h) => Math.max(h - 1, 0)); }
+            else if (e.key === "Enter") { e.preventDefault(); const pick = items[hi]; if (pick) choose(pick); }
+            else if (e.key === "Escape") setOpen(false);
+          }}
+          className="w-72 rounded border border-border bg-background px-2 py-1 text-sm"
+          placeholder="1200 K St, Sacramento, CA, 95814, USA"
+          autoComplete="off"
+        />
+        {open && (
+          <ul className="absolute left-0 top-full z-50 mt-1 max-h-64 w-[26rem] overflow-y-auto rounded-md border border-border bg-popover shadow-lg">
+            {items.map((s, i) => (
+              <li key={`${s.lat},${s.lng},${i}`}>
+                <button
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => choose(s)}
+                  onMouseEnter={() => setHi(i)}
+                  className={`flex w-full items-start gap-2 px-3 py-2 text-left text-xs ${i === hi ? "bg-accent" : ""}`}
+                >
+                  <MapPin className="mt-0.5 h-3.5 w-3.5 flex-none text-muted-foreground" />
+                  <span className="min-w-0">
+                    <span className="block truncate font-medium">{s.short}</span>
+                    <span className="block truncate text-[11px] text-muted-foreground">
+                      {s.lat.toFixed(4)}, {s.lng.toFixed(4)}
+                    </span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </span>
+      <Btn onClick={onLookup} disabled={busy || loading}>
+        <Search className="h-3.5 w-3.5" /> {busy || loading ? "Finding…" : "Find"}
+      </Btn>
+    </span>
   );
 }
