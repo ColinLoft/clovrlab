@@ -2,13 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   ScrollText, RefreshCw, Sparkles, Flame, CloudFog, AlertTriangle, Timer, PlayCircle,
-  CheckCircle2, XCircle, BellRing, BellOff, ArrowUpRight, VolumeX, Radio,
+  CheckCircle2, XCircle, BellRing, BellOff, ArrowUpRight, VolumeX, Radio, Download, Printer,
 } from "lucide-react";
 import { WorkPage, Card, Btn, Pill, Empty, Loading, Stat, StatRow, Select, dt } from "@/components/hq/work/kit";
 import { UserMention } from "@/components/hq/UserMention";
 import { fetchSweepRuns, type SweepRun } from "@/lib/net/settings";
 import { fetchDetectionEvents, type DetectionEvent } from "@/lib/net/detection-log";
 import { relTime } from "@/lib/net/alertwest";
+import { downloadCsv, printReport } from "@/lib/net/export";
 
 export const Route = createFileRoute("/_hq/ops/logs")({
   head: () => ({
