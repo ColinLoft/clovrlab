@@ -183,7 +183,7 @@ function IncidentsPage() {
               <Card
                 title={current.title}
                 hint={`${current.source.toUpperCase()} · discovered ${dt(current.discovered_at)}`}
-                actions={
+                action={
                   <span className="flex flex-wrap gap-1.5">
                     <Btn onClick={() => exportTimeline("csv")}><Download className="h-3.5 w-3.5" /> CSV</Btn>
                     <Btn onClick={() => exportTimeline("pdf")}><Printer className="h-3.5 w-3.5" /> PDF</Btn>
@@ -295,5 +295,197 @@ function Detail({ label, value }: { label: string; value: string }) {
       <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</p>
       <p className="mt-1 text-sm font-medium">{value}</p>
     </div>
+  );
+}
+
+/* ---------------- resolution workflow ---------------- */
+
+function ResolutionCard({ incident, refresh }: { incident: IncidentRow; refresh: () => void }) {
+  const [resolution, setResolution] = useState(incident.resolution ?? "confirmed_fire");
+  const [notes, setNotes] = useState(incident.resolution_notes ?? "");
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState(false);
+  const closed = ["closed", "false_positive"].includes(incident.status);
+
+  useEffect(() => {
+    setResolution(incident.resolution ?? "confirmed_fire");
+    setNotes(incident.resolution_notes ?? "");
+  }, [incident.id]);
+
+  return (
+    <Card title="Resolution" hint="Record the outcome before closing — this is what the report shows">
+      <div className="space-y-3">
+        <div>
+          <p className="mb-1 text-[11px] uppercase tracking-wider text-muted-foreground">Outcome</p>
+          <Select value={resolution} onChange={setResolution} options={RESOLUTIONS} className="w-full" />
+        </div>
+        <div>
+          <p className="mb-1 text-[11px] uppercase tracking-wider text-muted-foreground">Resolution notes</p>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={3}
+            placeholder="What was found on scene, who responded, what closed it out…"
+            className="w-full rounded border border-border bg-background px-2 py-1.5 text-sm"
+          />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Btn
+            variant="primary"
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true);
+              try { await resolveIncident(incident.id, { resolution, notes }); refresh(); } finally { setBusy(false); }
+            }}
+          >
+            <ClipboardCheck className="h-3.5 w-3.5" /> Save resolution
+          </Btn>
+          {closed ? (
+            <Btn onClick={async () => { await reopenIncident(incident.id); refresh(); }}>Reopen incident</Btn>
+          ) : (
+            <Btn
+              variant="danger"
+              onClick={async () => {
+                if (!confirm("Close this incident? The camera returns to normal sweeping and can open new incidents again.")) return;
+                await closeIncident(incident.id);
+                refresh();
+              }}
+            >
+              Close incident
+            </Btn>
+          )}
+        </div>
+        {incident.resolved_at && (
+          <p className="text-[11px] text-muted-foreground">
+            Resolved {dt(incident.resolved_at)}
+            {incident.closed_at ? ` · closed ${dt(incident.closed_at)}` : ""}
+          </p>
+        )}
+
+        <div className="border-t border-border pt-3">
+          <p className="mb-1 text-[11px] uppercase tracking-wider text-muted-foreground">Add a note to the timeline</p>
+          <div className="flex gap-1.5">
+            <input
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              onKeyDown={async (e) => {
+                if (e.key === "Enter" && note.trim()) {
+                  e.preventDefault();
+                  await addIncidentNote(incident.id, note.trim());
+                  setNote(""); refresh();
+                }
+              }}
+              placeholder="Spotted second column of smoke to the north…"
+              className="flex-1 rounded border border-border bg-background px-2 py-1 text-sm"
+            />
+            <Btn
+              disabled={!note.trim()}
+              onClick={async () => { await addIncidentNote(incident.id, note.trim()); setNote(""); refresh(); }}
+            >
+              <Send className="h-3.5 w-3.5" /> Post
+            </Btn>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function MediaCard({ incident, media, refresh }: { incident: IncidentRow; media: IncidentMedia[]; refresh: () => void }) {
+  const [url, setUrl] = useState("");
+  const [caption, setCaption] = useState("");
+  const frames = incident.snapshot_url && !media.some((m) => m.url === incident.snapshot_url)
+    ? [{ id: "snapshot", incident_id: incident.id, kind: "frame", url: incident.snapshot_url, caption: "Detection frame", captured_at: incident.discovered_at, created_by: null, created_at: incident.created_at } as IncidentMedia, ...media]
+    : media;
+
+  return (
+    <Card title="Camera footage & attachments" hint="Detection frames are captured automatically; add ground photos, maps or documents">
+      {frames.length === 0 ? <Empty>Nothing attached yet.</Empty> : (
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {frames.map((m) => (
+            <figure key={m.id} className="group relative overflow-hidden rounded-md border border-border">
+              <a href={m.url} target="_blank" rel="noreferrer">
+                <img src={m.url} alt={m.caption ?? "Incident attachment"} loading="lazy"
+                  className="h-24 w-full bg-muted object-cover transition group-hover:opacity-80" />
+              </a>
+              <figcaption className="truncate px-2 py-1 text-[10px] text-muted-foreground">
+                {m.caption ?? m.kind}{m.captured_at ? ` · ${dt(m.captured_at)}` : ""}
+              </figcaption>
+              {m.id !== "snapshot" && (
+                <button
+                  type="button"
+                  aria-label="Remove attachment"
+                  onClick={async () => { await deleteIncidentMedia(m.id); refresh(); }}
+                  className="absolute right-1 top-1 hidden rounded bg-background/90 p-1 text-destructive group-hover:block"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              )}
+            </figure>
+          ))}
+        </div>
+      )}
+      <div className="mt-3 flex flex-wrap gap-1.5 border-t border-border pt-3">
+        <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://… image or document URL"
+          className="min-w-[14rem] flex-1 rounded border border-border bg-background px-2 py-1 text-sm" />
+        <input value={caption} onChange={(e) => setCaption(e.target.value)} placeholder="Caption"
+          className="w-40 rounded border border-border bg-background px-2 py-1 text-sm" />
+        <Btn
+          disabled={!url.trim()}
+          onClick={async () => {
+            await addIncidentMedia(incident.id, { url: url.trim(), caption: caption.trim() || null });
+            setUrl(""); setCaption(""); refresh();
+          }}
+        >
+          <ImageIcon className="h-3.5 w-3.5" /> Attach
+        </Btn>
+      </div>
+    </Card>
+  );
+}
+
+function ReviewCard({ incident, refresh }: { incident: IncidentRow; refresh: () => void }) {
+  const [cause, setCause] = useState(incident.review_cause ?? "");
+  const [actions, setActions] = useState(incident.review_actions ?? "");
+  const [lessons, setLessons] = useState(incident.review_lessons ?? "");
+
+  useEffect(() => {
+    setCause(incident.review_cause ?? "");
+    setActions(incident.review_actions ?? "");
+    setLessons(incident.review_lessons ?? "");
+  }, [incident.id]);
+
+  return (
+    <Card
+      title="Post-incident review"
+      hint={incident.review_completed_at ? `Completed ${dt(incident.review_completed_at)}` : "Complete after the incident is closed"}
+    >
+      <div className="grid gap-3 lg:grid-cols-3">
+        <Field label="Cause / what happened" value={cause} onChange={setCause} />
+        <Field label="Actions taken" value={actions} onChange={setActions} />
+        <Field label="Lessons & follow-ups" value={lessons} onChange={setLessons} />
+      </div>
+      <div className="mt-3">
+        <Btn
+          variant="primary"
+          onClick={async () => {
+            await saveIncidentReview(incident.id, { review_cause: cause, review_actions: actions, review_lessons: lessons });
+            refresh();
+          }}
+        >
+          <ClipboardCheck className="h-3.5 w-3.5" /> Save review
+        </Btn>
+      </div>
+    </Card>
+  );
+}
+
+function Field({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-[11px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={3}
+        className="w-full rounded border border-border bg-background px-2 py-1.5 text-sm" />
+    </label>
   );
 }
