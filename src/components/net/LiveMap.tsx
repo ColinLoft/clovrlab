@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { MapContainer, TileLayer, CircleMarker, Circle, Marker, Popup, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Circle, Marker, Popup, Tooltip, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { Camera } from "@/lib/net/alertwest";
@@ -49,6 +49,29 @@ function ClickCapture({ onPick }: { onPick?: (p: { lat: number; lng: number }) =
   return null;
 }
 
+function FlyTo({ target }: { target: { lat: number; lng: number; zoom?: number } | null }) {
+  const map = useMap();
+  useEffect(() => {
+    if (target) map.flyTo([target.lat, target.lng], target.zoom ?? 11, { duration: 0.8 });
+  }, [target, map]);
+  return null;
+}
+
+function Readout() {
+  const [pos, setPos] = useState<{ lat: number; lng: number } | null>(null);
+  const [zoom, setZoom] = useState<number | null>(null);
+  const map = useMapEvents({
+    mousemove: (e) => setPos({ lat: e.latlng.lat, lng: e.latlng.lng }),
+    mouseout: () => setPos(null),
+    zoomend: () => setZoom(map.getZoom()),
+  });
+  return (
+    <div className="pointer-events-none absolute bottom-2 left-2 z-[500] rounded bg-black/60 px-2 py-1 font-mono text-[10px] text-white/80">
+      {pos ? `${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}` : "move cursor for coordinates"} · z{zoom ?? ""}
+    </div>
+  );
+}
+
 function planeIcon(heading: number | null) {
   return L.divIcon({
     className: "",
@@ -71,6 +94,7 @@ export default function LiveMap({
   onPickPoint,
   onSelectCamera,
   onSelectIncident,
+  focus = null,
   height = "70vh",
 }: {
   center?: [number, number];
@@ -85,6 +109,7 @@ export default function LiveMap({
   onPickPoint?: (p: { lat: number; lng: number }) => void;
   onSelectCamera?: (c: Camera) => void;
   onSelectIncident?: (i: IncidentRow) => void;
+  focus?: { lat: number; lng: number; zoom?: number } | null;
   height?: string;
 }) {
   const base = BASEMAPS[basemap] ?? BASEMAPS.dark;
@@ -93,10 +118,12 @@ export default function LiveMap({
   if (!ready) return <div className="rounded-lg border border-border bg-muted/30" style={{ height }} />;
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border" style={{ height }}>
+    <div className="relative overflow-hidden rounded-lg border border-border" style={{ height }}>
       <MapContainer center={center} zoom={zoom} style={{ height: "100%", width: "100%", background: "#0b1220" }} preferCanvas>
         <TileLayer url={base.url} attribution={base.attribution} subdomains={"abcd"} />
         <ClickCapture onPick={onPickPoint} />
+        <FlyTo target={focus} />
+        <Readout />
 
         {layers.area && area && Number(area.radius_mi) > 0 && (
           <Circle
@@ -139,6 +166,7 @@ export default function LiveMap({
                 pathOptions={{ color: st.color, fillColor: st.color, fillOpacity: 0.9, weight: 1 }}
                 eventHandlers={{ click: () => onSelectCamera?.(c) }}
               >
+                <Tooltip direction="top" offset={[0, -4]}>{c.name}</Tooltip>
                 <Popup minWidth={240}>
                   <div className="text-xs">
                     {c.image.url && (
