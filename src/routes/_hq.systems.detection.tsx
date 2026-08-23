@@ -281,22 +281,16 @@ function AiTab({ s, setS, area, setArea, persist, saving, runs }: {
           <Row label="Vision model">
             <Select value={s.ai_model} onChange={(v) => setS({ ...s, ai_model: v })} options={AI_MODELS} className="w-72" />
           </Row>
-          <Row label="Minimum confidence to queue" hint="Below this, a smoke/fire call is discarded">
+          <Row label="Minimum confidence to open an incident" hint="At or above this, a smoke/fire call opens an incident and pages on-call. Below it, the frame is logged only.">
             <Num value={s.min_confidence} onChange={(v) => setS({ ...s, min_confidence: v })} suffix="%" />
           </Row>
-          <Row label="Auto-promote very high confidence" hint="Creates an incident automatically — a human still authorizes any flight">
-            <Toggle on={s.auto_promote} onChange={(v) => setS({ ...s, auto_promote: v })} />
-          </Row>
-          {s.auto_promote && (
-            <Row label="Auto-promote threshold">
-              <Num value={s.auto_promote_confidence} onChange={(v) => setS({ ...s, auto_promote_confidence: v })} suffix="%" />
-            </Row>
-          )}
           <div className="pt-3">
             <Btn variant="primary" disabled={saving}
-              onClick={() => persist({ ai_model: s.ai_model, min_confidence: s.min_confidence, auto_promote: s.auto_promote, auto_promote_confidence: s.auto_promote_confidence })}>
+              onClick={() => persist({ ai_model: s.ai_model, min_confidence: s.min_confidence })}>
               <Save className="h-3.5 w-3.5" /> Save AI settings
             </Btn>
+          </div>
+
           </div>
         </Card>
 
