@@ -1,4 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
+import { logDetectionEvent } from "./detection-log";
+
 
 export type IncidentStatus = "new" | "triaging" | "dispatched" | "onscene" | "contained" | "closed" | "false_positive";
 export type IncidentPriority = "p1" | "p2" | "p3" | "p4";
