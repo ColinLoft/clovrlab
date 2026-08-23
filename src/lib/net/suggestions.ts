@@ -89,19 +89,27 @@ export async function fetchCameraHealth(): Promise<Record<string, CameraHealth>>
 
 /** Mark a suggestion as a false positive (improves future sweeps for that camera via health-tracking). */
 export async function markFalsePositive(id: string) {
-  const { error } = await supabase
-    .from("net_suggestions")
-    .update({ status: "dismissed", resolved_at: new Date().toISOString() })
-    .eq("id", id);
-  if (error) throw error;
+  await dismissSuggestion(id, "Marked a false positive by an operator");
 }
 
-export async function dismissSuggestion(id: string) {
-  const { error } = await supabase
+export async function dismissSuggestion(id: string, note = "Dismissed by an operator") {
+  const { data, error } = await supabase
     .from("net_suggestions")
     .update({ status: "dismissed", resolved_at: new Date().toISOString() })
-    .eq("id", id);
+    .eq("id", id)
+    .select("*")
+    .maybeSingle();
   if (error) throw error;
+  const s = data as SuggestionRow | null;
+  await logDetectionEvent({
+    kind: "dismissed",
+    suggestion_id: id,
+    camera_id: s?.camera_id ?? null,
+    camera_name: s?.camera_name ?? null,
+    label: s?.label ?? null,
+    confidence: s?.confidence ?? null,
+    message: note,
+  });
 }
 
 export async function muteCamera(camera_id: string, camera_name: string | null, hours = 24, reason = "False positive") {
@@ -116,6 +124,12 @@ export async function muteCamera(camera_id: string, camera_name: string | null, 
     .update({ status: "dismissed", resolved_at: new Date().toISOString() })
     .eq("camera_id", camera_id)
     .eq("status", "pending");
+  await logDetectionEvent({
+    kind: "muted",
+    camera_id,
+    camera_name,
+    message: `Camera muted for ${hours}h — ${reason}`,
+  });
 }
 
 export async function promoteSuggestion(s: SuggestionRow): Promise<string> {
@@ -145,10 +159,21 @@ export async function promoteSuggestion(s: SuggestionRow): Promise<string> {
   await supabase.from("net_incident_events").insert({
     incident_id: inc!.id,
     event_type: "created",
-    message: `Promoted from AI camera detection (${s.label}, ${s.confidence}%)`,
+    message: `Confirmed by an operator from AI camera detection (${s.label}, ${s.confidence}%)`,
+  });
+  await logDetectionEvent({
+    kind: "confirmed",
+    suggestion_id: s.id,
+    incident_id: inc!.id,
+    camera_id: s.camera_id,
+    camera_name: s.camera_name,
+    label: s.label,
+    confidence: s.confidence,
+    message: "Operator confirmed the detection and opened an incident",
   });
   return inc!.id;
 }
+
 
 /** Full detection history (any status) for the logs view. */
 export async function fetchSuggestionHistory(limit = 100): Promise<SuggestionRow[]> {
