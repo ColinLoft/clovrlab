@@ -4,6 +4,8 @@ import { Flame, Radio, Plane, Clock, RefreshCw } from "lucide-react";
 import {
   WorkPage, Card, Btn, Pill, Empty, Loading, Stat, StatRow, Toolbar, Select, dt,
 } from "@/components/hq/work/kit";
+import { UserMention } from "@/components/hq/UserMention";
+
 import {
   fetchIncidents, fetchIncidentEvents, updateIncidentStatus,
   STATUS_META, PRIORITY_META, type IncidentRow, type IncidentEvent, type IncidentStatus,
