@@ -123,8 +123,9 @@ export const Route = createFileRoute("/api/public/net/sweep")({
           const res = await runSweep(supabaseAdmin as never, batch, apiKey, {
             model: s.ai_model,
             minConfidence: Number(s.min_confidence ?? 55),
-            trigger: "scheduled",
+            trigger: highRiskOnly ? "scheduled-highrisk" : "scheduled",
           });
+
 
           if (res.blocked) {
             await unlock(supabaseAdmin, { paused: true, pause_reason: res.blocked.message });
