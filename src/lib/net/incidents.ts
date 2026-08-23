@@ -21,9 +21,14 @@ export interface IncidentRow {
   frp: number | null;
   assigned_drone_id: string | null;
   notes: string | null;
+  alert_id: string | null;
+  acked_by: string | null;
+  acked_at: string | null;
+  suggestion_id: string | null;
   created_at: string;
   updated_at: string;
 }
+
 
 export interface IncidentEvent {
   id: string;
