@@ -8,8 +8,11 @@ export interface NetSettings {
   auto_promote_confidence: number;
   sweep_enabled: boolean;
   sweep_interval_hours: number;
+  sweep_interval_minutes: number;
+  high_risk_interval_minutes: number;
   sweep_batch_size: number;
   sweep_priority_only: boolean;
+
   last_sweep_at: string | null;
   sweep_lock_until: string | null;
   paused: boolean;
