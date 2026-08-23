@@ -149,3 +149,14 @@ export async function promoteSuggestion(s: SuggestionRow): Promise<string> {
   });
   return inc!.id;
 }
+
+/** Full detection history (any status) for the logs view. */
+export async function fetchSuggestionHistory(limit = 100): Promise<SuggestionRow[]> {
+  const { data, error } = await supabase
+    .from("net_suggestions")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []) as SuggestionRow[];
+}
