@@ -97,3 +97,45 @@ export function isIOS() {
   return /iP(hone|ad|od)/.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && (navigator as any).maxTouchPoints > 1);
 }
+
+// ---------- Admin: manage every operator's topic ----------
+
+export interface OperatorTopic {
+  user_id: string;
+  topic: string;
+  revoked: boolean;
+  last_sent_at: string | null;
+  last_ack_at: string | null;
+  updated_at: string | null;
+}
+
+/** Admin view of all operator topics (RLS restricts this to HQ admins). */
+export async function listOperatorTopics(): Promise<OperatorTopic[]> {
+  const { data, error } = await (supabase as any)
+    .from("push_topics")
+    .select("user_id, topic, revoked, last_sent_at, last_ack_at, updated_at")
+    .order("updated_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as OperatorTopic[];
+}
+
+/** Create or replace a topic for another operator. */
+export async function adminIssueTopic(user_id: string): Promise<string> {
+  const topic = randomTopic();
+  const { error } = await (supabase as any)
+    .from("push_topics")
+    .upsert({ user_id, topic, revoked: false, last_sent_at: null, last_ack_at: null }, { onConflict: "user_id" });
+  if (error) throw error;
+  return topic;
+}
+
+/** Stop pages going to a topic without deleting the record. */
+export async function adminSetRevoked(user_id: string, revoked: boolean) {
+  const { error } = await (supabase as any).from("push_topics").update({ revoked }).eq("user_id", user_id);
+  if (error) throw error;
+}
+
+export async function adminDeleteTopic(user_id: string) {
+  const { error } = await (supabase as any).from("push_topics").delete().eq("user_id", user_id);
+  if (error) throw error;
+}
