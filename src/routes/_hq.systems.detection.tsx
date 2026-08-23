@@ -303,8 +303,17 @@ function AiTab({ s, setS, area, setArea, persist, saving, runs }: {
           <Row label="Run sweeps automatically">
             <Toggle on={s.sweep_enabled} onChange={(v) => setS({ ...s, sweep_enabled: v })} />
           </Row>
-          <Row label="Interval" hint="Checked hourly; a sweep runs once this much time has passed">
-            <Num value={s.sweep_interval_hours} onChange={(v) => setS({ ...s, sweep_interval_hours: v })} suffix="hours" />
+          <Row label="Sweep every" hint="The scheduler checks every few minutes and runs a sweep once this much time has passed">
+            <Interval
+              minutes={s.sweep_interval_minutes ?? 60}
+              onChange={(m) => setS({ ...s, sweep_interval_minutes: m, sweep_interval_hours: Math.max(1, Math.round(m / 60)) })}
+            />
+          </Row>
+          <Row label="High-risk cameras sweep every" hint="Cameras flagged high risk are re-checked on this faster cadence">
+            <Interval
+              minutes={s.high_risk_interval_minutes ?? 15}
+              onChange={(m) => setS({ ...s, high_risk_interval_minutes: m })}
+            />
           </Row>
           <Row label="Cameras per run" hint="Keeps AI spend and run time bounded (max 50)">
             <Num value={s.sweep_batch_size} onChange={(v) => setS({ ...s, sweep_batch_size: v })} />
@@ -314,10 +323,11 @@ function AiTab({ s, setS, area, setArea, persist, saving, runs }: {
           </Row>
           <div className="pt-3">
             <Btn variant="primary" disabled={saving}
-              onClick={() => persist({ sweep_enabled: s.sweep_enabled, sweep_interval_hours: s.sweep_interval_hours, sweep_batch_size: s.sweep_batch_size, sweep_priority_only: s.sweep_priority_only })}>
+              onClick={() => persist({ sweep_enabled: s.sweep_enabled, sweep_interval_hours: s.sweep_interval_hours, sweep_interval_minutes: s.sweep_interval_minutes, high_risk_interval_minutes: s.high_risk_interval_minutes, sweep_batch_size: s.sweep_batch_size, sweep_priority_only: s.sweep_priority_only })}>
               <Save className="h-3.5 w-3.5" /> Save schedule
             </Btn>
           </div>
+
         </Card>
       </div>
 
