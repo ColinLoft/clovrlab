@@ -79,7 +79,7 @@ function DetectionSettings() {
       }
     >
       <StatRow>
-        <Stat label="Scheduled sweeps" value={s.sweep_enabled ? `Every ${s.sweep_interval_hours}h` : "Off"} icon={History} tone={s.sweep_enabled ? "good" : "default"} />
+        <Stat label="Scheduled sweeps" value={s.sweep_enabled ? fmtEvery(s.sweep_interval_minutes ?? (s.sweep_interval_hours || 1) * 60) : "Off"} icon={History} tone={s.sweep_enabled ? "good" : "default"} hint={s.sweep_enabled ? `High risk ${fmtEvery(s.high_risk_interval_minutes ?? 15)}` : undefined} />
         <Stat label="Last sweep" value={s.last_sweep_at ? dt(s.last_sweep_at) : "Never"} />
         <Stat label="Automation" value={s.paused ? "Paused" : "Active"} tone={s.paused ? "risk" : "good"} hint={s.pause_reason ?? undefined} />
         <Stat label="Service area" value={area ? (area.mode === "region" ? `${(area.states ?? []).length + (area.counties ?? []).length} regions` : `${Math.round(Number(area.radius_mi))} mi radius`) : "—"} icon={MapPin} hint={area?.mode === "region" ? [...(area.counties ?? []), ...(area.states ?? [])].join(", ") || undefined : area?.address ?? undefined} />
