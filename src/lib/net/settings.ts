@@ -52,9 +52,11 @@ export interface CameraPref {
   camera_name: string | null;
   watch: boolean;
   priority: number;
+  high_risk: boolean;
   label: string | null;
   notes: string | null;
 }
+
 
 export async function fetchCameraPrefs(): Promise<Record<string, CameraPref>> {
   const { data } = await supabase.from("net_camera_prefs").select("*");
