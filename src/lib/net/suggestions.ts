@@ -1,4 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
+import { logDetectionEvent } from "./detection-log";
+
 
 export interface SuggestionRow {
   id: string;
