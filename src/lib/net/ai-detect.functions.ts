@@ -21,8 +21,6 @@ export const sweepCameras = createServerFn({ method: "POST" })
     const res = await runSweep(supabase as never, data.cameras, apiKey, {
       model: (st as any)?.ai_model ?? "google/gemini-2.5-flash",
       minConfidence: Number((st as any)?.min_confidence ?? 55),
-      autoPromote: Boolean((st as any)?.auto_promote),
-      autoPromoteConfidence: Number((st as any)?.auto_promote_confidence ?? 90),
       trigger: "manual",
     });
 

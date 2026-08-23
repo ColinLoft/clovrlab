@@ -98,8 +98,6 @@ export const Route = createFileRoute("/api/public/net/sweep")({
           const res = await runSweep(supabaseAdmin as never, batch, apiKey, {
             model: s.ai_model,
             minConfidence: Number(s.min_confidence ?? 55),
-            autoPromote: Boolean(s.auto_promote),
-            autoPromoteConfidence: Number(s.auto_promote_confidence ?? 90),
             trigger: "scheduled",
           });
 
