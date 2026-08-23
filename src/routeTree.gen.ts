@@ -71,6 +71,7 @@ import { Route as HqSystemsPagingRouteImport } from './routes/_hq.systems.paging
 import { Route as HqSystemsHelpdeskRouteImport } from './routes/_hq.systems.helpdesk'
 import { Route as HqSystemsDetectionRouteImport } from './routes/_hq.systems.detection'
 import { Route as HqSystemsAssetsRouteImport } from './routes/_hq.systems.assets'
+import { Route as HqSystemsAnalyticsRouteImport } from './routes/_hq.systems.analytics'
 import { Route as HqSystemsAccessRouteImport } from './routes/_hq.systems.access'
 import { Route as HqProductSupportRouteImport } from './routes/_hq.product.support'
 import { Route as HqProductRoadmapRouteImport } from './routes/_hq.product.roadmap'
@@ -436,6 +437,11 @@ const HqSystemsDetectionRoute = HqSystemsDetectionRouteImport.update({
 const HqSystemsAssetsRoute = HqSystemsAssetsRouteImport.update({
   id: '/systems/assets',
   path: '/systems/assets',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSystemsAnalyticsRoute = HqSystemsAnalyticsRouteImport.update({
+  id: '/systems/analytics',
+  path: '/systems/analytics',
   getParentRoute: () => HqRoute,
 } as any)
 const HqSystemsAccessRoute = HqSystemsAccessRouteImport.update({
@@ -831,6 +837,7 @@ export interface FileRoutesByFullPath {
   '/product/roadmap': typeof HqProductRoadmapRoute
   '/product/support': typeof HqProductSupportRoute
   '/systems/access': typeof HqSystemsAccessRoute
+  '/systems/analytics': typeof HqSystemsAnalyticsRoute
   '/systems/assets': typeof HqSystemsAssetsRoute
   '/systems/detection': typeof HqSystemsDetectionRoute
   '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
@@ -950,6 +957,7 @@ export interface FileRoutesByTo {
   '/product/roadmap': typeof HqProductRoadmapRoute
   '/product/support': typeof HqProductSupportRoute
   '/systems/access': typeof HqSystemsAccessRoute
+  '/systems/analytics': typeof HqSystemsAnalyticsRoute
   '/systems/assets': typeof HqSystemsAssetsRoute
   '/systems/detection': typeof HqSystemsDetectionRoute
   '/systems/helpdesk': typeof HqSystemsHelpdeskRoute
@@ -1072,6 +1080,7 @@ export interface FileRoutesById {
   '/_hq/product/roadmap': typeof HqProductRoadmapRoute
   '/_hq/product/support': typeof HqProductSupportRoute
   '/_hq/systems/access': typeof HqSystemsAccessRoute
+  '/_hq/systems/analytics': typeof HqSystemsAnalyticsRoute
   '/_hq/systems/assets': typeof HqSystemsAssetsRoute
   '/_hq/systems/detection': typeof HqSystemsDetectionRoute
   '/_hq/systems/helpdesk': typeof HqSystemsHelpdeskRoute
@@ -1194,6 +1203,7 @@ export interface FileRouteTypes {
     | '/product/roadmap'
     | '/product/support'
     | '/systems/access'
+    | '/systems/analytics'
     | '/systems/assets'
     | '/systems/detection'
     | '/systems/helpdesk'
@@ -1313,6 +1323,7 @@ export interface FileRouteTypes {
     | '/product/roadmap'
     | '/product/support'
     | '/systems/access'
+    | '/systems/analytics'
     | '/systems/assets'
     | '/systems/detection'
     | '/systems/helpdesk'
@@ -1434,6 +1445,7 @@ export interface FileRouteTypes {
     | '/_hq/product/roadmap'
     | '/_hq/product/support'
     | '/_hq/systems/access'
+    | '/_hq/systems/analytics'
     | '/_hq/systems/assets'
     | '/_hq/systems/detection'
     | '/_hq/systems/helpdesk'
@@ -1912,6 +1924,13 @@ declare module '@tanstack/react-router' {
       path: '/systems/assets'
       fullPath: '/systems/assets'
       preLoaderRoute: typeof HqSystemsAssetsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/systems/analytics': {
+      id: '/_hq/systems/analytics'
+      path: '/systems/analytics'
+      fullPath: '/systems/analytics'
+      preLoaderRoute: typeof HqSystemsAnalyticsRouteImport
       parentRoute: typeof HqRoute
     }
     '/_hq/systems/access': {
@@ -2415,6 +2434,7 @@ interface HqRouteChildren {
   HqProductRoadmapRoute: typeof HqProductRoadmapRoute
   HqProductSupportRoute: typeof HqProductSupportRoute
   HqSystemsAccessRoute: typeof HqSystemsAccessRoute
+  HqSystemsAnalyticsRoute: typeof HqSystemsAnalyticsRoute
   HqSystemsAssetsRoute: typeof HqSystemsAssetsRoute
   HqSystemsDetectionRoute: typeof HqSystemsDetectionRoute
   HqSystemsHelpdeskRoute: typeof HqSystemsHelpdeskRoute
@@ -2508,6 +2528,7 @@ const HqRouteChildren: HqRouteChildren = {
   HqProductRoadmapRoute: HqProductRoadmapRoute,
   HqProductSupportRoute: HqProductSupportRoute,
   HqSystemsAccessRoute: HqSystemsAccessRoute,
+  HqSystemsAnalyticsRoute: HqSystemsAnalyticsRoute,
   HqSystemsAssetsRoute: HqSystemsAssetsRoute,
   HqSystemsDetectionRoute: HqSystemsDetectionRoute,
   HqSystemsHelpdeskRoute: HqSystemsHelpdeskRoute,
