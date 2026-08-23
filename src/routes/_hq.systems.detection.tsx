@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Cpu, MapPin, Plane, Camera as CameraIcon, Radio, Save, PlayCircle, PauseCircle, History, Plus, Search } from "lucide-react";
 import {
   WorkPage, Card, Btn, Pill, Empty, Loading, Stat, StatRow, Select, Toolbar,
@@ -8,7 +8,7 @@ import {
 import { fetchSettings, saveSettings, fetchSweepRuns, fetchCameraPrefs, saveCameraPref, AI_MODELS, type NetSettings, type SweepRun, type CameraPref } from "@/lib/net/settings";
 import { fetchResponseArea, saveResponseArea, inArea, type ResponseArea } from "@/lib/net/area";
 import { fetchCameras, getStatus, type Camera } from "@/lib/net/alertwest";
-import { geocode } from "@/lib/net/geo";
+import { geocode, geocodeSuggest, type GeocodeSuggestion } from "@/lib/net/geo";
 
 export const Route = createFileRoute("/_hq/systems/detection")({
   head: () => ({
@@ -79,7 +79,7 @@ function DetectionSettings() {
       }
     >
       <StatRow>
-        <Stat label="Scheduled sweeps" value={s.sweep_enabled ? `Every ${s.sweep_interval_hours}h` : "Off"} icon={History} tone={s.sweep_enabled ? "good" : "default"} />
+        <Stat label="Scheduled sweeps" value={s.sweep_enabled ? fmtEvery(s.sweep_interval_minutes ?? (s.sweep_interval_hours || 1) * 60) : "Off"} icon={History} tone={s.sweep_enabled ? "good" : "default"} hint={s.sweep_enabled ? `High risk ${fmtEvery(s.high_risk_interval_minutes ?? 15)}` : undefined} />
         <Stat label="Last sweep" value={s.last_sweep_at ? dt(s.last_sweep_at) : "Never"} />
         <Stat label="Automation" value={s.paused ? "Paused" : "Active"} tone={s.paused ? "risk" : "good"} hint={s.pause_reason ?? undefined} />
         <Stat label="Service area" value={area ? (area.mode === "region" ? `${(area.states ?? []).length + (area.counties ?? []).length} regions` : `${Math.round(Number(area.radius_mi))} mi radius`) : "—"} icon={MapPin} hint={area?.mode === "region" ? [...(area.counties ?? []), ...(area.states ?? [])].join(", ") || undefined : area?.address ?? undefined} />
@@ -213,15 +213,20 @@ function AreaCard({ area, setArea, persist, saving }: {
 
       {mode === "address" ? (
         <>
-          <Row label="Address or place" hint="Search to set the centre point automatically">
-            <span className="flex gap-1.5">
-              <input value={area.address ?? ""} onChange={(e) => setArea({ ...area, address: e.target.value })}
-                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void lookup(); } }}
-                className="w-60 rounded border border-border bg-background px-2 py-1 text-sm" placeholder="1200 K St, Sacramento, CA" />
-              <Btn onClick={lookup} disabled={busy}><Search className="h-3.5 w-3.5" /> {busy ? "Finding…" : "Find"}</Btn>
-            </span>
+          <Row label="Address or place" hint="Start typing — pick a suggestion to set the centre point exactly">
+            <AddressAutocomplete
+              value={area.address ?? ""}
+              busy={busy}
+              onText={(v) => setArea({ ...area, address: v })}
+              onPick={(sug) => {
+                setArea({ ...area, address: sug.display_name, center_lat: sug.lat, center_lng: sug.lng });
+                setGeo(`Matched: ${sug.display_name}`);
+              }}
+              onLookup={lookup}
+            />
           </Row>
           {geo && <p className="pb-2 text-xs text-muted-foreground">{geo}</p>}
+
           <Row label="Centre latitude"><Num value={Number(area.center_lat ?? 0)} onChange={(v) => setArea({ ...area, center_lat: v })} width="w-32" /></Row>
           <Row label="Centre longitude"><Num value={Number(area.center_lng ?? 0)} onChange={(v) => setArea({ ...area, center_lng: v })} width="w-32" /></Row>
           <Row label="Radius" hint="0 means the whole camera network is in scope">
@@ -298,8 +303,17 @@ function AiTab({ s, setS, area, setArea, persist, saving, runs }: {
           <Row label="Run sweeps automatically">
             <Toggle on={s.sweep_enabled} onChange={(v) => setS({ ...s, sweep_enabled: v })} />
           </Row>
-          <Row label="Interval" hint="Checked hourly; a sweep runs once this much time has passed">
-            <Num value={s.sweep_interval_hours} onChange={(v) => setS({ ...s, sweep_interval_hours: v })} suffix="hours" />
+          <Row label="Sweep every" hint="The scheduler checks every few minutes and runs a sweep once this much time has passed">
+            <Interval
+              minutes={s.sweep_interval_minutes ?? 60}
+              onChange={(m) => setS({ ...s, sweep_interval_minutes: m, sweep_interval_hours: Math.max(1, Math.round(m / 60)) })}
+            />
+          </Row>
+          <Row label="High-risk cameras sweep every" hint="Cameras flagged high risk are re-checked on this faster cadence">
+            <Interval
+              minutes={s.high_risk_interval_minutes ?? 15}
+              onChange={(m) => setS({ ...s, high_risk_interval_minutes: m })}
+            />
           </Row>
           <Row label="Cameras per run" hint="Keeps AI spend and run time bounded (max 50)">
             <Num value={s.sweep_batch_size} onChange={(v) => setS({ ...s, sweep_batch_size: v })} />
@@ -309,10 +323,11 @@ function AiTab({ s, setS, area, setArea, persist, saving, runs }: {
           </Row>
           <div className="pt-3">
             <Btn variant="primary" disabled={saving}
-              onClick={() => persist({ sweep_enabled: s.sweep_enabled, sweep_interval_hours: s.sweep_interval_hours, sweep_batch_size: s.sweep_batch_size, sweep_priority_only: s.sweep_priority_only })}>
+              onClick={() => persist({ sweep_enabled: s.sweep_enabled, sweep_interval_hours: s.sweep_interval_hours, sweep_interval_minutes: s.sweep_interval_minutes, high_risk_interval_minutes: s.high_risk_interval_minutes, sweep_batch_size: s.sweep_batch_size, sweep_priority_only: s.sweep_priority_only })}>
               <Save className="h-3.5 w-3.5" /> Save schedule
             </Btn>
           </div>
+
         </Card>
       </div>
 
@@ -366,7 +381,7 @@ function CamerasTab({ area }: { area: ResponseArea | null }) {
   }, [cameras, area, q, prefs]);
 
   const update = async (id: string, name: string, patch: Partial<CameraPref>) => {
-    const base: CameraPref = prefs[id] ?? { camera_id: id, camera_name: name, watch: true, priority: 0, label: null, notes: null };
+    const base: CameraPref = prefs[id] ?? { camera_id: id, camera_name: name, watch: true, priority: 0, high_risk: false, label: null, notes: null };
     const next: CameraPref = { ...base, camera_id: id, camera_name: name, ...patch };
     setPrefs({ ...prefs, [id]: next });
     await saveCameraPref(next);
@@ -380,24 +395,26 @@ function CamerasTab({ area }: { area: ResponseArea | null }) {
         <Stat label="Cameras in area" value={list.length} icon={CameraIcon} />
         <Stat label="On watch list" value={watching} tone="good" />
         <Stat label="Priority flagged" value={Object.values(prefs).filter((p) => p.priority > 0).length} />
+        <Stat label="High risk" value={Object.values(prefs).filter((p) => p.high_risk).length} tone="warn" />
         <Stat label="Muted" value={muted.length} tone={muted.length ? "warn" : "default"} />
       </StatRow>
 
       <Toolbar q={q} setQ={setQ} placeholder="Search cameras, counties…" />
 
       {loading ? <Loading /> : (
-        <Card pad={false} title="Watch list" hint="Priority cameras are swept first, and exclusively when priority-only is on">
+        <Card pad={false} title="Watch list" hint="Priority cameras are swept first; high-risk cameras are also re-swept on the faster cadence set under scheduled sweeps">
           <div className="max-h-[62vh] overflow-y-auto">
             <table className="w-full text-sm">
               <thead className="sticky top-0 border-b border-border bg-muted/60 text-left text-[11px] uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th className="px-4 py-2.5">Camera</th><th className="px-4 py-2.5">Location</th>
                   <th className="px-4 py-2.5">Status</th><th className="px-4 py-2.5">Label</th>
-                  <th className="px-4 py-2.5">Priority</th><th className="px-4 py-2.5 text-right">Watch</th>
+                  <th className="px-4 py-2.5">Priority</th><th className="px-4 py-2.5">High risk</th>
+                  <th className="px-4 py-2.5 text-right">Watch</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {list.length === 0 && <tr><td colSpan={6}><Empty>No cameras match.</Empty></td></tr>}
+                {list.length === 0 && <tr><td colSpan={7}><Empty>No cameras match.</Empty></td></tr>}
                 {list.map((c) => {
                   const p = prefs[c.site.id];
                   const st = getStatus(c);
@@ -416,12 +433,16 @@ function CamerasTab({ area }: { area: ResponseArea | null }) {
                           onChange={(v) => update(c.site.id, c.name, { priority: Number(v) })}
                           options={[{ value: "0", label: "Standard" }, { value: "1", label: "Priority" }, { value: "2", label: "Critical" }]} />
                       </td>
+                      <td className="px-4 py-2">
+                        <Toggle on={!!p?.high_risk} onChange={(v) => update(c.site.id, c.name, { high_risk: v })} />
+                      </td>
                       <td className="px-4 py-2 text-right">
                         <Toggle on={p?.watch !== false} onChange={(v) => update(c.site.id, c.name, { watch: v })} />
                       </td>
                     </tr>
                   );
                 })}
+
               </tbody>
             </table>
           </div>
@@ -602,4 +623,127 @@ function DispatchTab({ s, setS, persist, saving }: {
       </Card>
     </div>
   );
+}
+
+/** Type-ahead address field: debounced suggestions with an exact-format dropdown. */
+function AddressAutocomplete({ value, busy, onText, onPick, onLookup }: {
+  value: string;
+  busy: boolean;
+  onText: (v: string) => void;
+  onPick: (s: GeocodeSuggestion) => void;
+  onLookup: () => void | Promise<void>;
+}) {
+  const [items, setItems] = useState<GeocodeSuggestion[]>([]);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [hi, setHi] = useState(0);
+  const typed = useRef(false);
+
+  useEffect(() => {
+    if (!typed.current) return;
+    const q = value.trim();
+    if (q.length < 3) { setItems([]); return; }
+    setLoading(true);
+    const t = setTimeout(async () => {
+      try {
+        const res = await geocodeSuggest(q);
+        setItems(res);
+        setOpen(res.length > 0);
+        setHi(0);
+      } finally { setLoading(false); }
+    }, 280);
+    return () => clearTimeout(t);
+  }, [value]);
+
+  const choose = (s: GeocodeSuggestion) => { typed.current = false; onPick(s); setOpen(false); setItems([]); };
+
+  return (
+    <span className="relative flex gap-1.5">
+      <span className="relative">
+        <input
+          value={value}
+          onChange={(e) => { typed.current = true; onText(e.target.value); }}
+          onFocus={() => items.length && setOpen(true)}
+          onBlur={() => setTimeout(() => setOpen(false), 150)}
+          onKeyDown={(e) => {
+            if (!open || !items.length) {
+              if (e.key === "Enter") { e.preventDefault(); void onLookup(); }
+              return;
+            }
+            if (e.key === "ArrowDown") { e.preventDefault(); setHi((h) => Math.min(h + 1, items.length - 1)); }
+            else if (e.key === "ArrowUp") { e.preventDefault(); setHi((h) => Math.max(h - 1, 0)); }
+            else if (e.key === "Enter") { e.preventDefault(); const pick = items[hi]; if (pick) choose(pick); }
+            else if (e.key === "Escape") setOpen(false);
+          }}
+          className="w-72 rounded border border-border bg-background px-2 py-1 text-sm"
+          placeholder="1200 K St, Sacramento, CA, 95814, USA"
+          autoComplete="off"
+        />
+        {open && (
+          <ul className="absolute left-0 top-full z-50 mt-1 max-h-64 w-[26rem] overflow-y-auto rounded-md border border-border bg-popover shadow-lg">
+            {items.map((s, i) => (
+              <li key={`${s.lat},${s.lng},${i}`}>
+                <button
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => choose(s)}
+                  onMouseEnter={() => setHi(i)}
+                  className={`flex w-full items-start gap-2 px-3 py-2 text-left text-xs ${i === hi ? "bg-accent" : ""}`}
+                >
+                  <MapPin className="mt-0.5 h-3.5 w-3.5 flex-none text-muted-foreground" />
+                  <span className="min-w-0">
+                    <span className="block truncate font-medium">{s.short}</span>
+                    <span className="block truncate text-[11px] text-muted-foreground">
+                      {s.lat.toFixed(4)}, {s.lng.toFixed(4)}
+                    </span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </span>
+      <Btn onClick={onLookup} disabled={busy || loading}>
+        <Search className="h-3.5 w-3.5" /> {busy || loading ? "Finding…" : "Find"}
+      </Btn>
+    </span>
+  );
+}
+
+/** Interval field that lets an operator work in minutes or hours. */
+function Interval({ minutes, onChange }: { minutes: number; onChange: (m: number) => void }) {
+  const useHours = minutes >= 60 && minutes % 60 === 0;
+  const [unit, setUnit] = useState<"m" | "h">(useHours ? "h" : "m");
+  const shown = unit === "h" ? Math.max(1, Math.round(minutes / 60)) : Math.max(1, minutes);
+  return (
+    <span className="flex items-center gap-1.5">
+      <input
+        type="number"
+        min={1}
+        value={shown}
+        onChange={(e) => {
+          const n = Math.max(1, Number(e.target.value) || 1);
+          onChange(unit === "h" ? n * 60 : n);
+        }}
+        className="w-20 rounded border border-border bg-background px-2 py-1 text-sm tabular-nums"
+      />
+      <Select
+        value={unit}
+        className="w-28"
+        onChange={(v) => {
+          const u = v as "m" | "h";
+          setUnit(u);
+          onChange(u === "h" ? Math.max(60, Math.round(minutes / 60) * 60) : minutes);
+        }}
+        options={[{ value: "m", label: "minutes" }, { value: "h", label: "hours" }]}
+      />
+    </span>
+  );
+}
+
+function fmtEvery(minutes: number) {
+  const m = Math.max(1, Math.round(minutes));
+  if (m % 60 === 0) return `Every ${m / 60}h`;
+  if (m > 60) return `Every ${Math.floor(m / 60)}h ${m % 60}m`;
+  return `Every ${m}m`;
 }

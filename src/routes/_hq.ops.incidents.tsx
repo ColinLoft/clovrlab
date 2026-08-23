@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { Flame, Radio, Plane, Clock, RefreshCw } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Flame, Radio, Plane, Clock, RefreshCw, Download, Printer, Image as ImageIcon, Trash2, AlertTriangle, ClipboardCheck, Send } from "lucide-react";
 import {
   WorkPage, Card, Btn, Pill, Empty, Loading, Stat, StatRow, Toolbar, Select, dt,
 } from "@/components/hq/work/kit";
@@ -8,10 +8,16 @@ import { UserMention } from "@/components/hq/UserMention";
 
 import {
   fetchIncidents, fetchIncidentEvents, updateIncidentStatus,
-  STATUS_META, PRIORITY_META, type IncidentRow, type IncidentEvent, type IncidentStatus,
+  fetchIncidentMedia, addIncidentMedia, deleteIncidentMedia, addIncidentNote,
+  resolveIncident, closeIncident, reopenIncident, saveIncidentReview, setIncidentHighRisk,
+  RESOLUTIONS,
+  STATUS_META, PRIORITY_META,
+  type IncidentRow, type IncidentEvent, type IncidentStatus, type IncidentMedia,
 } from "@/lib/net/incidents";
+import { downloadCsv, printReport } from "@/lib/net/export";
 import { fetchDrones, type DroneRow } from "@/lib/net/drones";
 import { rankCandidates, assignDroneToIncident, releaseDroneFromIncident, markDroneInflight } from "@/lib/net/dispatch";
+
 
 export const Route = createFileRoute("/_hq/ops/incidents")({
   validateSearch: (s: Record<string, unknown>) => ({ id: typeof s['id'] === "string" ? s['id'] : undefined }),
@@ -32,6 +38,8 @@ function IncidentsPage() {
   const [incidents, setIncidents] = useState<IncidentRow[]>([]);
   const [drones, setDrones] = useState<DroneRow[]>([]);
   const [events, setEvents] = useState<IncidentEvent[]>([]);
+  const [media, setMedia] = useState<IncidentMedia[]>([]);
+
   const [selected, setSelected] = useState<string | null>(search.id ?? null);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
@@ -65,11 +73,43 @@ function IncidentsPage() {
   const current = filtered.find((i) => i.id === selected) ?? filtered[0] ?? null;
 
   useEffect(() => {
-    if (!current) { setEvents([]); return; }
+    if (!current) { setEvents([]); setMedia([]); return; }
     let alive = true;
     fetchIncidentEvents(current.id).then((e) => alive && setEvents(e)).catch(() => setEvents([]));
+    fetchIncidentMedia(current.id).then((m) => alive && setMedia(m)).catch(() => setMedia([]));
     return () => { alive = false; };
   }, [current?.id, tick]);
+
+  const refresh = useCallback(() => setTick((t) => t + 1), []);
+
+  const exportTimeline = (mode: "csv" | "pdf") => {
+    if (!current) return;
+    const columns = [
+      { key: "time", label: "Time (UTC)" },
+      { key: "type", label: "Event" },
+      { key: "message", label: "Detail" },
+    ];
+    const rows = [...events].reverse().map((e) => ({
+      time: new Date(e.created_at).toISOString(),
+      type: e.event_type.replace(/_/g, " "),
+      message: e.message ?? "",
+    }));
+    const slug = current.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+    if (mode === "csv") return downloadCsv(`incident-${slug}`, columns, rows);
+    printReport({
+      title: `Incident report — ${current.title}`,
+      subtitle: `${current.source.toUpperCase()} · ${STATUS_META[current.status]?.label} · discovered ${dt(current.discovered_at)}`,
+      columns,
+      rows,
+      summary: [
+        { label: "Priority", value: PRIORITY_META[current.priority]?.label ?? current.priority },
+        { label: "Coordinates", value: `${Number(current.lat).toFixed(4)}, ${Number(current.lng).toFixed(4)}` },
+        { label: "Camera", value: current.camera_name ?? "—" },
+        { label: "Resolution", value: current.resolution?.replace(/_/g, " ") ?? "Open" },
+      ],
+    });
+  };
+
 
   const candidates = useMemo(() => (current ? rankCandidates(drones, current) : []), [drones, current]);
 
@@ -140,14 +180,29 @@ function IncidentsPage() {
 
           {current ? (
             <div className="space-y-4">
-              <Card title={current.title} hint={`${current.source.toUpperCase()} · discovered ${dt(current.discovered_at)}`}>
+              <Card
+                title={current.title}
+                hint={`${current.source.toUpperCase()} · discovered ${dt(current.discovered_at)}`}
+                action={
+                  <span className="flex flex-wrap gap-1.5">
+                    <Btn onClick={() => exportTimeline("csv")}><Download className="h-3.5 w-3.5" /> CSV</Btn>
+                    <Btn onClick={() => exportTimeline("pdf")}><Printer className="h-3.5 w-3.5" /> PDF</Btn>
+                    <Btn
+                      variant={current.high_risk ? "primary" : "ghost"}
+                      onClick={async () => { await setIncidentHighRisk(current.id, !current.high_risk); refresh(); }}
+                    >
+                      <AlertTriangle className="h-3.5 w-3.5" /> {current.high_risk ? "High risk" : "Flag high risk"}
+                    </Btn>
+                  </span>
+                }
+              >
                 <div className="grid gap-3 sm:grid-cols-4">
                   <Detail label="Status" value={STATUS_META[current.status]?.label ?? current.status} />
                   <Detail label="Priority" value={PRIORITY_META[current.priority]?.label ?? current.priority} />
                   <Detail label="Coordinates" value={`${Number(current.lat).toFixed(3)}, ${Number(current.lng).toFixed(3)}`} />
                   <Detail label="Confidence" value={current.confidence != null ? `${Math.round(current.confidence)}%` : "—"} />
+                  <Detail label="Camera" value={current.camera_name ?? "—"} />
                   <Detail label="FRP" value={current.frp != null ? `${current.frp} MW` : "—"} />
-                  <Detail label="Acreage" value={current.acreage != null ? `${current.acreage}` : "—"} />
                   <Detail label="County" value={current.county ?? "—"} />
                   <Detail label="Assigned aircraft" value={drones.find((d) => d.id === current.assigned_drone_id)?.tail_number ?? "None"} />
                 </div>
@@ -171,18 +226,26 @@ function IncidentsPage() {
                 <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
                   {STATUSES.map((s) => (
                     <Btn key={s} variant={current.status === s ? "primary" : "ghost"}
-                      onClick={async () => { await updateIncidentStatus(current.id, s); setTick((t) => t + 1); }}>
+                      onClick={async () => { await updateIncidentStatus(current.id, s); refresh(); }}>
                       {STATUS_META[s].label}
                     </Btn>
                   ))}
                   {current.assigned_drone_id && (
                     <>
-                      <Btn onClick={async () => { await markDroneInflight(current.assigned_drone_id!, current.id); setTick((t) => t + 1); }}>Mark in flight</Btn>
-                      <Btn variant="danger" onClick={async () => { await releaseDroneFromIncident(current.id, current.assigned_drone_id); setTick((t) => t + 1); }}>Release aircraft</Btn>
+                      <Btn onClick={async () => { await markDroneInflight(current.assigned_drone_id!, current.id); refresh(); }}>Mark in flight</Btn>
+                      <Btn variant="danger" onClick={async () => { await releaseDroneFromIncident(current.id, current.assigned_drone_id); refresh(); }}>Release aircraft</Btn>
                     </>
                   )}
                 </div>
               </Card>
+
+              <div className="grid gap-4 lg:grid-cols-2">
+                <ResolutionCard incident={current} refresh={refresh} />
+                <MediaCard incident={current} media={media} refresh={refresh} />
+              </div>
+
+              <ReviewCard incident={current} refresh={refresh} />
+
 
               <div className="grid gap-4 lg:grid-cols-2">
                 <Card pad={false} title="Dispatch candidates" hint="Ranked by ETA, range and battery">
@@ -232,5 +295,197 @@ function Detail({ label, value }: { label: string; value: string }) {
       <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</p>
       <p className="mt-1 text-sm font-medium">{value}</p>
     </div>
+  );
+}
+
+/* ---------------- resolution workflow ---------------- */
+
+function ResolutionCard({ incident, refresh }: { incident: IncidentRow; refresh: () => void }) {
+  const [resolution, setResolution] = useState(incident.resolution ?? "confirmed_fire");
+  const [notes, setNotes] = useState(incident.resolution_notes ?? "");
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState(false);
+  const closed = ["closed", "false_positive"].includes(incident.status);
+
+  useEffect(() => {
+    setResolution(incident.resolution ?? "confirmed_fire");
+    setNotes(incident.resolution_notes ?? "");
+  }, [incident.id]);
+
+  return (
+    <Card title="Resolution" hint="Record the outcome before closing — this is what the report shows">
+      <div className="space-y-3">
+        <div>
+          <p className="mb-1 text-[11px] uppercase tracking-wider text-muted-foreground">Outcome</p>
+          <Select value={resolution} onChange={setResolution} options={RESOLUTIONS} className="w-full" />
+        </div>
+        <div>
+          <p className="mb-1 text-[11px] uppercase tracking-wider text-muted-foreground">Resolution notes</p>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={3}
+            placeholder="What was found on scene, who responded, what closed it out…"
+            className="w-full rounded border border-border bg-background px-2 py-1.5 text-sm"
+          />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Btn
+            variant="primary"
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true);
+              try { await resolveIncident(incident.id, { resolution, notes }); refresh(); } finally { setBusy(false); }
+            }}
+          >
+            <ClipboardCheck className="h-3.5 w-3.5" /> Save resolution
+          </Btn>
+          {closed ? (
+            <Btn onClick={async () => { await reopenIncident(incident.id); refresh(); }}>Reopen incident</Btn>
+          ) : (
+            <Btn
+              variant="danger"
+              onClick={async () => {
+                if (!confirm("Close this incident? The camera returns to normal sweeping and can open new incidents again.")) return;
+                await closeIncident(incident.id);
+                refresh();
+              }}
+            >
+              Close incident
+            </Btn>
+          )}
+        </div>
+        {incident.resolved_at && (
+          <p className="text-[11px] text-muted-foreground">
+            Resolved {dt(incident.resolved_at)}
+            {incident.closed_at ? ` · closed ${dt(incident.closed_at)}` : ""}
+          </p>
+        )}
+
+        <div className="border-t border-border pt-3">
+          <p className="mb-1 text-[11px] uppercase tracking-wider text-muted-foreground">Add a note to the timeline</p>
+          <div className="flex gap-1.5">
+            <input
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              onKeyDown={async (e) => {
+                if (e.key === "Enter" && note.trim()) {
+                  e.preventDefault();
+                  await addIncidentNote(incident.id, note.trim());
+                  setNote(""); refresh();
+                }
+              }}
+              placeholder="Spotted second column of smoke to the north…"
+              className="flex-1 rounded border border-border bg-background px-2 py-1 text-sm"
+            />
+            <Btn
+              disabled={!note.trim()}
+              onClick={async () => { await addIncidentNote(incident.id, note.trim()); setNote(""); refresh(); }}
+            >
+              <Send className="h-3.5 w-3.5" /> Post
+            </Btn>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function MediaCard({ incident, media, refresh }: { incident: IncidentRow; media: IncidentMedia[]; refresh: () => void }) {
+  const [url, setUrl] = useState("");
+  const [caption, setCaption] = useState("");
+  const frames = incident.snapshot_url && !media.some((m) => m.url === incident.snapshot_url)
+    ? [{ id: "snapshot", incident_id: incident.id, kind: "frame", url: incident.snapshot_url, caption: "Detection frame", captured_at: incident.discovered_at, created_by: null, created_at: incident.created_at } as IncidentMedia, ...media]
+    : media;
+
+  return (
+    <Card title="Camera footage & attachments" hint="Detection frames are captured automatically; add ground photos, maps or documents">
+      {frames.length === 0 ? <Empty>Nothing attached yet.</Empty> : (
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {frames.map((m) => (
+            <figure key={m.id} className="group relative overflow-hidden rounded-md border border-border">
+              <a href={m.url} target="_blank" rel="noreferrer">
+                <img src={m.url} alt={m.caption ?? "Incident attachment"} loading="lazy"
+                  className="h-24 w-full bg-muted object-cover transition group-hover:opacity-80" />
+              </a>
+              <figcaption className="truncate px-2 py-1 text-[10px] text-muted-foreground">
+                {m.caption ?? m.kind}{m.captured_at ? ` · ${dt(m.captured_at)}` : ""}
+              </figcaption>
+              {m.id !== "snapshot" && (
+                <button
+                  type="button"
+                  aria-label="Remove attachment"
+                  onClick={async () => { await deleteIncidentMedia(m.id); refresh(); }}
+                  className="absolute right-1 top-1 hidden rounded bg-background/90 p-1 text-destructive group-hover:block"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              )}
+            </figure>
+          ))}
+        </div>
+      )}
+      <div className="mt-3 flex flex-wrap gap-1.5 border-t border-border pt-3">
+        <input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://… image or document URL"
+          className="min-w-[14rem] flex-1 rounded border border-border bg-background px-2 py-1 text-sm" />
+        <input value={caption} onChange={(e) => setCaption(e.target.value)} placeholder="Caption"
+          className="w-40 rounded border border-border bg-background px-2 py-1 text-sm" />
+        <Btn
+          disabled={!url.trim()}
+          onClick={async () => {
+            await addIncidentMedia(incident.id, { url: url.trim(), caption: caption.trim() || null });
+            setUrl(""); setCaption(""); refresh();
+          }}
+        >
+          <ImageIcon className="h-3.5 w-3.5" /> Attach
+        </Btn>
+      </div>
+    </Card>
+  );
+}
+
+function ReviewCard({ incident, refresh }: { incident: IncidentRow; refresh: () => void }) {
+  const [cause, setCause] = useState(incident.review_cause ?? "");
+  const [actions, setActions] = useState(incident.review_actions ?? "");
+  const [lessons, setLessons] = useState(incident.review_lessons ?? "");
+
+  useEffect(() => {
+    setCause(incident.review_cause ?? "");
+    setActions(incident.review_actions ?? "");
+    setLessons(incident.review_lessons ?? "");
+  }, [incident.id]);
+
+  return (
+    <Card
+      title="Post-incident review"
+      hint={incident.review_completed_at ? `Completed ${dt(incident.review_completed_at)}` : "Complete after the incident is closed"}
+    >
+      <div className="grid gap-3 lg:grid-cols-3">
+        <Field label="Cause / what happened" value={cause} onChange={setCause} />
+        <Field label="Actions taken" value={actions} onChange={setActions} />
+        <Field label="Lessons & follow-ups" value={lessons} onChange={setLessons} />
+      </div>
+      <div className="mt-3">
+        <Btn
+          variant="primary"
+          onClick={async () => {
+            await saveIncidentReview(incident.id, { review_cause: cause, review_actions: actions, review_lessons: lessons });
+            refresh();
+          }}
+        >
+          <ClipboardCheck className="h-3.5 w-3.5" /> Save review
+        </Btn>
+      </div>
+    </Card>
+  );
+}
+
+function Field({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-[11px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={3}
+        className="w-full rounded border border-border bg-background px-2 py-1.5 text-sm" />
+    </label>
   );
 }

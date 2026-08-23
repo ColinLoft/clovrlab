@@ -1,5 +1,5 @@
-import { Link } from "@tanstack/react-router";
-import { Bell, Menu, Phone, ChevronsUpDown, Check, ArrowUpRight, Sun, Moon } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Bell, Menu, Phone, ChevronsUpDown, Check, ArrowUpRight, Sun, Moon, CheckCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { RecordTabs } from "./RecordTabs";
@@ -7,6 +7,8 @@ import { usePhone } from "@/lib/hq/phone";
 import { useHQTheme, resolveTheme } from "@/lib/hq/theme";
 import { useCurrentApp } from "@/lib/hq/app-context";
 import { appUrl } from "@/lib/hq/apps";
+import { playSound } from "@/lib/hq/sounds";
+import { toast } from "@/lib/hq/notify";
 
 type Notification = {
   id: string;
@@ -14,6 +16,7 @@ type Notification = {
   body: string | null;
   created_at: string;
   read_at: string | null;
+  link?: string | null;
 };
 
 export function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
@@ -24,32 +27,67 @@ export function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
   const { permitted: allPermitted, app: current } = useCurrentApp();
   const permitted = allPermitted.filter((a) => !a.is_hub);
   const { incoming, acceptIncoming, declineIncoming } = usePhone();
+  const navigate = useNavigate();
 
+  const loadNotifs = async () => {
+    const { data } = await supabase
+      .from("notifications")
+      .select("id, title, body, link, created_at, read_at")
+      .order("created_at", { ascending: false })
+      .limit(12);
+    if (data) setNotifs(data as Notification[]);
+    const { count } = await supabase
+      .from("notifications")
+      .select("*", { count: "exact", head: true })
+      .is("read_at", null);
+    if (count !== null) setUnread(count);
+  };
+
+  // Live pages and mentions land here: badge, sound and a toast the operator can act on.
   useEffect(() => {
-    let mounted = true;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let cancelled = false;
     (async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user || !mounted) return;
-      const { count } = await supabase
-        .from("notifications")
-        .select("*", { count: "exact", head: true })
-        .is("read_at", null);
-      if (mounted && count !== null) setUnread(count);
+      const { data } = await supabase.auth.getUser();
+      const uid = data.user?.id;
+      if (!uid || cancelled) return;
+      channel = supabase
+        .channel("topbar-notifications")
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${uid}` },
+          (payload) => {
+            const n = payload.new as Notification;
+            setNotifs((cur) => [n, ...cur].slice(0, 12));
+            setUnread((c) => c + 1);
+            playSound("notification");
+            toast.info(n.title ?? "New notification");
+          },
+        )
+        .subscribe();
     })();
-    return () => { mounted = false; };
+    return () => { cancelled = true; if (channel) supabase.removeChannel(channel); };
   }, []);
 
-  useEffect(() => {
-    if (open !== "notif") return;
-    (async () => {
-      const { data } = await supabase
-        .from("notifications")
-        .select("id, title, body, created_at, read_at")
-        .order("created_at", { ascending: false })
-        .limit(6);
-      if (data) setNotifs(data as Notification[]);
-    })();
-  }, [open]);
+  const openNotif = async (n: Notification) => {
+    if (!n.read_at) {
+      await supabase.from("notifications").update({ read_at: new Date().toISOString() }).eq("id", n.id);
+      setNotifs((cur) => cur.map((x) => (x.id === n.id ? { ...x, read_at: new Date().toISOString() } : x)));
+      setUnread((c) => Math.max(0, c - 1));
+    }
+    setOpen(null);
+    if (n.link) navigate({ to: n.link as never });
+  };
+
+  const markAllRead = async () => {
+    await supabase.from("notifications").update({ read_at: new Date().toISOString() }).is("read_at", null);
+    setNotifs((cur) => cur.map((n) => ({ ...n, read_at: n.read_at ?? new Date().toISOString() })));
+    setUnread(0);
+  };
+
+  useEffect(() => { void loadNotifs(); }, []);
+
+  useEffect(() => { if (open === "notif") void loadNotifs(); }, [open]);
 
   // Outside click closes all
   useEffect(() => {
@@ -186,18 +224,34 @@ export function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
             <div className="absolute right-0 top-12 w-80 rounded-xl border border-border bg-card p-1 shadow-xl">
               <div className="flex items-center justify-between border-b border-border px-3 py-2">
                 <p className="text-sm font-semibold">Notifications</p>
-                <span className="text-xs text-muted-foreground">{unread} unread</span>
+                {unread > 0 ? (
+                  <button onClick={markAllRead} className="flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+                    <CheckCheck className="h-3.5 w-3.5" /> Mark all read
+                  </button>
+                ) : (
+                  <span className="text-xs text-muted-foreground">All caught up</span>
+                )}
               </div>
               <div className="max-h-80 overflow-y-auto">
                 {notifs.length === 0 && (
                   <p className="px-3 py-6 text-center text-xs text-muted-foreground">No notifications</p>
                 )}
                 {notifs.map((n) => (
-                  <div key={n.id} className={`border-b border-border/50 px-3 py-2 text-sm last:border-0 ${!n.read_at ? "bg-primary/5" : ""}`}>
-                    <p className="truncate font-medium">{n.title ?? "Notification"}</p>
+                  <button
+                    key={n.id}
+                    type="button"
+                    onClick={() => void openNotif(n)}
+                    className={`block w-full border-b border-border/50 px-3 py-2 text-left text-sm transition last:border-0 hover:bg-muted ${!n.read_at ? "bg-primary/5" : ""}`}
+                  >
+                    <p className="flex items-center gap-1.5 truncate font-medium">
+                      {!n.read_at && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />}
+                      {n.title ?? "Notification"}
+                    </p>
                     {n.body && <p className="line-clamp-2 text-xs text-muted-foreground">{n.body}</p>}
-                    <p className="mt-0.5 text-[10px] text-muted-foreground">{new Date(n.created_at).toLocaleString()}</p>
-                  </div>
+                    <p className="mt-0.5 text-[10px] text-muted-foreground">
+                      {new Date(n.created_at).toLocaleString()}{n.link ? " · tap to open" : ""}
+                    </p>
+                  </button>
                 ))}
               </div>
               <Link

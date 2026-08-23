@@ -27,9 +27,47 @@ export interface IncidentRow {
   acked_by: string | null;
   acked_at: string | null;
   suggestion_id: string | null;
+  camera_id: string | null;
+  camera_name: string | null;
+  snapshot_url: string | null;
+  high_risk: boolean;
+  assigned_to: string | null;
+  assigned_at: string | null;
+  resolution: string | null;
+  resolution_notes: string | null;
+  resolved_at: string | null;
+  resolved_by: string | null;
+  closed_at: string | null;
+  closed_by: string | null;
+  review_cause: string | null;
+  review_actions: string | null;
+  review_lessons: string | null;
+  review_completed_at: string | null;
+  review_by: string | null;
   created_at: string;
   updated_at: string;
 }
+
+export interface IncidentMedia {
+  id: string;
+  incident_id: string;
+  kind: string;
+  url: string;
+  caption: string | null;
+  captured_at: string | null;
+  created_by: string | null;
+  created_at: string;
+}
+
+export const RESOLUTIONS = [
+  { value: "confirmed_fire", label: "Confirmed fire — responders dispatched" },
+  { value: "controlled_burn", label: "Controlled / prescribed burn" },
+  { value: "no_fire", label: "No fire found on scene" },
+  { value: "false_positive", label: "False positive (cloud, dust, glare)" },
+  { value: "duplicate", label: "Duplicate of another incident" },
+  { value: "other", label: "Other" },
+];
+
 
 
 export interface IncidentEvent {
@@ -153,3 +191,108 @@ export async function updateIncidentStatus(id: string, status: IncidentStatus) {
   });
 }
 
+
+/* ---------------- Incident workflow ---------------- */
+
+async function logEvent(id: string, type: string, message: string) {
+  const { data: u } = await supabase.auth.getUser();
+  await supabase.from("net_incident_events").insert({
+    incident_id: id,
+    event_type: type,
+    message,
+    actor: u.user?.id ?? null,
+  } as never);
+}
+
+export async function fetchIncidentMedia(incidentId: string): Promise<IncidentMedia[]> {
+  const { data, error } = await (supabase as any)
+    .from("net_incident_media")
+    .select("*")
+    .eq("incident_id", incidentId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as IncidentMedia[];
+}
+
+export async function addIncidentMedia(incidentId: string, input: { url: string; kind?: string; caption?: string | null }) {
+  const { data: u } = await supabase.auth.getUser();
+  const { error } = await (supabase as any).from("net_incident_media").insert({
+    incident_id: incidentId,
+    url: input.url,
+    kind: input.kind ?? "photo",
+    caption: input.caption ?? null,
+    created_by: u.user?.id ?? null,
+  });
+  if (error) throw error;
+  await logEvent(incidentId, "media_added", `Attachment added${input.caption ? ` — ${input.caption}` : ""}`);
+}
+
+export async function deleteIncidentMedia(id: string) {
+  const { error } = await (supabase as any).from("net_incident_media").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function addIncidentNote(incidentId: string, message: string) {
+  await logEvent(incidentId, "note", message);
+}
+
+export async function assignIncident(id: string, userId: string | null, name?: string) {
+  const { error } = await (supabase as any).from("net_incidents").update({ assigned_to: userId }).eq("id", id);
+  if (error) throw error;
+  await logEvent(id, "assigned", userId ? `Assigned to ${name ?? "an operator"}` : "Assignment cleared");
+}
+
+export async function resolveIncident(
+  id: string,
+  input: { resolution: string; notes: string; status?: IncidentStatus },
+) {
+  const { data: u } = await supabase.auth.getUser();
+  const status: IncidentStatus = input.status ?? (input.resolution === "false_positive" ? "false_positive" : "contained");
+  const { error } = await (supabase as any)
+    .from("net_incidents")
+    .update({
+      status,
+      resolution: input.resolution,
+      resolution_notes: input.notes,
+      resolved_by: u.user?.id ?? null,
+    })
+    .eq("id", id);
+  if (error) throw error;
+  await logEvent(id, "resolved", `Resolved as ${input.resolution.replace(/_/g, " ")}${input.notes ? ` — ${input.notes}` : ""}`);
+  await logDetectionEvent({ kind: "incident_status", incident_id: id, message: `Incident resolved (${input.resolution})` });
+}
+
+export async function closeIncident(id: string) {
+  const { error } = await (supabase as any).from("net_incidents").update({ status: "closed" }).eq("id", id);
+  if (error) throw error;
+  await logEvent(id, "closed", "Incident closed — camera returns to normal sweeping");
+  await logDetectionEvent({ kind: "incident_status", incident_id: id, message: "Incident closed" });
+}
+
+export async function reopenIncident(id: string) {
+  const { error } = await (supabase as any)
+    .from("net_incidents")
+    .update({ status: "triaging", closed_at: null, closed_by: null })
+    .eq("id", id);
+  if (error) throw error;
+  await logEvent(id, "reopened", "Incident reopened");
+}
+
+export async function saveIncidentReview(
+  id: string,
+  review: { review_cause: string; review_actions: string; review_lessons: string },
+) {
+  const { data: u } = await supabase.auth.getUser();
+  const { error } = await (supabase as any)
+    .from("net_incidents")
+    .update({ ...review, review_completed_at: new Date().toISOString(), review_by: u.user?.id ?? null })
+    .eq("id", id);
+  if (error) throw error;
+  await logEvent(id, "review", "Post-incident review completed");
+}
+
+export async function setIncidentHighRisk(id: string, high: boolean) {
+  const { error } = await (supabase as any).from("net_incidents").update({ high_risk: high }).eq("id", id);
+  if (error) throw error;
+  await logEvent(id, "flag", high ? "Flagged high risk" : "High-risk flag cleared");
+}

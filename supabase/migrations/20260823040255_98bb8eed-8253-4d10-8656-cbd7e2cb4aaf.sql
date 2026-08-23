@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.net_incident_lifecycle() FROM PUBLIC, anon, authenticated;

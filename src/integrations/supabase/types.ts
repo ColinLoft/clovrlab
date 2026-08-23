@@ -6072,6 +6072,7 @@ export type Database = {
         Row: {
           camera_id: string
           camera_name: string | null
+          high_risk: boolean
           label: string | null
           notes: string | null
           priority: number
@@ -6081,6 +6082,7 @@ export type Database = {
         Insert: {
           camera_id: string
           camera_name?: string | null
+          high_risk?: boolean
           label?: string | null
           notes?: string | null
           priority?: number
@@ -6090,6 +6092,7 @@ export type Database = {
         Update: {
           camera_id?: string
           camera_name?: string | null
+          high_risk?: boolean
           label?: string | null
           notes?: string | null
           priority?: number
@@ -6259,6 +6262,47 @@ export type Database = {
           },
         ]
       }
+      net_incident_media: {
+        Row: {
+          caption: string | null
+          captured_at: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          incident_id: string
+          kind: string
+          url: string
+        }
+        Insert: {
+          caption?: string | null
+          captured_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          incident_id: string
+          kind?: string
+          url: string
+        }
+        Update: {
+          caption?: string | null
+          captured_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          incident_id?: string
+          kind?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "net_incident_media_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "net_incidents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       net_incident_reports: {
         Row: {
           author: string | null
@@ -6306,7 +6350,13 @@ export type Database = {
           acked_by: string | null
           acreage: number | null
           alert_id: string | null
+          assigned_at: string | null
           assigned_drone_id: string | null
+          assigned_to: string | null
+          camera_id: string | null
+          camera_name: string | null
+          closed_at: string | null
+          closed_by: string | null
           confidence: number | null
           county: string | null
           created_at: string
@@ -6314,11 +6364,22 @@ export type Database = {
           discovered_at: string
           external_id: string | null
           frp: number | null
+          high_risk: boolean
           id: string
           lat: number
           lng: number
           notes: string | null
           priority: Database["public"]["Enums"]["net_incident_priority"]
+          resolution: string | null
+          resolution_notes: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          review_actions: string | null
+          review_by: string | null
+          review_cause: string | null
+          review_completed_at: string | null
+          review_lessons: string | null
+          snapshot_url: string | null
           source: Database["public"]["Enums"]["net_incident_source"]
           state: string | null
           status: Database["public"]["Enums"]["net_incident_status"]
@@ -6331,7 +6392,13 @@ export type Database = {
           acked_by?: string | null
           acreage?: number | null
           alert_id?: string | null
+          assigned_at?: string | null
           assigned_drone_id?: string | null
+          assigned_to?: string | null
+          camera_id?: string | null
+          camera_name?: string | null
+          closed_at?: string | null
+          closed_by?: string | null
           confidence?: number | null
           county?: string | null
           created_at?: string
@@ -6339,11 +6406,22 @@ export type Database = {
           discovered_at?: string
           external_id?: string | null
           frp?: number | null
+          high_risk?: boolean
           id?: string
           lat: number
           lng: number
           notes?: string | null
           priority?: Database["public"]["Enums"]["net_incident_priority"]
+          resolution?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          review_actions?: string | null
+          review_by?: string | null
+          review_cause?: string | null
+          review_completed_at?: string | null
+          review_lessons?: string | null
+          snapshot_url?: string | null
           source?: Database["public"]["Enums"]["net_incident_source"]
           state?: string | null
           status?: Database["public"]["Enums"]["net_incident_status"]
@@ -6356,7 +6434,13 @@ export type Database = {
           acked_by?: string | null
           acreage?: number | null
           alert_id?: string | null
+          assigned_at?: string | null
           assigned_drone_id?: string | null
+          assigned_to?: string | null
+          camera_id?: string | null
+          camera_name?: string | null
+          closed_at?: string | null
+          closed_by?: string | null
           confidence?: number | null
           county?: string | null
           created_at?: string
@@ -6364,11 +6448,22 @@ export type Database = {
           discovered_at?: string
           external_id?: string | null
           frp?: number | null
+          high_risk?: boolean
           id?: string
           lat?: number
           lng?: number
           notes?: string | null
           priority?: Database["public"]["Enums"]["net_incident_priority"]
+          resolution?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          review_actions?: string | null
+          review_by?: string | null
+          review_cause?: string | null
+          review_completed_at?: string | null
+          review_lessons?: string | null
+          snapshot_url?: string | null
           source?: Database["public"]["Enums"]["net_incident_source"]
           state?: string | null
           status?: Database["public"]["Enums"]["net_incident_status"]
@@ -6497,6 +6592,7 @@ export type Database = {
           auto_promote_confidence: number
           dispatch_max_range_mi: number
           dispatch_min_battery: number
+          high_risk_interval_minutes: number
           id: boolean
           last_sweep_at: string | null
           min_confidence: number
@@ -6507,6 +6603,7 @@ export type Database = {
           sweep_batch_size: number
           sweep_enabled: boolean
           sweep_interval_hours: number
+          sweep_interval_minutes: number
           sweep_lock_until: string | null
           sweep_priority_only: boolean
           updated_at: string
@@ -6518,6 +6615,7 @@ export type Database = {
           auto_promote_confidence?: number
           dispatch_max_range_mi?: number
           dispatch_min_battery?: number
+          high_risk_interval_minutes?: number
           id?: boolean
           last_sweep_at?: string | null
           min_confidence?: number
@@ -6528,6 +6626,7 @@ export type Database = {
           sweep_batch_size?: number
           sweep_enabled?: boolean
           sweep_interval_hours?: number
+          sweep_interval_minutes?: number
           sweep_lock_until?: string | null
           sweep_priority_only?: boolean
           updated_at?: string
@@ -6539,6 +6638,7 @@ export type Database = {
           auto_promote_confidence?: number
           dispatch_max_range_mi?: number
           dispatch_min_battery?: number
+          high_risk_interval_minutes?: number
           id?: boolean
           last_sweep_at?: string | null
           min_confidence?: number
@@ -6549,6 +6649,7 @@ export type Database = {
           sweep_batch_size?: number
           sweep_enabled?: boolean
           sweep_interval_hours?: number
+          sweep_interval_minutes?: number
           sweep_lock_until?: string | null
           sweep_priority_only?: boolean
           updated_at?: string

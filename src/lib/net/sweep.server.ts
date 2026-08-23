@@ -87,7 +87,7 @@ export async function analyzeOne(input: CameraInput, apiKey: string, model: stri
 export interface RunSweepOptions {
   minConfidence: number;
   model: string;
-  trigger: "manual" | "scheduled";
+  trigger: "manual" | "scheduled" | "scheduled-highrisk";
 }
 
 /**

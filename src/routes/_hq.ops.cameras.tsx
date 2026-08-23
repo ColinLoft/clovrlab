@@ -122,6 +122,8 @@ function CamerasPage() {
       camera_name: c.name,
       watch: cur?.watch ?? true,
       priority: (cur?.priority ?? 0) > 0 ? 0 : 1,
+      high_risk: cur?.high_risk ?? false,
+
       label: cur?.label ?? null,
       notes: cur?.notes ?? null,
     };

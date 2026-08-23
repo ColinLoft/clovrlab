@@ -2,13 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
   ScrollText, RefreshCw, Sparkles, Flame, CloudFog, AlertTriangle, Timer, PlayCircle,
-  CheckCircle2, XCircle, BellRing, BellOff, ArrowUpRight, VolumeX, Radio,
+  CheckCircle2, XCircle, BellRing, BellOff, ArrowUpRight, VolumeX, Radio, Download, Printer,
 } from "lucide-react";
 import { WorkPage, Card, Btn, Pill, Empty, Loading, Stat, StatRow, Select, dt } from "@/components/hq/work/kit";
 import { UserMention } from "@/components/hq/UserMention";
 import { fetchSweepRuns, type SweepRun } from "@/lib/net/settings";
 import { fetchDetectionEvents, type DetectionEvent } from "@/lib/net/detection-log";
 import { relTime } from "@/lib/net/alertwest";
+import { downloadCsv, printReport } from "@/lib/net/export";
 
 export const Route = createFileRoute("/_hq/ops/logs")({
   head: () => ({
@@ -91,14 +92,54 @@ function LogsPage() {
     ? Math.round(last24.reduce((n, r) => n + (r.duration_ms ?? 0), 0) / last24.filter((r) => r.duration_ms).length)
     : 0;
 
+  const exportCols = [
+    { key: "time", label: "Time (UTC)" },
+    { key: "kind", label: "Event" },
+    { key: "camera", label: "Camera" },
+    { key: "label", label: "Label" },
+    { key: "confidence", label: "Confidence %" },
+    { key: "message", label: "Detail" },
+  ];
+  const exportRows = () =>
+    [...visible].reverse().map((e) => ({
+      time: new Date(e.created_at).toISOString(),
+      kind: (META[e.kind]?.label ?? e.kind).toString(),
+      camera: e.camera_name ?? "",
+      label: e.label ?? "",
+      confidence: e.confidence != null ? Math.round(e.confidence) : "",
+      message: e.message ?? "",
+    }));
+
   return (
     <WorkPage
       wide
       eyebrow="Mission Operations · Detection"
       title="Detection logs"
       lede="One timeline for the whole detection loop: when a sweep starts and ends, what the model said about each frame, which detections became incidents, who was paged and what a human decided."
-      actions={<Btn onClick={() => setTick((t) => t + 1)}><RefreshCw className="h-3.5 w-3.5" /> Refresh</Btn>}
+      actions={
+        <>
+          <Btn onClick={() => downloadCsv("detection-timeline", exportCols, exportRows())}>
+            <Download className="h-3.5 w-3.5" /> CSV
+          </Btn>
+          <Btn onClick={() => printReport({
+            title: "Detection timeline",
+            subtitle: FILTERS.find((f) => f.value === filter)?.label ?? "",
+            columns: exportCols,
+            rows: exportRows(),
+            summary: [
+              { label: "Sweeps 24h", value: String(last24.length) },
+              { label: "Frames 24h", value: String(analyzed24) },
+              { label: "Incidents 24h", value: String(incidents24) },
+              { label: "Errors 24h", value: String(errors24) },
+            ],
+          })}>
+            <Printer className="h-3.5 w-3.5" /> PDF
+          </Btn>
+          <Btn onClick={() => setTick((t) => t + 1)}><RefreshCw className="h-3.5 w-3.5" /> Refresh</Btn>
+        </>
+      }
     >
+
       <StatRow>
         <Stat label="Sweeps (24h)" value={last24.length} icon={Sparkles} />
         <Stat label="Frames screened (24h)" value={analyzed24} icon={ScrollText} />
