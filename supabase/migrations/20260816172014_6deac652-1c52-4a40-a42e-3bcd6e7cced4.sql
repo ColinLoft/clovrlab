@@ -13,9 +13,3 @@ UPDATE public.org_apps SET accent='oklch(0.60 0.20 27)', accent_dark='oklch(0.70
 UPDATE public.org_apps SET accent='oklch(0.58 0.13 170)', accent_dark='oklch(0.72 0.13 170)', layout='console', short_code='SYS' WHERE slug='systems';
 UPDATE public.org_apps SET accent='oklch(0.60 0.15 145)', accent_dark='oklch(0.73 0.14 145)', layout='board', short_code='CO' WHERE slug='commercial';
 UPDATE public.org_apps SET accent='oklch(0.55 0.10 250)', accent_dark='oklch(0.70 0.10 250)', layout='classic', short_code='AD' WHERE slug='admin';
-
-INSERT INTO public.user_roles (user_id, role)
-SELECT '20293dd9-9b87-49e2-98f2-61fdd193398a'::uuid, 'super_admin'::app_role
-WHERE NOT EXISTS (
-  SELECT 1 FROM public.user_roles WHERE user_id = '20293dd9-9b87-49e2-98f2-61fdd193398a' AND role = 'super_admin'
-);

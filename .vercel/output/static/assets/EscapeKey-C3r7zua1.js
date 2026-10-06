@@ -1,0 +1,1 @@
+import{i as e}from"./jsx-runtime-Cx0BB4qO.js";import{t}from"./react-IDFlRUvQ.js";var n=e(t(),1);function r({onEscape:e}){return(0,n.useEffect)(()=>{let t=t=>{t.key===`Escape`&&(t.stopPropagation(),e())};return document.addEventListener(`keydown`,t),()=>document.removeEventListener(`keydown`,t)},[e]),null}export{r as t};

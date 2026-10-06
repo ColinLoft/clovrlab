@@ -1,10 +1,19 @@
-<!-- LOVABLE:BEGIN -->
-> [!IMPORTANT]
-> This project is connected to [Lovable](https://lovable.dev). Avoid rewriting
-> published git history — force pushing, or rebasing/amending/squashing commits
-> that are already pushed — as it rewrites history on Lovable's side and the
-> user will likely lose their project history.
->
-> Commits you push to the connected branch sync back to Lovable and show up in
-> the editor, so keep the branch in a working state.
-<!-- LOVABLE:END -->
+# Clovr Lab
+
+This project uses [TanStack Start](https://tanstack.com/start) with a [Supabase](https://supabase.com) backend.
+Deployed to [Vercel](https://vercel.com).
+
+## Development
+
+```bash
+bun install
+bun run dev
+```
+
+## Database
+
+Migrations live in `supabase/migrations/`. Apply them using the [Supabase CLI](https://supabase.com/docs/guides/cli):
+
+```bash
+supabase db push
+```

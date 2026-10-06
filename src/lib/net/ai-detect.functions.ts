@@ -11,8 +11,8 @@ export const sweepCameras = createServerFn({ method: "POST" })
     return { cameras: d.cameras.slice(0, 50) };
   })
   .handler(async ({ data, context }) => {
-    const apiKey = process.env['LOVABLE_API_KEY'];
-    if (!apiKey) return { created: 0, errors: ["LOVABLE_API_KEY missing"], analyzed: 0, results: [] as SweepResultItem[] };
+    const apiKey = process.env['OPENROUTER_API_KEY'];
+    if (!apiKey) return { created: 0, errors: ["OPENROUTER_API_KEY missing"], analyzed: 0, results: [] as SweepResultItem[] };
 
     const { runSweep } = await import("./sweep.server");
     const supabase = context.supabase;

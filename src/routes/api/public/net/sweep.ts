@@ -10,7 +10,7 @@ export const Route = createFileRoute("/api/public/net/sweep")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const apiKey = process.env['LOVABLE_API_KEY'];
+        const apiKey = process.env['OPENROUTER_API_KEY'];
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { runSweep } = await import("@/lib/net/sweep.server");
 
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/api/public/net/sweep")({
         const s: any = st;
         if (!s) return json({ skipped: "no settings row" });
         if (!s.sweep_enabled) return json({ skipped: "scheduled sweeps disabled" });
-        if (!apiKey) return json({ skipped: "LOVABLE_API_KEY missing" });
+        if (!apiKey) return json({ skipped: "OPENROUTER_API_KEY missing" });
 
         const now = Date.now();
         const probeOnly = Boolean(s.paused);

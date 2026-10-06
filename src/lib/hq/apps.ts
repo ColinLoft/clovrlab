@@ -35,7 +35,7 @@ export const APP_LAYOUTS = [
 export const APP_OVERRIDE_KEY = "hq.app.override";
 
 /** Hostnames that never carry a team subdomain (previews, local dev, apex). */
-const NEUTRAL_HOSTS = [/\.lovable\.app$/, /\.lovableproject\.com$/, /^localhost$/, /^127\./];
+const NEUTRAL_HOSTS = [/^localhost$/, /^127\./];
 
 /**
  * Every workspace lives on the single HQ host. `?app=<slug>` selects it and is

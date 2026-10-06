@@ -46,7 +46,7 @@ CREATE POLICY net_settings_update_admin ON public.net_settings
 -- 2) Shared secret for the scheduled sweep endpoint
 CREATE TABLE IF NOT EXISTS private.cron_tokens (
   name text PRIMARY KEY,
-  token text NOT NULL DEFAULT encode(gen_random_bytes(24), 'hex'),
+  token text NOT NULL DEFAULT encode(extensions.gen_random_bytes(24), 'hex'),
   created_at timestamptz NOT NULL DEFAULT now()
 );
 INSERT INTO private.cron_tokens (name) VALUES ('net_sweep') ON CONFLICT (name) DO NOTHING;
@@ -73,7 +73,7 @@ SELECT cron.schedule(
   '7 * * * *',
   $cron$
   SELECT net.http_post(
-    url := 'https://project--bb3b707d-fecc-4a18-be12-c9ddea559f35.lovable.app/api/public/net/sweep',
+    url := 'https://YOUR_APP_URL/api/public/net/sweep',
     headers := jsonb_build_object(
       'Content-Type', 'application/json',
       'x-cron-secret', (SELECT token FROM private.cron_tokens WHERE name = 'net_sweep')

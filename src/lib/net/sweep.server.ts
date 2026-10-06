@@ -50,9 +50,9 @@ async function toDataUrl(url: string): Promise<string> {
 
 export async function analyzeOne(input: CameraInput, apiKey: string, model: string) {
   const inlineImage = await toDataUrl(input.image_url);
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Lovable-API-Key": apiKey },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
       model,
       messages: [

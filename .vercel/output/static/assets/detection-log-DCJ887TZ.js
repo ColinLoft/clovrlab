@@ -1,0 +1,1 @@
+import{U as e}from"./index-Cl-NAboD.js";var t=e;async function n(e=200){let{data:n,error:r}=await t.from(`net_detection_events`).select(`*`).order(`created_at`,{ascending:!1}).limit(e);if(r)throw r;return n??[]}async function r(n){let{data:r}=await e.auth.getUser();await t.from(`net_detection_events`).insert({...n,actor:r.user?.id??null})}export{r as n,n as t};

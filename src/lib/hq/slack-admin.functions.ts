@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/slack/api";
+const GATEWAY_URL = "https://slack.com/api";
 
 async function assertAdmin(context: any) {
   const { data: roles, error } = await context.supabase
@@ -15,19 +15,17 @@ async function assertAdmin(context: any) {
 }
 
 function creds() {
-  const lovableKey = process.env["LOVABLE_API_KEY"];
   const slackKey = process.env["SLACK_API_KEY"];
-  return { lovableKey, slackKey, configured: Boolean(lovableKey && slackKey) };
+  return { slackKey, configured: Boolean(slackKey) };
 }
 
 async function slack(method: string, body?: Record<string, unknown>) {
-  const { lovableKey, slackKey, configured } = creds();
+  const { slackKey, configured } = creds();
   if (!configured) throw new Error("Slack is not connected for this project yet.");
   const res = await fetch(`${GATEWAY_URL}/${method}`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${lovableKey}`,
-      "X-Connection-Api-Key": slackKey!,
+      Authorization: `Bearer ${slackKey}`,
       "Content-Type": "application/json; charset=utf-8",
     },
     body: body ? JSON.stringify(body) : undefined,

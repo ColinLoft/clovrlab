@@ -6,8 +6,8 @@ SELECT cron.schedule(
   '7 * * * *',
   $$
   SELECT net.http_post(
-    url := 'https://project--bb3b707d-fecc-4a18-be12-c9ddea559f35.lovable.app/api/public/net/sweep',
-    headers := '{"Content-Type": "application/json", "apikey": "sb_publishable_4IupizrjAgpXO7cTNIme4g_X-Hnovww"}'::jsonb,
+    url := 'https://YOUR_APP_URL/api/public/net/sweep',
+    headers := '{"Content-Type": "application/json"}'::jsonb,
     body := '{}'::jsonb
   );
   $$

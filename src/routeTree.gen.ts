@@ -9,195 +9,132 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WorkspacesRouteImport } from './routes/workspaces'
-import { Route as WelcomeRouteImport } from './routes/welcome'
-import { Route as TechnologyRouteImport } from './routes/technology'
-import { Route as SystemRouteImport } from './routes/system'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as PartnersRouteImport } from './routes/partners'
-import { Route as OperationsRouteImport } from './routes/operations'
-import { Route as MissionRouteImport } from './routes/mission'
-import { Route as JoinRouteImport } from './routes/join'
-import { Route as HqLoginRouteImport } from './routes/hq-login'
-import { Route as FaqRouteImport } from './routes/faq'
-import { Route as DonateRouteImport } from './routes/donate'
-import { Route as DevelopmentRouteImport } from './routes/development'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as HqRouteImport } from './routes/_hq'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as MeetingIdRouteImport } from './routes/meeting.$id'
-import { Route as LegalTermsRouteImport } from './routes/legal.terms'
-import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
-import { Route as LegalCookiesRouteImport } from './routes/legal.cookies'
-import { Route as ApiPlanesRouteImport } from './routes/api/planes'
-import { Route as HqTrainingRouteImport } from './routes/_hq.training'
-import { Route as HqTimeOffRouteImport } from './routes/_hq.time-off'
-import { Route as HqTeamsRouteImport } from './routes/_hq.teams'
-import { Route as HqTasksRouteImport } from './routes/_hq.tasks'
-import { Route as HqSettingsRouteImport } from './routes/_hq.settings'
-import { Route as HqSearchRouteImport } from './routes/_hq.search'
-import { Route as HqReviewsRouteImport } from './routes/_hq.reviews'
-import { Route as HqRequestsRouteImport } from './routes/_hq.requests'
-import { Route as HqRdIdeasRouteImport } from './routes/_hq.rd-ideas'
-import { Route as HqPurchaseOrdersRouteImport } from './routes/_hq.purchase-orders'
-import { Route as HqProfileRouteImport } from './routes/_hq.profile'
-import { Route as HqPhoneRouteImport } from './routes/_hq.phone'
-import { Route as HqOrgChartRouteImport } from './routes/_hq.org-chart'
-import { Route as HqOnboardingRouteImport } from './routes/_hq.onboarding'
-import { Route as HqNotificationsRouteImport } from './routes/_hq.notifications'
-import { Route as HqMyTimeRouteImport } from './routes/_hq.my-time'
-import { Route as HqMeetingsRouteImport } from './routes/_hq.meetings'
-import { Route as HqMeetingNotesRouteImport } from './routes/_hq.meeting-notes'
-import { Route as HqMailRouteImport } from './routes/_hq.mail'
-import { Route as HqKbRouteImport } from './routes/_hq.kb'
-import { Route as HqInvoicesRouteImport } from './routes/_hq.invoices'
-import { Route as HqHiringRouteImport } from './routes/_hq.hiring'
-import { Route as HqHelpRouteImport } from './routes/_hq.help'
-import { Route as HqFinancialReportsRouteImport } from './routes/_hq.financial-reports'
-import { Route as HqExpensesRouteImport } from './routes/_hq.expenses'
-import { Route as HqEmployeesRouteImport } from './routes/_hq.employees'
-import { Route as HqDriveRouteImport } from './routes/_hq.drive'
-import { Route as HqDashboardRouteImport } from './routes/_hq.dashboard'
-import { Route as HqCertificationsRouteImport } from './routes/_hq.certifications'
-import { Route as HqCalendarRouteImport } from './routes/_hq.calendar'
-import { Route as HqAttendanceRouteImport } from './routes/_hq.attendance'
-import { Route as HqAnalyticsRouteImport } from './routes/_hq.analytics'
+import { Route as HqRouteImport } from './routes/_hq'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DevelopmentRouteImport } from './routes/development'
+import { Route as DonateRouteImport } from './routes/donate'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as HqLoginRouteImport } from './routes/hq-login'
+import { Route as JoinRouteImport } from './routes/join'
+import { Route as MissionRouteImport } from './routes/mission'
+import { Route as OperationsRouteImport } from './routes/operations'
+import { Route as PartnersRouteImport } from './routes/partners'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SystemRouteImport } from './routes/system'
+import { Route as TechnologyRouteImport } from './routes/technology'
+import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as WorkspacesRouteImport } from './routes/workspaces'
 import { Route as HqAccountingRouteImport } from './routes/_hq.accounting'
+import { Route as HqAnalyticsRouteImport } from './routes/_hq.analytics'
+import { Route as HqAttendanceRouteImport } from './routes/_hq.attendance'
+import { Route as HqCalendarRouteImport } from './routes/_hq.calendar'
+import { Route as HqCertificationsRouteImport } from './routes/_hq.certifications'
+import { Route as HqDashboardRouteImport } from './routes/_hq.dashboard'
+import { Route as HqDriveRouteImport } from './routes/_hq.drive'
+import { Route as HqEmployeesRouteImport } from './routes/_hq.employees'
+import { Route as HqExpensesRouteImport } from './routes/_hq.expenses'
+import { Route as HqFinancialReportsRouteImport } from './routes/_hq.financial-reports'
+import { Route as HqHelpRouteImport } from './routes/_hq.help'
+import { Route as HqHiringRouteImport } from './routes/_hq.hiring'
+import { Route as HqInvoicesRouteImport } from './routes/_hq.invoices'
+import { Route as HqKbRouteImport } from './routes/_hq.kb'
+import { Route as HqMailRouteImport } from './routes/_hq.mail'
+import { Route as HqMeetingNotesRouteImport } from './routes/_hq.meeting-notes'
+import { Route as HqMeetingsRouteImport } from './routes/_hq.meetings'
+import { Route as HqMyTimeRouteImport } from './routes/_hq.my-time'
+import { Route as HqNotificationsRouteImport } from './routes/_hq.notifications'
+import { Route as HqOnboardingRouteImport } from './routes/_hq.onboarding'
+import { Route as HqOrgChartRouteImport } from './routes/_hq.org-chart'
+import { Route as HqPhoneRouteImport } from './routes/_hq.phone'
+import { Route as HqProfileRouteImport } from './routes/_hq.profile'
+import { Route as HqPurchaseOrdersRouteImport } from './routes/_hq.purchase-orders'
+import { Route as HqRdIdeasRouteImport } from './routes/_hq.rd-ideas'
+import { Route as HqRequestsRouteImport } from './routes/_hq.requests'
+import { Route as HqReviewsRouteImport } from './routes/_hq.reviews'
+import { Route as HqSearchRouteImport } from './routes/_hq.search'
+import { Route as HqSettingsRouteImport } from './routes/_hq.settings'
+import { Route as HqTasksRouteImport } from './routes/_hq.tasks'
+import { Route as HqTeamsRouteImport } from './routes/_hq.teams'
+import { Route as HqTimeOffRouteImport } from './routes/_hq.time-off'
+import { Route as HqTrainingRouteImport } from './routes/_hq.training'
+import { Route as ApiPlanesRouteImport } from './routes/api/planes'
+import { Route as LegalCookiesRouteImport } from './routes/legal.cookies'
+import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
+import { Route as LegalTermsRouteImport } from './routes/legal.terms'
+import { Route as MeetingIdRouteImport } from './routes/meeting.$id'
+import { Route as HqAdminAppsRouteImport } from './routes/_hq.admin.apps'
+import { Route as HqAdminCompanyRouteImport } from './routes/_hq.admin.company'
+import { Route as HqAdminDepartmentsRouteImport } from './routes/_hq.admin.departments'
+import { Route as HqAdminHealthRouteImport } from './routes/_hq.admin.health'
+import { Route as HqAdminItRouteImport } from './routes/_hq.admin.it'
+import { Route as HqAdminOrgRouteImport } from './routes/_hq.admin.org'
+import { Route as HqAdminPoliciesRouteImport } from './routes/_hq.admin.policies'
+import { Route as HqAdminSlackRouteImport } from './routes/_hq.admin.slack'
+import { Route as HqEngBoardRouteImport } from './routes/_hq.eng.board'
+import { Route as HqEngChangesRouteImport } from './routes/_hq.eng.changes'
+import { Route as HqEngFirmwareRouteImport } from './routes/_hq.eng.firmware'
+import { Route as HqEngHardwareRouteImport } from './routes/_hq.eng.hardware'
+import { Route as HqEngIssuesRouteImport } from './routes/_hq.eng.issues'
+import { Route as HqEngLibraryRouteImport } from './routes/_hq.eng.library'
+import { Route as HqEngProgramsRouteImport } from './routes/_hq.eng.programs'
+import { Route as HqEngReviewsRouteImport } from './routes/_hq.eng.reviews'
+import { Route as HqExecAnnouncementsRouteImport } from './routes/_hq.exec.announcements'
+import { Route as HqExecBriefingRouteImport } from './routes/_hq.exec.briefing'
+import { Route as HqExecDecisionsRouteImport } from './routes/_hq.exec.decisions'
+import { Route as HqExecOkrsRouteImport } from './routes/_hq.exec.okrs'
+import { Route as HqFundCampaignsRouteImport } from './routes/_hq.fund.campaigns'
+import { Route as HqFundDonationsRouteImport } from './routes/_hq.fund.donations'
+import { Route as HqFundDonorsRouteImport } from './routes/_hq.fund.donors'
+import { Route as HqFundGrantsRouteImport } from './routes/_hq.fund.grants'
+import { Route as HqFundPipelineRouteImport } from './routes/_hq.fund.pipeline'
+import { Route as HqMfgLineRouteImport } from './routes/_hq.mfg.line'
+import { Route as HqMfgOrdersRouteImport } from './routes/_hq.mfg.orders'
+import { Route as HqMfgQualityRouteImport } from './routes/_hq.mfg.quality'
+import { Route as HqMfgReturnsRouteImport } from './routes/_hq.mfg.returns'
+import { Route as HqMfgStockRouteImport } from './routes/_hq.mfg.stock'
+import { Route as HqMfgSupplyRouteImport } from './routes/_hq.mfg.supply'
+import { Route as HqOpsAirspaceRouteImport } from './routes/_hq.ops.airspace'
+import { Route as HqOpsCamerasRouteImport } from './routes/_hq.ops.cameras'
+import { Route as HqOpsControlRouteImport } from './routes/_hq.ops.control'
+import { Route as HqOpsCoverageRouteImport } from './routes/_hq.ops.coverage'
+import { Route as HqOpsDetectionsRouteImport } from './routes/_hq.ops.detections'
+import { Route as HqOpsFlightsRouteImport } from './routes/_hq.ops.flights'
+import { Route as HqOpsIncidentsRouteImport } from './routes/_hq.ops.incidents'
+import { Route as HqOpsLiveMapRouteImport } from './routes/_hq.ops.live-map'
+import { Route as HqOpsLogsRouteImport } from './routes/_hq.ops.logs'
+import { Route as HqOpsMaintenanceRouteImport } from './routes/_hq.ops.maintenance'
+import { Route as HqOpsNetworkFleetRouteImport } from './routes/_hq.ops.network-fleet'
+import { Route as HqOpsPagingRouteImport } from './routes/_hq.ops.paging'
+import { Route as HqOpsReadinessRouteImport } from './routes/_hq.ops.readiness'
+import { Route as HqOpsSitrepRouteImport } from './routes/_hq.ops.sitrep'
+import { Route as HqProductFeedbackRouteImport } from './routes/_hq.product.feedback'
+import { Route as HqProductInsightsRouteImport } from './routes/_hq.product.insights'
+import { Route as HqProductPortfolioRouteImport } from './routes/_hq.product.portfolio'
+import { Route as HqProductReleasesRouteImport } from './routes/_hq.product.releases'
+import { Route as HqProductRoadmapRouteImport } from './routes/_hq.product.roadmap'
+import { Route as HqProductSupportRouteImport } from './routes/_hq.product.support'
+import { Route as HqSystemsAccessRouteImport } from './routes/_hq.systems.access'
+import { Route as HqSystemsAnalyticsRouteImport } from './routes/_hq.systems.analytics'
+import { Route as HqSystemsAssetsRouteImport } from './routes/_hq.systems.assets'
+import { Route as HqSystemsDetectionRouteImport } from './routes/_hq.systems.detection'
+import { Route as HqSystemsHelpdeskRouteImport } from './routes/_hq.systems.helpdesk'
+import { Route as HqSystemsPagingRouteImport } from './routes/_hq.systems.paging'
+import { Route as HqSystemsServicesRouteImport } from './routes/_hq.systems.services'
 import { Route as HqTeamsIndexRouteImport } from './routes/_hq.teams.index'
 import { Route as HqTeamsSlugRouteImport } from './routes/_hq.teams.$slug'
-import { Route as HqSystemsServicesRouteImport } from './routes/_hq.systems.services'
-import { Route as HqSystemsPagingRouteImport } from './routes/_hq.systems.paging'
-import { Route as HqSystemsHelpdeskRouteImport } from './routes/_hq.systems.helpdesk'
-import { Route as HqSystemsDetectionRouteImport } from './routes/_hq.systems.detection'
-import { Route as HqSystemsAssetsRouteImport } from './routes/_hq.systems.assets'
-import { Route as HqSystemsAnalyticsRouteImport } from './routes/_hq.systems.analytics'
-import { Route as HqSystemsAccessRouteImport } from './routes/_hq.systems.access'
-import { Route as HqProductSupportRouteImport } from './routes/_hq.product.support'
-import { Route as HqProductRoadmapRouteImport } from './routes/_hq.product.roadmap'
-import { Route as HqProductReleasesRouteImport } from './routes/_hq.product.releases'
-import { Route as HqProductPortfolioRouteImport } from './routes/_hq.product.portfolio'
-import { Route as HqProductInsightsRouteImport } from './routes/_hq.product.insights'
-import { Route as HqProductFeedbackRouteImport } from './routes/_hq.product.feedback'
-import { Route as HqOpsSitrepRouteImport } from './routes/_hq.ops.sitrep'
-import { Route as HqOpsReadinessRouteImport } from './routes/_hq.ops.readiness'
-import { Route as HqOpsPagingRouteImport } from './routes/_hq.ops.paging'
-import { Route as HqOpsNetworkFleetRouteImport } from './routes/_hq.ops.network-fleet'
-import { Route as HqOpsMaintenanceRouteImport } from './routes/_hq.ops.maintenance'
-import { Route as HqOpsLogsRouteImport } from './routes/_hq.ops.logs'
-import { Route as HqOpsLiveMapRouteImport } from './routes/_hq.ops.live-map'
-import { Route as HqOpsIncidentsRouteImport } from './routes/_hq.ops.incidents'
-import { Route as HqOpsFlightsRouteImport } from './routes/_hq.ops.flights'
-import { Route as HqOpsDetectionsRouteImport } from './routes/_hq.ops.detections'
-import { Route as HqOpsCoverageRouteImport } from './routes/_hq.ops.coverage'
-import { Route as HqOpsControlRouteImport } from './routes/_hq.ops.control'
-import { Route as HqOpsCamerasRouteImport } from './routes/_hq.ops.cameras'
-import { Route as HqOpsAirspaceRouteImport } from './routes/_hq.ops.airspace'
-import { Route as HqMfgSupplyRouteImport } from './routes/_hq.mfg.supply'
-import { Route as HqMfgStockRouteImport } from './routes/_hq.mfg.stock'
-import { Route as HqMfgReturnsRouteImport } from './routes/_hq.mfg.returns'
-import { Route as HqMfgQualityRouteImport } from './routes/_hq.mfg.quality'
-import { Route as HqMfgOrdersRouteImport } from './routes/_hq.mfg.orders'
-import { Route as HqMfgLineRouteImport } from './routes/_hq.mfg.line'
-import { Route as HqFundPipelineRouteImport } from './routes/_hq.fund.pipeline'
-import { Route as HqFundGrantsRouteImport } from './routes/_hq.fund.grants'
-import { Route as HqFundDonorsRouteImport } from './routes/_hq.fund.donors'
-import { Route as HqFundDonationsRouteImport } from './routes/_hq.fund.donations'
-import { Route as HqFundCampaignsRouteImport } from './routes/_hq.fund.campaigns'
-import { Route as HqExecOkrsRouteImport } from './routes/_hq.exec.okrs'
-import { Route as HqExecDecisionsRouteImport } from './routes/_hq.exec.decisions'
-import { Route as HqExecBriefingRouteImport } from './routes/_hq.exec.briefing'
-import { Route as HqExecAnnouncementsRouteImport } from './routes/_hq.exec.announcements'
-import { Route as HqEngReviewsRouteImport } from './routes/_hq.eng.reviews'
-import { Route as HqEngProgramsRouteImport } from './routes/_hq.eng.programs'
-import { Route as HqEngLibraryRouteImport } from './routes/_hq.eng.library'
-import { Route as HqEngIssuesRouteImport } from './routes/_hq.eng.issues'
-import { Route as HqEngHardwareRouteImport } from './routes/_hq.eng.hardware'
-import { Route as HqEngFirmwareRouteImport } from './routes/_hq.eng.firmware'
-import { Route as HqEngChangesRouteImport } from './routes/_hq.eng.changes'
-import { Route as HqEngBoardRouteImport } from './routes/_hq.eng.board'
-import { Route as HqAdminSlackRouteImport } from './routes/_hq.admin.slack'
-import { Route as HqAdminPoliciesRouteImport } from './routes/_hq.admin.policies'
-import { Route as HqAdminOrgRouteImport } from './routes/_hq.admin.org'
-import { Route as HqAdminItRouteImport } from './routes/_hq.admin.it'
-import { Route as HqAdminHealthRouteImport } from './routes/_hq.admin.health'
-import { Route as HqAdminDepartmentsRouteImport } from './routes/_hq.admin.departments'
-import { Route as HqAdminCompanyRouteImport } from './routes/_hq.admin.company'
-import { Route as HqAdminAppsRouteImport } from './routes/_hq.admin.apps'
-import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
-import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
-import { Route as ApiPublicNetSweepRouteImport } from './routes/api/public/net/sweep'
-import { Route as ApiPublicNetPageEmailRouteImport } from './routes/api/public/net/page-email'
 import { Route as ApiPublicNetPageAckRouteImport } from './routes/api/public/net/page-ack'
+import { Route as ApiPublicNetPageEmailRouteImport } from './routes/api/public/net/page-email'
+import { Route as ApiPublicNetSweepRouteImport } from './routes/api/public/net/sweep'
 
-const WorkspacesRoute = WorkspacesRouteImport.update({
-  id: '/workspaces',
-  path: '/workspaces',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WelcomeRoute = WelcomeRouteImport.update({
-  id: '/welcome',
-  path: '/welcome',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TechnologyRoute = TechnologyRouteImport.update({
-  id: '/technology',
-  path: '/technology',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SystemRoute = SystemRouteImport.update({
-  id: '/system',
-  path: '/system',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PartnersRoute = PartnersRouteImport.update({
-  id: '/partners',
-  path: '/partners',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OperationsRoute = OperationsRouteImport.update({
-  id: '/operations',
-  path: '/operations',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MissionRoute = MissionRouteImport.update({
-  id: '/mission',
-  path: '/mission',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JoinRoute = JoinRouteImport.update({
-  id: '/join',
-  path: '/join',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HqLoginRoute = HqLoginRouteImport.update({
-  id: '/hq-login',
-  path: '/hq-login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DonateRoute = DonateRouteImport.update({
-  id: '/donate',
-  path: '/donate',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DevelopmentRoute = DevelopmentRouteImport.update({
-  id: '/development',
-  path: '/development',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const HqRoute = HqRouteImport.update({
+  id: '/_hq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -205,193 +142,79 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HqRoute = HqRouteImport.update({
-  id: '/_hq',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const DevelopmentRoute = DevelopmentRouteImport.update({
+  id: '/development',
+  path: '/development',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MeetingIdRoute = MeetingIdRouteImport.update({
-  id: '/meeting/$id',
-  path: '/meeting/$id',
+const DonateRoute = DonateRouteImport.update({
+  id: '/donate',
+  path: '/donate',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LegalTermsRoute = LegalTermsRouteImport.update({
-  id: '/legal/terms',
-  path: '/legal/terms',
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
-  id: '/legal/privacy',
-  path: '/legal/privacy',
+const HqLoginRoute = HqLoginRouteImport.update({
+  id: '/hq-login',
+  path: '/hq-login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LegalCookiesRoute = LegalCookiesRouteImport.update({
-  id: '/legal/cookies',
-  path: '/legal/cookies',
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPlanesRoute = ApiPlanesRouteImport.update({
-  id: '/api/planes',
-  path: '/api/planes',
+const MissionRoute = MissionRouteImport.update({
+  id: '/mission',
+  path: '/mission',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HqTrainingRoute = HqTrainingRouteImport.update({
-  id: '/training',
-  path: '/training',
-  getParentRoute: () => HqRoute,
+const OperationsRoute = OperationsRouteImport.update({
+  id: '/operations',
+  path: '/operations',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const HqTimeOffRoute = HqTimeOffRouteImport.update({
-  id: '/time-off',
-  path: '/time-off',
-  getParentRoute: () => HqRoute,
+const PartnersRoute = PartnersRouteImport.update({
+  id: '/partners',
+  path: '/partners',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const HqTeamsRoute = HqTeamsRouteImport.update({
-  id: '/teams',
-  path: '/teams',
-  getParentRoute: () => HqRoute,
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const HqTasksRoute = HqTasksRouteImport.update({
-  id: '/tasks',
-  path: '/tasks',
-  getParentRoute: () => HqRoute,
+const SystemRoute = SystemRouteImport.update({
+  id: '/system',
+  path: '/system',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const HqSettingsRoute = HqSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => HqRoute,
+const TechnologyRoute = TechnologyRouteImport.update({
+  id: '/technology',
+  path: '/technology',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const HqSearchRoute = HqSearchRouteImport.update({
-  id: '/search',
-  path: '/search',
-  getParentRoute: () => HqRoute,
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const HqReviewsRoute = HqReviewsRouteImport.update({
-  id: '/reviews',
-  path: '/reviews',
-  getParentRoute: () => HqRoute,
+const WorkspacesRoute = WorkspacesRouteImport.update({
+  id: '/workspaces',
+  path: '/workspaces',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const HqRequestsRoute = HqRequestsRouteImport.update({
-  id: '/requests',
-  path: '/requests',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqRdIdeasRoute = HqRdIdeasRouteImport.update({
-  id: '/rd-ideas',
-  path: '/rd-ideas',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqPurchaseOrdersRoute = HqPurchaseOrdersRouteImport.update({
-  id: '/purchase-orders',
-  path: '/purchase-orders',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqProfileRoute = HqProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqPhoneRoute = HqPhoneRouteImport.update({
-  id: '/phone',
-  path: '/phone',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOrgChartRoute = HqOrgChartRouteImport.update({
-  id: '/org-chart',
-  path: '/org-chart',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOnboardingRoute = HqOnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqNotificationsRoute = HqNotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqMyTimeRoute = HqMyTimeRouteImport.update({
-  id: '/my-time',
-  path: '/my-time',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqMeetingsRoute = HqMeetingsRouteImport.update({
-  id: '/meetings',
-  path: '/meetings',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqMeetingNotesRoute = HqMeetingNotesRouteImport.update({
-  id: '/meeting-notes',
-  path: '/meeting-notes',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqMailRoute = HqMailRouteImport.update({
-  id: '/mail',
-  path: '/mail',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqKbRoute = HqKbRouteImport.update({
-  id: '/kb',
-  path: '/kb',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqInvoicesRoute = HqInvoicesRouteImport.update({
-  id: '/invoices',
-  path: '/invoices',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqHiringRoute = HqHiringRouteImport.update({
-  id: '/hiring',
-  path: '/hiring',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqHelpRoute = HqHelpRouteImport.update({
-  id: '/help',
-  path: '/help',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqFinancialReportsRoute = HqFinancialReportsRouteImport.update({
-  id: '/financial-reports',
-  path: '/financial-reports',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqExpensesRoute = HqExpensesRouteImport.update({
-  id: '/expenses',
-  path: '/expenses',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqEmployeesRoute = HqEmployeesRouteImport.update({
-  id: '/employees',
-  path: '/employees',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqDriveRoute = HqDriveRouteImport.update({
-  id: '/drive',
-  path: '/drive',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqDashboardRoute = HqDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqCertificationsRoute = HqCertificationsRouteImport.update({
-  id: '/certifications',
-  path: '/certifications',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqCalendarRoute = HqCalendarRouteImport.update({
-  id: '/calendar',
-  path: '/calendar',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqAttendanceRoute = HqAttendanceRouteImport.update({
-  id: '/attendance',
-  path: '/attendance',
+const HqAccountingRoute = HqAccountingRouteImport.update({
+  id: '/accounting',
+  path: '/accounting',
   getParentRoute: () => HqRoute,
 } as any)
 const HqAnalyticsRoute = HqAnalyticsRouteImport.update({
@@ -399,9 +222,474 @@ const HqAnalyticsRoute = HqAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => HqRoute,
 } as any)
-const HqAccountingRoute = HqAccountingRouteImport.update({
-  id: '/accounting',
-  path: '/accounting',
+const HqAttendanceRoute = HqAttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqCalendarRoute = HqCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqCertificationsRoute = HqCertificationsRouteImport.update({
+  id: '/certifications',
+  path: '/certifications',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqDashboardRoute = HqDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqDriveRoute = HqDriveRouteImport.update({
+  id: '/drive',
+  path: '/drive',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqEmployeesRoute = HqEmployeesRouteImport.update({
+  id: '/employees',
+  path: '/employees',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqExpensesRoute = HqExpensesRouteImport.update({
+  id: '/expenses',
+  path: '/expenses',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqFinancialReportsRoute = HqFinancialReportsRouteImport.update({
+  id: '/financial-reports',
+  path: '/financial-reports',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqHelpRoute = HqHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqHiringRoute = HqHiringRouteImport.update({
+  id: '/hiring',
+  path: '/hiring',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqInvoicesRoute = HqInvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqKbRoute = HqKbRouteImport.update({
+  id: '/kb',
+  path: '/kb',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqMailRoute = HqMailRouteImport.update({
+  id: '/mail',
+  path: '/mail',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqMeetingNotesRoute = HqMeetingNotesRouteImport.update({
+  id: '/meeting-notes',
+  path: '/meeting-notes',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqMeetingsRoute = HqMeetingsRouteImport.update({
+  id: '/meetings',
+  path: '/meetings',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqMyTimeRoute = HqMyTimeRouteImport.update({
+  id: '/my-time',
+  path: '/my-time',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqNotificationsRoute = HqNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOnboardingRoute = HqOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOrgChartRoute = HqOrgChartRouteImport.update({
+  id: '/org-chart',
+  path: '/org-chart',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqPhoneRoute = HqPhoneRouteImport.update({
+  id: '/phone',
+  path: '/phone',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqProfileRoute = HqProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqPurchaseOrdersRoute = HqPurchaseOrdersRouteImport.update({
+  id: '/purchase-orders',
+  path: '/purchase-orders',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqRdIdeasRoute = HqRdIdeasRouteImport.update({
+  id: '/rd-ideas',
+  path: '/rd-ideas',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqRequestsRoute = HqRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqReviewsRoute = HqReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSearchRoute = HqSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSettingsRoute = HqSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqTasksRoute = HqTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqTeamsRoute = HqTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqTimeOffRoute = HqTimeOffRouteImport.update({
+  id: '/time-off',
+  path: '/time-off',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqTrainingRoute = HqTrainingRouteImport.update({
+  id: '/training',
+  path: '/training',
+  getParentRoute: () => HqRoute,
+} as any)
+const ApiPlanesRoute = ApiPlanesRouteImport.update({
+  id: '/api/planes',
+  path: '/api/planes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalCookiesRoute = LegalCookiesRouteImport.update({
+  id: '/legal/cookies',
+  path: '/legal/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
+  id: '/legal/privacy',
+  path: '/legal/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalTermsRoute = LegalTermsRouteImport.update({
+  id: '/legal/terms',
+  path: '/legal/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeetingIdRoute = MeetingIdRouteImport.update({
+  id: '/meeting/$id',
+  path: '/meeting/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HqAdminAppsRoute = HqAdminAppsRouteImport.update({
+  id: '/admin/apps',
+  path: '/admin/apps',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqAdminCompanyRoute = HqAdminCompanyRouteImport.update({
+  id: '/admin/company',
+  path: '/admin/company',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqAdminDepartmentsRoute = HqAdminDepartmentsRouteImport.update({
+  id: '/admin/departments',
+  path: '/admin/departments',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqAdminHealthRoute = HqAdminHealthRouteImport.update({
+  id: '/admin/health',
+  path: '/admin/health',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqAdminItRoute = HqAdminItRouteImport.update({
+  id: '/admin/it',
+  path: '/admin/it',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqAdminOrgRoute = HqAdminOrgRouteImport.update({
+  id: '/admin/org',
+  path: '/admin/org',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqAdminPoliciesRoute = HqAdminPoliciesRouteImport.update({
+  id: '/admin/policies',
+  path: '/admin/policies',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqAdminSlackRoute = HqAdminSlackRouteImport.update({
+  id: '/admin/slack',
+  path: '/admin/slack',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqEngBoardRoute = HqEngBoardRouteImport.update({
+  id: '/eng/board',
+  path: '/eng/board',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqEngChangesRoute = HqEngChangesRouteImport.update({
+  id: '/eng/changes',
+  path: '/eng/changes',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqEngFirmwareRoute = HqEngFirmwareRouteImport.update({
+  id: '/eng/firmware',
+  path: '/eng/firmware',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqEngHardwareRoute = HqEngHardwareRouteImport.update({
+  id: '/eng/hardware',
+  path: '/eng/hardware',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqEngIssuesRoute = HqEngIssuesRouteImport.update({
+  id: '/eng/issues',
+  path: '/eng/issues',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqEngLibraryRoute = HqEngLibraryRouteImport.update({
+  id: '/eng/library',
+  path: '/eng/library',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqEngProgramsRoute = HqEngProgramsRouteImport.update({
+  id: '/eng/programs',
+  path: '/eng/programs',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqEngReviewsRoute = HqEngReviewsRouteImport.update({
+  id: '/eng/reviews',
+  path: '/eng/reviews',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqExecAnnouncementsRoute = HqExecAnnouncementsRouteImport.update({
+  id: '/exec/announcements',
+  path: '/exec/announcements',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqExecBriefingRoute = HqExecBriefingRouteImport.update({
+  id: '/exec/briefing',
+  path: '/exec/briefing',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqExecDecisionsRoute = HqExecDecisionsRouteImport.update({
+  id: '/exec/decisions',
+  path: '/exec/decisions',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqExecOkrsRoute = HqExecOkrsRouteImport.update({
+  id: '/exec/okrs',
+  path: '/exec/okrs',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqFundCampaignsRoute = HqFundCampaignsRouteImport.update({
+  id: '/fund/campaigns',
+  path: '/fund/campaigns',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqFundDonationsRoute = HqFundDonationsRouteImport.update({
+  id: '/fund/donations',
+  path: '/fund/donations',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqFundDonorsRoute = HqFundDonorsRouteImport.update({
+  id: '/fund/donors',
+  path: '/fund/donors',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqFundGrantsRoute = HqFundGrantsRouteImport.update({
+  id: '/fund/grants',
+  path: '/fund/grants',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqFundPipelineRoute = HqFundPipelineRouteImport.update({
+  id: '/fund/pipeline',
+  path: '/fund/pipeline',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqMfgLineRoute = HqMfgLineRouteImport.update({
+  id: '/mfg/line',
+  path: '/mfg/line',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqMfgOrdersRoute = HqMfgOrdersRouteImport.update({
+  id: '/mfg/orders',
+  path: '/mfg/orders',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqMfgQualityRoute = HqMfgQualityRouteImport.update({
+  id: '/mfg/quality',
+  path: '/mfg/quality',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqMfgReturnsRoute = HqMfgReturnsRouteImport.update({
+  id: '/mfg/returns',
+  path: '/mfg/returns',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqMfgStockRoute = HqMfgStockRouteImport.update({
+  id: '/mfg/stock',
+  path: '/mfg/stock',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqMfgSupplyRoute = HqMfgSupplyRouteImport.update({
+  id: '/mfg/supply',
+  path: '/mfg/supply',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsAirspaceRoute = HqOpsAirspaceRouteImport.update({
+  id: '/ops/airspace',
+  path: '/ops/airspace',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsCamerasRoute = HqOpsCamerasRouteImport.update({
+  id: '/ops/cameras',
+  path: '/ops/cameras',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsControlRoute = HqOpsControlRouteImport.update({
+  id: '/ops/control',
+  path: '/ops/control',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsCoverageRoute = HqOpsCoverageRouteImport.update({
+  id: '/ops/coverage',
+  path: '/ops/coverage',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsDetectionsRoute = HqOpsDetectionsRouteImport.update({
+  id: '/ops/detections',
+  path: '/ops/detections',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsFlightsRoute = HqOpsFlightsRouteImport.update({
+  id: '/ops/flights',
+  path: '/ops/flights',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsIncidentsRoute = HqOpsIncidentsRouteImport.update({
+  id: '/ops/incidents',
+  path: '/ops/incidents',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsLiveMapRoute = HqOpsLiveMapRouteImport.update({
+  id: '/ops/live-map',
+  path: '/ops/live-map',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsLogsRoute = HqOpsLogsRouteImport.update({
+  id: '/ops/logs',
+  path: '/ops/logs',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsMaintenanceRoute = HqOpsMaintenanceRouteImport.update({
+  id: '/ops/maintenance',
+  path: '/ops/maintenance',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsNetworkFleetRoute = HqOpsNetworkFleetRouteImport.update({
+  id: '/ops/network-fleet',
+  path: '/ops/network-fleet',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsPagingRoute = HqOpsPagingRouteImport.update({
+  id: '/ops/paging',
+  path: '/ops/paging',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsReadinessRoute = HqOpsReadinessRouteImport.update({
+  id: '/ops/readiness',
+  path: '/ops/readiness',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqOpsSitrepRoute = HqOpsSitrepRouteImport.update({
+  id: '/ops/sitrep',
+  path: '/ops/sitrep',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqProductFeedbackRoute = HqProductFeedbackRouteImport.update({
+  id: '/product/feedback',
+  path: '/product/feedback',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqProductInsightsRoute = HqProductInsightsRouteImport.update({
+  id: '/product/insights',
+  path: '/product/insights',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqProductPortfolioRoute = HqProductPortfolioRouteImport.update({
+  id: '/product/portfolio',
+  path: '/product/portfolio',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqProductReleasesRoute = HqProductReleasesRouteImport.update({
+  id: '/product/releases',
+  path: '/product/releases',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqProductRoadmapRoute = HqProductRoadmapRouteImport.update({
+  id: '/product/roadmap',
+  path: '/product/roadmap',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqProductSupportRoute = HqProductSupportRouteImport.update({
+  id: '/product/support',
+  path: '/product/support',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSystemsAccessRoute = HqSystemsAccessRouteImport.update({
+  id: '/systems/access',
+  path: '/systems/access',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSystemsAnalyticsRoute = HqSystemsAnalyticsRouteImport.update({
+  id: '/systems/analytics',
+  path: '/systems/analytics',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSystemsAssetsRoute = HqSystemsAssetsRouteImport.update({
+  id: '/systems/assets',
+  path: '/systems/assets',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSystemsDetectionRoute = HqSystemsDetectionRouteImport.update({
+  id: '/systems/detection',
+  path: '/systems/detection',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSystemsHelpdeskRoute = HqSystemsHelpdeskRouteImport.update({
+  id: '/systems/helpdesk',
+  path: '/systems/helpdesk',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSystemsPagingRoute = HqSystemsPagingRouteImport.update({
+  id: '/systems/paging',
+  path: '/systems/paging',
+  getParentRoute: () => HqRoute,
+} as any)
+const HqSystemsServicesRoute = HqSystemsServicesRouteImport.update({
+  id: '/systems/services',
+  path: '/systems/services',
   getParentRoute: () => HqRoute,
 } as any)
 const HqTeamsIndexRoute = HqTeamsIndexRouteImport.update({
@@ -414,309 +702,9 @@ const HqTeamsSlugRoute = HqTeamsSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => HqTeamsRoute,
 } as any)
-const HqSystemsServicesRoute = HqSystemsServicesRouteImport.update({
-  id: '/systems/services',
-  path: '/systems/services',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqSystemsPagingRoute = HqSystemsPagingRouteImport.update({
-  id: '/systems/paging',
-  path: '/systems/paging',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqSystemsHelpdeskRoute = HqSystemsHelpdeskRouteImport.update({
-  id: '/systems/helpdesk',
-  path: '/systems/helpdesk',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqSystemsDetectionRoute = HqSystemsDetectionRouteImport.update({
-  id: '/systems/detection',
-  path: '/systems/detection',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqSystemsAssetsRoute = HqSystemsAssetsRouteImport.update({
-  id: '/systems/assets',
-  path: '/systems/assets',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqSystemsAnalyticsRoute = HqSystemsAnalyticsRouteImport.update({
-  id: '/systems/analytics',
-  path: '/systems/analytics',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqSystemsAccessRoute = HqSystemsAccessRouteImport.update({
-  id: '/systems/access',
-  path: '/systems/access',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqProductSupportRoute = HqProductSupportRouteImport.update({
-  id: '/product/support',
-  path: '/product/support',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqProductRoadmapRoute = HqProductRoadmapRouteImport.update({
-  id: '/product/roadmap',
-  path: '/product/roadmap',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqProductReleasesRoute = HqProductReleasesRouteImport.update({
-  id: '/product/releases',
-  path: '/product/releases',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqProductPortfolioRoute = HqProductPortfolioRouteImport.update({
-  id: '/product/portfolio',
-  path: '/product/portfolio',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqProductInsightsRoute = HqProductInsightsRouteImport.update({
-  id: '/product/insights',
-  path: '/product/insights',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqProductFeedbackRoute = HqProductFeedbackRouteImport.update({
-  id: '/product/feedback',
-  path: '/product/feedback',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsSitrepRoute = HqOpsSitrepRouteImport.update({
-  id: '/ops/sitrep',
-  path: '/ops/sitrep',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsReadinessRoute = HqOpsReadinessRouteImport.update({
-  id: '/ops/readiness',
-  path: '/ops/readiness',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsPagingRoute = HqOpsPagingRouteImport.update({
-  id: '/ops/paging',
-  path: '/ops/paging',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsNetworkFleetRoute = HqOpsNetworkFleetRouteImport.update({
-  id: '/ops/network-fleet',
-  path: '/ops/network-fleet',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsMaintenanceRoute = HqOpsMaintenanceRouteImport.update({
-  id: '/ops/maintenance',
-  path: '/ops/maintenance',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsLogsRoute = HqOpsLogsRouteImport.update({
-  id: '/ops/logs',
-  path: '/ops/logs',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsLiveMapRoute = HqOpsLiveMapRouteImport.update({
-  id: '/ops/live-map',
-  path: '/ops/live-map',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsIncidentsRoute = HqOpsIncidentsRouteImport.update({
-  id: '/ops/incidents',
-  path: '/ops/incidents',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsFlightsRoute = HqOpsFlightsRouteImport.update({
-  id: '/ops/flights',
-  path: '/ops/flights',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsDetectionsRoute = HqOpsDetectionsRouteImport.update({
-  id: '/ops/detections',
-  path: '/ops/detections',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsCoverageRoute = HqOpsCoverageRouteImport.update({
-  id: '/ops/coverage',
-  path: '/ops/coverage',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsControlRoute = HqOpsControlRouteImport.update({
-  id: '/ops/control',
-  path: '/ops/control',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsCamerasRoute = HqOpsCamerasRouteImport.update({
-  id: '/ops/cameras',
-  path: '/ops/cameras',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqOpsAirspaceRoute = HqOpsAirspaceRouteImport.update({
-  id: '/ops/airspace',
-  path: '/ops/airspace',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqMfgSupplyRoute = HqMfgSupplyRouteImport.update({
-  id: '/mfg/supply',
-  path: '/mfg/supply',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqMfgStockRoute = HqMfgStockRouteImport.update({
-  id: '/mfg/stock',
-  path: '/mfg/stock',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqMfgReturnsRoute = HqMfgReturnsRouteImport.update({
-  id: '/mfg/returns',
-  path: '/mfg/returns',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqMfgQualityRoute = HqMfgQualityRouteImport.update({
-  id: '/mfg/quality',
-  path: '/mfg/quality',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqMfgOrdersRoute = HqMfgOrdersRouteImport.update({
-  id: '/mfg/orders',
-  path: '/mfg/orders',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqMfgLineRoute = HqMfgLineRouteImport.update({
-  id: '/mfg/line',
-  path: '/mfg/line',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqFundPipelineRoute = HqFundPipelineRouteImport.update({
-  id: '/fund/pipeline',
-  path: '/fund/pipeline',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqFundGrantsRoute = HqFundGrantsRouteImport.update({
-  id: '/fund/grants',
-  path: '/fund/grants',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqFundDonorsRoute = HqFundDonorsRouteImport.update({
-  id: '/fund/donors',
-  path: '/fund/donors',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqFundDonationsRoute = HqFundDonationsRouteImport.update({
-  id: '/fund/donations',
-  path: '/fund/donations',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqFundCampaignsRoute = HqFundCampaignsRouteImport.update({
-  id: '/fund/campaigns',
-  path: '/fund/campaigns',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqExecOkrsRoute = HqExecOkrsRouteImport.update({
-  id: '/exec/okrs',
-  path: '/exec/okrs',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqExecDecisionsRoute = HqExecDecisionsRouteImport.update({
-  id: '/exec/decisions',
-  path: '/exec/decisions',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqExecBriefingRoute = HqExecBriefingRouteImport.update({
-  id: '/exec/briefing',
-  path: '/exec/briefing',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqExecAnnouncementsRoute = HqExecAnnouncementsRouteImport.update({
-  id: '/exec/announcements',
-  path: '/exec/announcements',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqEngReviewsRoute = HqEngReviewsRouteImport.update({
-  id: '/eng/reviews',
-  path: '/eng/reviews',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqEngProgramsRoute = HqEngProgramsRouteImport.update({
-  id: '/eng/programs',
-  path: '/eng/programs',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqEngLibraryRoute = HqEngLibraryRouteImport.update({
-  id: '/eng/library',
-  path: '/eng/library',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqEngIssuesRoute = HqEngIssuesRouteImport.update({
-  id: '/eng/issues',
-  path: '/eng/issues',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqEngHardwareRoute = HqEngHardwareRouteImport.update({
-  id: '/eng/hardware',
-  path: '/eng/hardware',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqEngFirmwareRoute = HqEngFirmwareRouteImport.update({
-  id: '/eng/firmware',
-  path: '/eng/firmware',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqEngChangesRoute = HqEngChangesRouteImport.update({
-  id: '/eng/changes',
-  path: '/eng/changes',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqEngBoardRoute = HqEngBoardRouteImport.update({
-  id: '/eng/board',
-  path: '/eng/board',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqAdminSlackRoute = HqAdminSlackRouteImport.update({
-  id: '/admin/slack',
-  path: '/admin/slack',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqAdminPoliciesRoute = HqAdminPoliciesRouteImport.update({
-  id: '/admin/policies',
-  path: '/admin/policies',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqAdminOrgRoute = HqAdminOrgRouteImport.update({
-  id: '/admin/org',
-  path: '/admin/org',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqAdminItRoute = HqAdminItRouteImport.update({
-  id: '/admin/it',
-  path: '/admin/it',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqAdminHealthRoute = HqAdminHealthRouteImport.update({
-  id: '/admin/health',
-  path: '/admin/health',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqAdminDepartmentsRoute = HqAdminDepartmentsRouteImport.update({
-  id: '/admin/departments',
-  path: '/admin/departments',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqAdminCompanyRoute = HqAdminCompanyRouteImport.update({
-  id: '/admin/company',
-  path: '/admin/company',
-  getParentRoute: () => HqRoute,
-} as any)
-const HqAdminAppsRoute = HqAdminAppsRouteImport.update({
-  id: '/admin/apps',
-  path: '/admin/apps',
-  getParentRoute: () => HqRoute,
-} as any)
-const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
-  id: '/lovable/email/auth/webhook',
-  path: '/lovable/email/auth/webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
-  id: '/lovable/email/auth/preview',
-  path: '/lovable/email/auth/preview',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicNetSweepRoute = ApiPublicNetSweepRouteImport.update({
-  id: '/api/public/net/sweep',
-  path: '/api/public/net/sweep',
+const ApiPublicNetPageAckRoute = ApiPublicNetPageAckRouteImport.update({
+  id: '/api/public/net/page-ack',
+  path: '/api/public/net/page-ack',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicNetPageEmailRoute = ApiPublicNetPageEmailRouteImport.update({
@@ -724,9 +712,9 @@ const ApiPublicNetPageEmailRoute = ApiPublicNetPageEmailRouteImport.update({
   path: '/api/public/net/page-email',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicNetPageAckRoute = ApiPublicNetPageAckRouteImport.update({
-  id: '/api/public/net/page-ack',
-  path: '/api/public/net/page-ack',
+const ApiPublicNetSweepRoute = ApiPublicNetSweepRouteImport.update({
+  id: '/api/public/net/sweep',
+  path: '/api/public/net/sweep',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -848,8 +836,6 @@ export interface FileRoutesByFullPath {
   '/api/public/net/page-ack': typeof ApiPublicNetPageAckRoute
   '/api/public/net/page-email': typeof ApiPublicNetPageEmailRoute
   '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
-  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
-  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -968,8 +954,6 @@ export interface FileRoutesByTo {
   '/api/public/net/page-ack': typeof ApiPublicNetPageAckRoute
   '/api/public/net/page-email': typeof ApiPublicNetPageEmailRoute
   '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
-  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
-  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -1091,8 +1075,6 @@ export interface FileRoutesById {
   '/api/public/net/page-ack': typeof ApiPublicNetPageAckRoute
   '/api/public/net/page-email': typeof ApiPublicNetPageEmailRoute
   '/api/public/net/sweep': typeof ApiPublicNetSweepRoute
-  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
-  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -1214,8 +1196,6 @@ export interface FileRouteTypes {
     | '/api/public/net/page-ack'
     | '/api/public/net/page-email'
     | '/api/public/net/sweep'
-    | '/lovable/email/auth/preview'
-    | '/lovable/email/auth/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1334,8 +1314,6 @@ export interface FileRouteTypes {
     | '/api/public/net/page-ack'
     | '/api/public/net/page-email'
     | '/api/public/net/sweep'
-    | '/lovable/email/auth/preview'
-    | '/lovable/email/auth/webhook'
   id:
     | '__root__'
     | '/'
@@ -1456,8 +1434,6 @@ export interface FileRouteTypes {
     | '/api/public/net/page-ack'
     | '/api/public/net/page-email'
     | '/api/public/net/sweep'
-    | '/lovable/email/auth/preview'
-    | '/lovable/email/auth/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1486,115 +1462,15 @@ export interface RootRouteChildren {
   ApiPublicNetPageAckRoute: typeof ApiPublicNetPageAckRoute
   ApiPublicNetPageEmailRoute: typeof ApiPublicNetPageEmailRoute
   ApiPublicNetSweepRoute: typeof ApiPublicNetSweepRoute
-  LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
-  LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/workspaces': {
-      id: '/workspaces'
-      path: '/workspaces'
-      fullPath: '/workspaces'
-      preLoaderRoute: typeof WorkspacesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/welcome': {
-      id: '/welcome'
-      path: '/welcome'
-      fullPath: '/welcome'
-      preLoaderRoute: typeof WelcomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/technology': {
-      id: '/technology'
-      path: '/technology'
-      fullPath: '/technology'
-      preLoaderRoute: typeof TechnologyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/system': {
-      id: '/system'
-      path: '/system'
-      fullPath: '/system'
-      preLoaderRoute: typeof SystemRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/partners': {
-      id: '/partners'
-      path: '/partners'
-      fullPath: '/partners'
-      preLoaderRoute: typeof PartnersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/operations': {
-      id: '/operations'
-      path: '/operations'
-      fullPath: '/operations'
-      preLoaderRoute: typeof OperationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mission': {
-      id: '/mission'
-      path: '/mission'
-      fullPath: '/mission'
-      preLoaderRoute: typeof MissionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/join': {
-      id: '/join'
-      path: '/join'
-      fullPath: '/join'
-      preLoaderRoute: typeof JoinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/hq-login': {
-      id: '/hq-login'
-      path: '/hq-login'
-      fullPath: '/hq-login'
-      preLoaderRoute: typeof HqLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/donate': {
-      id: '/donate'
-      path: '/donate'
-      fullPath: '/donate'
-      preLoaderRoute: typeof DonateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/development': {
-      id: '/development'
-      path: '/development'
-      fullPath: '/development'
-      preLoaderRoute: typeof DevelopmentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_hq': {
@@ -1604,263 +1480,116 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/meeting/$id': {
-      id: '/meeting/$id'
-      path: '/meeting/$id'
-      fullPath: '/meeting/$id'
-      preLoaderRoute: typeof MeetingIdRouteImport
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/legal/terms': {
-      id: '/legal/terms'
-      path: '/legal/terms'
-      fullPath: '/legal/terms'
-      preLoaderRoute: typeof LegalTermsRouteImport
+    '/development': {
+      id: '/development'
+      path: '/development'
+      fullPath: '/development'
+      preLoaderRoute: typeof DevelopmentRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/legal/privacy': {
-      id: '/legal/privacy'
-      path: '/legal/privacy'
-      fullPath: '/legal/privacy'
-      preLoaderRoute: typeof LegalPrivacyRouteImport
+    '/donate': {
+      id: '/donate'
+      path: '/donate'
+      fullPath: '/donate'
+      preLoaderRoute: typeof DonateRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/legal/cookies': {
-      id: '/legal/cookies'
-      path: '/legal/cookies'
-      fullPath: '/legal/cookies'
-      preLoaderRoute: typeof LegalCookiesRouteImport
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/planes': {
-      id: '/api/planes'
-      path: '/api/planes'
-      fullPath: '/api/planes'
-      preLoaderRoute: typeof ApiPlanesRouteImport
+    '/hq-login': {
+      id: '/hq-login'
+      path: '/hq-login'
+      fullPath: '/hq-login'
+      preLoaderRoute: typeof HqLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_hq/training': {
-      id: '/_hq/training'
-      path: '/training'
-      fullPath: '/training'
-      preLoaderRoute: typeof HqTrainingRouteImport
-      parentRoute: typeof HqRoute
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_hq/time-off': {
-      id: '/_hq/time-off'
-      path: '/time-off'
-      fullPath: '/time-off'
-      preLoaderRoute: typeof HqTimeOffRouteImport
-      parentRoute: typeof HqRoute
+    '/mission': {
+      id: '/mission'
+      path: '/mission'
+      fullPath: '/mission'
+      preLoaderRoute: typeof MissionRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_hq/teams': {
-      id: '/_hq/teams'
-      path: '/teams'
-      fullPath: '/teams'
-      preLoaderRoute: typeof HqTeamsRouteImport
-      parentRoute: typeof HqRoute
+    '/operations': {
+      id: '/operations'
+      path: '/operations'
+      fullPath: '/operations'
+      preLoaderRoute: typeof OperationsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_hq/tasks': {
-      id: '/_hq/tasks'
-      path: '/tasks'
-      fullPath: '/tasks'
-      preLoaderRoute: typeof HqTasksRouteImport
-      parentRoute: typeof HqRoute
+    '/partners': {
+      id: '/partners'
+      path: '/partners'
+      fullPath: '/partners'
+      preLoaderRoute: typeof PartnersRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_hq/settings': {
-      id: '/_hq/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof HqSettingsRouteImport
-      parentRoute: typeof HqRoute
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_hq/search': {
-      id: '/_hq/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof HqSearchRouteImport
-      parentRoute: typeof HqRoute
+    '/system': {
+      id: '/system'
+      path: '/system'
+      fullPath: '/system'
+      preLoaderRoute: typeof SystemRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_hq/reviews': {
-      id: '/_hq/reviews'
-      path: '/reviews'
-      fullPath: '/reviews'
-      preLoaderRoute: typeof HqReviewsRouteImport
-      parentRoute: typeof HqRoute
+    '/technology': {
+      id: '/technology'
+      path: '/technology'
+      fullPath: '/technology'
+      preLoaderRoute: typeof TechnologyRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_hq/requests': {
-      id: '/_hq/requests'
-      path: '/requests'
-      fullPath: '/requests'
-      preLoaderRoute: typeof HqRequestsRouteImport
-      parentRoute: typeof HqRoute
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_hq/rd-ideas': {
-      id: '/_hq/rd-ideas'
-      path: '/rd-ideas'
-      fullPath: '/rd-ideas'
-      preLoaderRoute: typeof HqRdIdeasRouteImport
-      parentRoute: typeof HqRoute
+    '/workspaces': {
+      id: '/workspaces'
+      path: '/workspaces'
+      fullPath: '/workspaces'
+      preLoaderRoute: typeof WorkspacesRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_hq/purchase-orders': {
-      id: '/_hq/purchase-orders'
-      path: '/purchase-orders'
-      fullPath: '/purchase-orders'
-      preLoaderRoute: typeof HqPurchaseOrdersRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/profile': {
-      id: '/_hq/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof HqProfileRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/phone': {
-      id: '/_hq/phone'
-      path: '/phone'
-      fullPath: '/phone'
-      preLoaderRoute: typeof HqPhoneRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/org-chart': {
-      id: '/_hq/org-chart'
-      path: '/org-chart'
-      fullPath: '/org-chart'
-      preLoaderRoute: typeof HqOrgChartRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/onboarding': {
-      id: '/_hq/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof HqOnboardingRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/notifications': {
-      id: '/_hq/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof HqNotificationsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/my-time': {
-      id: '/_hq/my-time'
-      path: '/my-time'
-      fullPath: '/my-time'
-      preLoaderRoute: typeof HqMyTimeRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/meetings': {
-      id: '/_hq/meetings'
-      path: '/meetings'
-      fullPath: '/meetings'
-      preLoaderRoute: typeof HqMeetingsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/meeting-notes': {
-      id: '/_hq/meeting-notes'
-      path: '/meeting-notes'
-      fullPath: '/meeting-notes'
-      preLoaderRoute: typeof HqMeetingNotesRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/mail': {
-      id: '/_hq/mail'
-      path: '/mail'
-      fullPath: '/mail'
-      preLoaderRoute: typeof HqMailRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/kb': {
-      id: '/_hq/kb'
-      path: '/kb'
-      fullPath: '/kb'
-      preLoaderRoute: typeof HqKbRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/invoices': {
-      id: '/_hq/invoices'
-      path: '/invoices'
-      fullPath: '/invoices'
-      preLoaderRoute: typeof HqInvoicesRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/hiring': {
-      id: '/_hq/hiring'
-      path: '/hiring'
-      fullPath: '/hiring'
-      preLoaderRoute: typeof HqHiringRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/help': {
-      id: '/_hq/help'
-      path: '/help'
-      fullPath: '/help'
-      preLoaderRoute: typeof HqHelpRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/financial-reports': {
-      id: '/_hq/financial-reports'
-      path: '/financial-reports'
-      fullPath: '/financial-reports'
-      preLoaderRoute: typeof HqFinancialReportsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/expenses': {
-      id: '/_hq/expenses'
-      path: '/expenses'
-      fullPath: '/expenses'
-      preLoaderRoute: typeof HqExpensesRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/employees': {
-      id: '/_hq/employees'
-      path: '/employees'
-      fullPath: '/employees'
-      preLoaderRoute: typeof HqEmployeesRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/drive': {
-      id: '/_hq/drive'
-      path: '/drive'
-      fullPath: '/drive'
-      preLoaderRoute: typeof HqDriveRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/dashboard': {
-      id: '/_hq/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof HqDashboardRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/certifications': {
-      id: '/_hq/certifications'
-      path: '/certifications'
-      fullPath: '/certifications'
-      preLoaderRoute: typeof HqCertificationsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/calendar': {
-      id: '/_hq/calendar'
-      path: '/calendar'
-      fullPath: '/calendar'
-      preLoaderRoute: typeof HqCalendarRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/attendance': {
-      id: '/_hq/attendance'
-      path: '/attendance'
-      fullPath: '/attendance'
-      preLoaderRoute: typeof HqAttendanceRouteImport
+    '/_hq/accounting': {
+      id: '/_hq/accounting'
+      path: '/accounting'
+      fullPath: '/accounting'
+      preLoaderRoute: typeof HqAccountingRouteImport
       parentRoute: typeof HqRoute
     }
     '/_hq/analytics': {
@@ -1870,11 +1599,662 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqAnalyticsRouteImport
       parentRoute: typeof HqRoute
     }
-    '/_hq/accounting': {
-      id: '/_hq/accounting'
-      path: '/accounting'
-      fullPath: '/accounting'
-      preLoaderRoute: typeof HqAccountingRouteImport
+    '/_hq/attendance': {
+      id: '/_hq/attendance'
+      path: '/attendance'
+      fullPath: '/attendance'
+      preLoaderRoute: typeof HqAttendanceRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/calendar': {
+      id: '/_hq/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof HqCalendarRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/certifications': {
+      id: '/_hq/certifications'
+      path: '/certifications'
+      fullPath: '/certifications'
+      preLoaderRoute: typeof HqCertificationsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/dashboard': {
+      id: '/_hq/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof HqDashboardRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/drive': {
+      id: '/_hq/drive'
+      path: '/drive'
+      fullPath: '/drive'
+      preLoaderRoute: typeof HqDriveRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/employees': {
+      id: '/_hq/employees'
+      path: '/employees'
+      fullPath: '/employees'
+      preLoaderRoute: typeof HqEmployeesRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/expenses': {
+      id: '/_hq/expenses'
+      path: '/expenses'
+      fullPath: '/expenses'
+      preLoaderRoute: typeof HqExpensesRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/financial-reports': {
+      id: '/_hq/financial-reports'
+      path: '/financial-reports'
+      fullPath: '/financial-reports'
+      preLoaderRoute: typeof HqFinancialReportsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/help': {
+      id: '/_hq/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HqHelpRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/hiring': {
+      id: '/_hq/hiring'
+      path: '/hiring'
+      fullPath: '/hiring'
+      preLoaderRoute: typeof HqHiringRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/invoices': {
+      id: '/_hq/invoices'
+      path: '/invoices'
+      fullPath: '/invoices'
+      preLoaderRoute: typeof HqInvoicesRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/kb': {
+      id: '/_hq/kb'
+      path: '/kb'
+      fullPath: '/kb'
+      preLoaderRoute: typeof HqKbRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/mail': {
+      id: '/_hq/mail'
+      path: '/mail'
+      fullPath: '/mail'
+      preLoaderRoute: typeof HqMailRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/meeting-notes': {
+      id: '/_hq/meeting-notes'
+      path: '/meeting-notes'
+      fullPath: '/meeting-notes'
+      preLoaderRoute: typeof HqMeetingNotesRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/meetings': {
+      id: '/_hq/meetings'
+      path: '/meetings'
+      fullPath: '/meetings'
+      preLoaderRoute: typeof HqMeetingsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/my-time': {
+      id: '/_hq/my-time'
+      path: '/my-time'
+      fullPath: '/my-time'
+      preLoaderRoute: typeof HqMyTimeRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/notifications': {
+      id: '/_hq/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof HqNotificationsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/onboarding': {
+      id: '/_hq/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof HqOnboardingRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/org-chart': {
+      id: '/_hq/org-chart'
+      path: '/org-chart'
+      fullPath: '/org-chart'
+      preLoaderRoute: typeof HqOrgChartRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/phone': {
+      id: '/_hq/phone'
+      path: '/phone'
+      fullPath: '/phone'
+      preLoaderRoute: typeof HqPhoneRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/profile': {
+      id: '/_hq/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof HqProfileRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/purchase-orders': {
+      id: '/_hq/purchase-orders'
+      path: '/purchase-orders'
+      fullPath: '/purchase-orders'
+      preLoaderRoute: typeof HqPurchaseOrdersRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/rd-ideas': {
+      id: '/_hq/rd-ideas'
+      path: '/rd-ideas'
+      fullPath: '/rd-ideas'
+      preLoaderRoute: typeof HqRdIdeasRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/requests': {
+      id: '/_hq/requests'
+      path: '/requests'
+      fullPath: '/requests'
+      preLoaderRoute: typeof HqRequestsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/reviews': {
+      id: '/_hq/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof HqReviewsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/search': {
+      id: '/_hq/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof HqSearchRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/settings': {
+      id: '/_hq/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof HqSettingsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/tasks': {
+      id: '/_hq/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof HqTasksRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/teams': {
+      id: '/_hq/teams'
+      path: '/teams'
+      fullPath: '/teams'
+      preLoaderRoute: typeof HqTeamsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/time-off': {
+      id: '/_hq/time-off'
+      path: '/time-off'
+      fullPath: '/time-off'
+      preLoaderRoute: typeof HqTimeOffRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/training': {
+      id: '/_hq/training'
+      path: '/training'
+      fullPath: '/training'
+      preLoaderRoute: typeof HqTrainingRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/api/planes': {
+      id: '/api/planes'
+      path: '/api/planes'
+      fullPath: '/api/planes'
+      preLoaderRoute: typeof ApiPlanesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/cookies': {
+      id: '/legal/cookies'
+      path: '/legal/cookies'
+      fullPath: '/legal/cookies'
+      preLoaderRoute: typeof LegalCookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/privacy': {
+      id: '/legal/privacy'
+      path: '/legal/privacy'
+      fullPath: '/legal/privacy'
+      preLoaderRoute: typeof LegalPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/terms': {
+      id: '/legal/terms'
+      path: '/legal/terms'
+      fullPath: '/legal/terms'
+      preLoaderRoute: typeof LegalTermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meeting/$id': {
+      id: '/meeting/$id'
+      path: '/meeting/$id'
+      fullPath: '/meeting/$id'
+      preLoaderRoute: typeof MeetingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_hq/admin/apps': {
+      id: '/_hq/admin/apps'
+      path: '/admin/apps'
+      fullPath: '/admin/apps'
+      preLoaderRoute: typeof HqAdminAppsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/admin/company': {
+      id: '/_hq/admin/company'
+      path: '/admin/company'
+      fullPath: '/admin/company'
+      preLoaderRoute: typeof HqAdminCompanyRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/admin/departments': {
+      id: '/_hq/admin/departments'
+      path: '/admin/departments'
+      fullPath: '/admin/departments'
+      preLoaderRoute: typeof HqAdminDepartmentsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/admin/health': {
+      id: '/_hq/admin/health'
+      path: '/admin/health'
+      fullPath: '/admin/health'
+      preLoaderRoute: typeof HqAdminHealthRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/admin/it': {
+      id: '/_hq/admin/it'
+      path: '/admin/it'
+      fullPath: '/admin/it'
+      preLoaderRoute: typeof HqAdminItRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/admin/org': {
+      id: '/_hq/admin/org'
+      path: '/admin/org'
+      fullPath: '/admin/org'
+      preLoaderRoute: typeof HqAdminOrgRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/admin/policies': {
+      id: '/_hq/admin/policies'
+      path: '/admin/policies'
+      fullPath: '/admin/policies'
+      preLoaderRoute: typeof HqAdminPoliciesRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/admin/slack': {
+      id: '/_hq/admin/slack'
+      path: '/admin/slack'
+      fullPath: '/admin/slack'
+      preLoaderRoute: typeof HqAdminSlackRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/eng/board': {
+      id: '/_hq/eng/board'
+      path: '/eng/board'
+      fullPath: '/eng/board'
+      preLoaderRoute: typeof HqEngBoardRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/eng/changes': {
+      id: '/_hq/eng/changes'
+      path: '/eng/changes'
+      fullPath: '/eng/changes'
+      preLoaderRoute: typeof HqEngChangesRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/eng/firmware': {
+      id: '/_hq/eng/firmware'
+      path: '/eng/firmware'
+      fullPath: '/eng/firmware'
+      preLoaderRoute: typeof HqEngFirmwareRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/eng/hardware': {
+      id: '/_hq/eng/hardware'
+      path: '/eng/hardware'
+      fullPath: '/eng/hardware'
+      preLoaderRoute: typeof HqEngHardwareRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/eng/issues': {
+      id: '/_hq/eng/issues'
+      path: '/eng/issues'
+      fullPath: '/eng/issues'
+      preLoaderRoute: typeof HqEngIssuesRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/eng/library': {
+      id: '/_hq/eng/library'
+      path: '/eng/library'
+      fullPath: '/eng/library'
+      preLoaderRoute: typeof HqEngLibraryRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/eng/programs': {
+      id: '/_hq/eng/programs'
+      path: '/eng/programs'
+      fullPath: '/eng/programs'
+      preLoaderRoute: typeof HqEngProgramsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/eng/reviews': {
+      id: '/_hq/eng/reviews'
+      path: '/eng/reviews'
+      fullPath: '/eng/reviews'
+      preLoaderRoute: typeof HqEngReviewsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/exec/announcements': {
+      id: '/_hq/exec/announcements'
+      path: '/exec/announcements'
+      fullPath: '/exec/announcements'
+      preLoaderRoute: typeof HqExecAnnouncementsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/exec/briefing': {
+      id: '/_hq/exec/briefing'
+      path: '/exec/briefing'
+      fullPath: '/exec/briefing'
+      preLoaderRoute: typeof HqExecBriefingRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/exec/decisions': {
+      id: '/_hq/exec/decisions'
+      path: '/exec/decisions'
+      fullPath: '/exec/decisions'
+      preLoaderRoute: typeof HqExecDecisionsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/exec/okrs': {
+      id: '/_hq/exec/okrs'
+      path: '/exec/okrs'
+      fullPath: '/exec/okrs'
+      preLoaderRoute: typeof HqExecOkrsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/fund/campaigns': {
+      id: '/_hq/fund/campaigns'
+      path: '/fund/campaigns'
+      fullPath: '/fund/campaigns'
+      preLoaderRoute: typeof HqFundCampaignsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/fund/donations': {
+      id: '/_hq/fund/donations'
+      path: '/fund/donations'
+      fullPath: '/fund/donations'
+      preLoaderRoute: typeof HqFundDonationsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/fund/donors': {
+      id: '/_hq/fund/donors'
+      path: '/fund/donors'
+      fullPath: '/fund/donors'
+      preLoaderRoute: typeof HqFundDonorsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/fund/grants': {
+      id: '/_hq/fund/grants'
+      path: '/fund/grants'
+      fullPath: '/fund/grants'
+      preLoaderRoute: typeof HqFundGrantsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/fund/pipeline': {
+      id: '/_hq/fund/pipeline'
+      path: '/fund/pipeline'
+      fullPath: '/fund/pipeline'
+      preLoaderRoute: typeof HqFundPipelineRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/mfg/line': {
+      id: '/_hq/mfg/line'
+      path: '/mfg/line'
+      fullPath: '/mfg/line'
+      preLoaderRoute: typeof HqMfgLineRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/mfg/orders': {
+      id: '/_hq/mfg/orders'
+      path: '/mfg/orders'
+      fullPath: '/mfg/orders'
+      preLoaderRoute: typeof HqMfgOrdersRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/mfg/quality': {
+      id: '/_hq/mfg/quality'
+      path: '/mfg/quality'
+      fullPath: '/mfg/quality'
+      preLoaderRoute: typeof HqMfgQualityRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/mfg/returns': {
+      id: '/_hq/mfg/returns'
+      path: '/mfg/returns'
+      fullPath: '/mfg/returns'
+      preLoaderRoute: typeof HqMfgReturnsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/mfg/stock': {
+      id: '/_hq/mfg/stock'
+      path: '/mfg/stock'
+      fullPath: '/mfg/stock'
+      preLoaderRoute: typeof HqMfgStockRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/mfg/supply': {
+      id: '/_hq/mfg/supply'
+      path: '/mfg/supply'
+      fullPath: '/mfg/supply'
+      preLoaderRoute: typeof HqMfgSupplyRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/airspace': {
+      id: '/_hq/ops/airspace'
+      path: '/ops/airspace'
+      fullPath: '/ops/airspace'
+      preLoaderRoute: typeof HqOpsAirspaceRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/cameras': {
+      id: '/_hq/ops/cameras'
+      path: '/ops/cameras'
+      fullPath: '/ops/cameras'
+      preLoaderRoute: typeof HqOpsCamerasRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/control': {
+      id: '/_hq/ops/control'
+      path: '/ops/control'
+      fullPath: '/ops/control'
+      preLoaderRoute: typeof HqOpsControlRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/coverage': {
+      id: '/_hq/ops/coverage'
+      path: '/ops/coverage'
+      fullPath: '/ops/coverage'
+      preLoaderRoute: typeof HqOpsCoverageRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/detections': {
+      id: '/_hq/ops/detections'
+      path: '/ops/detections'
+      fullPath: '/ops/detections'
+      preLoaderRoute: typeof HqOpsDetectionsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/flights': {
+      id: '/_hq/ops/flights'
+      path: '/ops/flights'
+      fullPath: '/ops/flights'
+      preLoaderRoute: typeof HqOpsFlightsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/incidents': {
+      id: '/_hq/ops/incidents'
+      path: '/ops/incidents'
+      fullPath: '/ops/incidents'
+      preLoaderRoute: typeof HqOpsIncidentsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/live-map': {
+      id: '/_hq/ops/live-map'
+      path: '/ops/live-map'
+      fullPath: '/ops/live-map'
+      preLoaderRoute: typeof HqOpsLiveMapRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/logs': {
+      id: '/_hq/ops/logs'
+      path: '/ops/logs'
+      fullPath: '/ops/logs'
+      preLoaderRoute: typeof HqOpsLogsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/maintenance': {
+      id: '/_hq/ops/maintenance'
+      path: '/ops/maintenance'
+      fullPath: '/ops/maintenance'
+      preLoaderRoute: typeof HqOpsMaintenanceRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/network-fleet': {
+      id: '/_hq/ops/network-fleet'
+      path: '/ops/network-fleet'
+      fullPath: '/ops/network-fleet'
+      preLoaderRoute: typeof HqOpsNetworkFleetRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/paging': {
+      id: '/_hq/ops/paging'
+      path: '/ops/paging'
+      fullPath: '/ops/paging'
+      preLoaderRoute: typeof HqOpsPagingRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/readiness': {
+      id: '/_hq/ops/readiness'
+      path: '/ops/readiness'
+      fullPath: '/ops/readiness'
+      preLoaderRoute: typeof HqOpsReadinessRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/ops/sitrep': {
+      id: '/_hq/ops/sitrep'
+      path: '/ops/sitrep'
+      fullPath: '/ops/sitrep'
+      preLoaderRoute: typeof HqOpsSitrepRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/product/feedback': {
+      id: '/_hq/product/feedback'
+      path: '/product/feedback'
+      fullPath: '/product/feedback'
+      preLoaderRoute: typeof HqProductFeedbackRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/product/insights': {
+      id: '/_hq/product/insights'
+      path: '/product/insights'
+      fullPath: '/product/insights'
+      preLoaderRoute: typeof HqProductInsightsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/product/portfolio': {
+      id: '/_hq/product/portfolio'
+      path: '/product/portfolio'
+      fullPath: '/product/portfolio'
+      preLoaderRoute: typeof HqProductPortfolioRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/product/releases': {
+      id: '/_hq/product/releases'
+      path: '/product/releases'
+      fullPath: '/product/releases'
+      preLoaderRoute: typeof HqProductReleasesRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/product/roadmap': {
+      id: '/_hq/product/roadmap'
+      path: '/product/roadmap'
+      fullPath: '/product/roadmap'
+      preLoaderRoute: typeof HqProductRoadmapRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/product/support': {
+      id: '/_hq/product/support'
+      path: '/product/support'
+      fullPath: '/product/support'
+      preLoaderRoute: typeof HqProductSupportRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/systems/access': {
+      id: '/_hq/systems/access'
+      path: '/systems/access'
+      fullPath: '/systems/access'
+      preLoaderRoute: typeof HqSystemsAccessRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/systems/analytics': {
+      id: '/_hq/systems/analytics'
+      path: '/systems/analytics'
+      fullPath: '/systems/analytics'
+      preLoaderRoute: typeof HqSystemsAnalyticsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/systems/assets': {
+      id: '/_hq/systems/assets'
+      path: '/systems/assets'
+      fullPath: '/systems/assets'
+      preLoaderRoute: typeof HqSystemsAssetsRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/systems/detection': {
+      id: '/_hq/systems/detection'
+      path: '/systems/detection'
+      fullPath: '/systems/detection'
+      preLoaderRoute: typeof HqSystemsDetectionRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/systems/helpdesk': {
+      id: '/_hq/systems/helpdesk'
+      path: '/systems/helpdesk'
+      fullPath: '/systems/helpdesk'
+      preLoaderRoute: typeof HqSystemsHelpdeskRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/systems/paging': {
+      id: '/_hq/systems/paging'
+      path: '/systems/paging'
+      fullPath: '/systems/paging'
+      preLoaderRoute: typeof HqSystemsPagingRouteImport
+      parentRoute: typeof HqRoute
+    }
+    '/_hq/systems/services': {
+      id: '/_hq/systems/services'
+      path: '/systems/services'
+      fullPath: '/systems/services'
+      preLoaderRoute: typeof HqSystemsServicesRouteImport
       parentRoute: typeof HqRoute
     }
     '/_hq/teams/': {
@@ -1891,431 +2271,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqTeamsSlugRouteImport
       parentRoute: typeof HqTeamsRoute
     }
-    '/_hq/systems/services': {
-      id: '/_hq/systems/services'
-      path: '/systems/services'
-      fullPath: '/systems/services'
-      preLoaderRoute: typeof HqSystemsServicesRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/systems/paging': {
-      id: '/_hq/systems/paging'
-      path: '/systems/paging'
-      fullPath: '/systems/paging'
-      preLoaderRoute: typeof HqSystemsPagingRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/systems/helpdesk': {
-      id: '/_hq/systems/helpdesk'
-      path: '/systems/helpdesk'
-      fullPath: '/systems/helpdesk'
-      preLoaderRoute: typeof HqSystemsHelpdeskRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/systems/detection': {
-      id: '/_hq/systems/detection'
-      path: '/systems/detection'
-      fullPath: '/systems/detection'
-      preLoaderRoute: typeof HqSystemsDetectionRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/systems/assets': {
-      id: '/_hq/systems/assets'
-      path: '/systems/assets'
-      fullPath: '/systems/assets'
-      preLoaderRoute: typeof HqSystemsAssetsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/systems/analytics': {
-      id: '/_hq/systems/analytics'
-      path: '/systems/analytics'
-      fullPath: '/systems/analytics'
-      preLoaderRoute: typeof HqSystemsAnalyticsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/systems/access': {
-      id: '/_hq/systems/access'
-      path: '/systems/access'
-      fullPath: '/systems/access'
-      preLoaderRoute: typeof HqSystemsAccessRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/product/support': {
-      id: '/_hq/product/support'
-      path: '/product/support'
-      fullPath: '/product/support'
-      preLoaderRoute: typeof HqProductSupportRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/product/roadmap': {
-      id: '/_hq/product/roadmap'
-      path: '/product/roadmap'
-      fullPath: '/product/roadmap'
-      preLoaderRoute: typeof HqProductRoadmapRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/product/releases': {
-      id: '/_hq/product/releases'
-      path: '/product/releases'
-      fullPath: '/product/releases'
-      preLoaderRoute: typeof HqProductReleasesRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/product/portfolio': {
-      id: '/_hq/product/portfolio'
-      path: '/product/portfolio'
-      fullPath: '/product/portfolio'
-      preLoaderRoute: typeof HqProductPortfolioRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/product/insights': {
-      id: '/_hq/product/insights'
-      path: '/product/insights'
-      fullPath: '/product/insights'
-      preLoaderRoute: typeof HqProductInsightsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/product/feedback': {
-      id: '/_hq/product/feedback'
-      path: '/product/feedback'
-      fullPath: '/product/feedback'
-      preLoaderRoute: typeof HqProductFeedbackRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/sitrep': {
-      id: '/_hq/ops/sitrep'
-      path: '/ops/sitrep'
-      fullPath: '/ops/sitrep'
-      preLoaderRoute: typeof HqOpsSitrepRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/readiness': {
-      id: '/_hq/ops/readiness'
-      path: '/ops/readiness'
-      fullPath: '/ops/readiness'
-      preLoaderRoute: typeof HqOpsReadinessRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/paging': {
-      id: '/_hq/ops/paging'
-      path: '/ops/paging'
-      fullPath: '/ops/paging'
-      preLoaderRoute: typeof HqOpsPagingRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/network-fleet': {
-      id: '/_hq/ops/network-fleet'
-      path: '/ops/network-fleet'
-      fullPath: '/ops/network-fleet'
-      preLoaderRoute: typeof HqOpsNetworkFleetRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/maintenance': {
-      id: '/_hq/ops/maintenance'
-      path: '/ops/maintenance'
-      fullPath: '/ops/maintenance'
-      preLoaderRoute: typeof HqOpsMaintenanceRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/logs': {
-      id: '/_hq/ops/logs'
-      path: '/ops/logs'
-      fullPath: '/ops/logs'
-      preLoaderRoute: typeof HqOpsLogsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/live-map': {
-      id: '/_hq/ops/live-map'
-      path: '/ops/live-map'
-      fullPath: '/ops/live-map'
-      preLoaderRoute: typeof HqOpsLiveMapRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/incidents': {
-      id: '/_hq/ops/incidents'
-      path: '/ops/incidents'
-      fullPath: '/ops/incidents'
-      preLoaderRoute: typeof HqOpsIncidentsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/flights': {
-      id: '/_hq/ops/flights'
-      path: '/ops/flights'
-      fullPath: '/ops/flights'
-      preLoaderRoute: typeof HqOpsFlightsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/detections': {
-      id: '/_hq/ops/detections'
-      path: '/ops/detections'
-      fullPath: '/ops/detections'
-      preLoaderRoute: typeof HqOpsDetectionsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/coverage': {
-      id: '/_hq/ops/coverage'
-      path: '/ops/coverage'
-      fullPath: '/ops/coverage'
-      preLoaderRoute: typeof HqOpsCoverageRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/control': {
-      id: '/_hq/ops/control'
-      path: '/ops/control'
-      fullPath: '/ops/control'
-      preLoaderRoute: typeof HqOpsControlRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/cameras': {
-      id: '/_hq/ops/cameras'
-      path: '/ops/cameras'
-      fullPath: '/ops/cameras'
-      preLoaderRoute: typeof HqOpsCamerasRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/ops/airspace': {
-      id: '/_hq/ops/airspace'
-      path: '/ops/airspace'
-      fullPath: '/ops/airspace'
-      preLoaderRoute: typeof HqOpsAirspaceRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/mfg/supply': {
-      id: '/_hq/mfg/supply'
-      path: '/mfg/supply'
-      fullPath: '/mfg/supply'
-      preLoaderRoute: typeof HqMfgSupplyRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/mfg/stock': {
-      id: '/_hq/mfg/stock'
-      path: '/mfg/stock'
-      fullPath: '/mfg/stock'
-      preLoaderRoute: typeof HqMfgStockRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/mfg/returns': {
-      id: '/_hq/mfg/returns'
-      path: '/mfg/returns'
-      fullPath: '/mfg/returns'
-      preLoaderRoute: typeof HqMfgReturnsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/mfg/quality': {
-      id: '/_hq/mfg/quality'
-      path: '/mfg/quality'
-      fullPath: '/mfg/quality'
-      preLoaderRoute: typeof HqMfgQualityRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/mfg/orders': {
-      id: '/_hq/mfg/orders'
-      path: '/mfg/orders'
-      fullPath: '/mfg/orders'
-      preLoaderRoute: typeof HqMfgOrdersRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/mfg/line': {
-      id: '/_hq/mfg/line'
-      path: '/mfg/line'
-      fullPath: '/mfg/line'
-      preLoaderRoute: typeof HqMfgLineRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/fund/pipeline': {
-      id: '/_hq/fund/pipeline'
-      path: '/fund/pipeline'
-      fullPath: '/fund/pipeline'
-      preLoaderRoute: typeof HqFundPipelineRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/fund/grants': {
-      id: '/_hq/fund/grants'
-      path: '/fund/grants'
-      fullPath: '/fund/grants'
-      preLoaderRoute: typeof HqFundGrantsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/fund/donors': {
-      id: '/_hq/fund/donors'
-      path: '/fund/donors'
-      fullPath: '/fund/donors'
-      preLoaderRoute: typeof HqFundDonorsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/fund/donations': {
-      id: '/_hq/fund/donations'
-      path: '/fund/donations'
-      fullPath: '/fund/donations'
-      preLoaderRoute: typeof HqFundDonationsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/fund/campaigns': {
-      id: '/_hq/fund/campaigns'
-      path: '/fund/campaigns'
-      fullPath: '/fund/campaigns'
-      preLoaderRoute: typeof HqFundCampaignsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/exec/okrs': {
-      id: '/_hq/exec/okrs'
-      path: '/exec/okrs'
-      fullPath: '/exec/okrs'
-      preLoaderRoute: typeof HqExecOkrsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/exec/decisions': {
-      id: '/_hq/exec/decisions'
-      path: '/exec/decisions'
-      fullPath: '/exec/decisions'
-      preLoaderRoute: typeof HqExecDecisionsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/exec/briefing': {
-      id: '/_hq/exec/briefing'
-      path: '/exec/briefing'
-      fullPath: '/exec/briefing'
-      preLoaderRoute: typeof HqExecBriefingRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/exec/announcements': {
-      id: '/_hq/exec/announcements'
-      path: '/exec/announcements'
-      fullPath: '/exec/announcements'
-      preLoaderRoute: typeof HqExecAnnouncementsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/eng/reviews': {
-      id: '/_hq/eng/reviews'
-      path: '/eng/reviews'
-      fullPath: '/eng/reviews'
-      preLoaderRoute: typeof HqEngReviewsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/eng/programs': {
-      id: '/_hq/eng/programs'
-      path: '/eng/programs'
-      fullPath: '/eng/programs'
-      preLoaderRoute: typeof HqEngProgramsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/eng/library': {
-      id: '/_hq/eng/library'
-      path: '/eng/library'
-      fullPath: '/eng/library'
-      preLoaderRoute: typeof HqEngLibraryRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/eng/issues': {
-      id: '/_hq/eng/issues'
-      path: '/eng/issues'
-      fullPath: '/eng/issues'
-      preLoaderRoute: typeof HqEngIssuesRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/eng/hardware': {
-      id: '/_hq/eng/hardware'
-      path: '/eng/hardware'
-      fullPath: '/eng/hardware'
-      preLoaderRoute: typeof HqEngHardwareRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/eng/firmware': {
-      id: '/_hq/eng/firmware'
-      path: '/eng/firmware'
-      fullPath: '/eng/firmware'
-      preLoaderRoute: typeof HqEngFirmwareRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/eng/changes': {
-      id: '/_hq/eng/changes'
-      path: '/eng/changes'
-      fullPath: '/eng/changes'
-      preLoaderRoute: typeof HqEngChangesRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/eng/board': {
-      id: '/_hq/eng/board'
-      path: '/eng/board'
-      fullPath: '/eng/board'
-      preLoaderRoute: typeof HqEngBoardRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/admin/slack': {
-      id: '/_hq/admin/slack'
-      path: '/admin/slack'
-      fullPath: '/admin/slack'
-      preLoaderRoute: typeof HqAdminSlackRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/admin/policies': {
-      id: '/_hq/admin/policies'
-      path: '/admin/policies'
-      fullPath: '/admin/policies'
-      preLoaderRoute: typeof HqAdminPoliciesRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/admin/org': {
-      id: '/_hq/admin/org'
-      path: '/admin/org'
-      fullPath: '/admin/org'
-      preLoaderRoute: typeof HqAdminOrgRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/admin/it': {
-      id: '/_hq/admin/it'
-      path: '/admin/it'
-      fullPath: '/admin/it'
-      preLoaderRoute: typeof HqAdminItRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/admin/health': {
-      id: '/_hq/admin/health'
-      path: '/admin/health'
-      fullPath: '/admin/health'
-      preLoaderRoute: typeof HqAdminHealthRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/admin/departments': {
-      id: '/_hq/admin/departments'
-      path: '/admin/departments'
-      fullPath: '/admin/departments'
-      preLoaderRoute: typeof HqAdminDepartmentsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/admin/company': {
-      id: '/_hq/admin/company'
-      path: '/admin/company'
-      fullPath: '/admin/company'
-      preLoaderRoute: typeof HqAdminCompanyRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/_hq/admin/apps': {
-      id: '/_hq/admin/apps'
-      path: '/admin/apps'
-      fullPath: '/admin/apps'
-      preLoaderRoute: typeof HqAdminAppsRouteImport
-      parentRoute: typeof HqRoute
-    }
-    '/lovable/email/auth/webhook': {
-      id: '/lovable/email/auth/webhook'
-      path: '/lovable/email/auth/webhook'
-      fullPath: '/lovable/email/auth/webhook'
-      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/auth/preview': {
-      id: '/lovable/email/auth/preview'
-      path: '/lovable/email/auth/preview'
-      fullPath: '/lovable/email/auth/preview'
-      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/net/sweep': {
-      id: '/api/public/net/sweep'
-      path: '/api/public/net/sweep'
-      fullPath: '/api/public/net/sweep'
-      preLoaderRoute: typeof ApiPublicNetSweepRouteImport
+    '/api/public/net/page-ack': {
+      id: '/api/public/net/page-ack'
+      path: '/api/public/net/page-ack'
+      fullPath: '/api/public/net/page-ack'
+      preLoaderRoute: typeof ApiPublicNetPageAckRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/net/page-email': {
@@ -2325,11 +2285,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNetPageEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/net/page-ack': {
-      id: '/api/public/net/page-ack'
-      path: '/api/public/net/page-ack'
-      fullPath: '/api/public/net/page-ack'
-      preLoaderRoute: typeof ApiPublicNetPageAckRouteImport
+    '/api/public/net/sweep': {
+      id: '/api/public/net/sweep'
+      path: '/api/public/net/sweep'
+      fullPath: '/api/public/net/sweep'
+      preLoaderRoute: typeof ApiPublicNetSweepRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -2564,8 +2524,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicNetPageAckRoute: ApiPublicNetPageAckRoute,
   ApiPublicNetPageEmailRoute: ApiPublicNetPageEmailRoute,
   ApiPublicNetSweepRoute: ApiPublicNetSweepRoute,
-  LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
-  LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

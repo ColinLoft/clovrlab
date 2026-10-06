@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS public.meeting_external_invites (
   meeting_id uuid NOT NULL REFERENCES public.meetings(id) ON DELETE CASCADE,
   email text NOT NULL,
   name text,
-  token text NOT NULL UNIQUE DEFAULT encode(gen_random_bytes(16), 'hex'),
+  token text NOT NULL UNIQUE DEFAULT encode(extensions.gen_random_bytes(16), 'hex'),
   invited_by uuid REFERENCES auth.users(id) ON DELETE SET NULL,
   joined_at timestamptz,
   created_at timestamptz NOT NULL DEFAULT now()

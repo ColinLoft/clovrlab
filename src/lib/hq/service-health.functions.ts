@@ -34,18 +34,20 @@ function classify(ms: number, error: string | null, slow = 800): ServiceProbe["s
   return ms > slow ? "degraded" : "operational";
 }
 
-async function verifyGatewayKey(connectionKey: string) {
-  const res = await fetch("https://connector-gateway.lovable.dev/api/v1/verify_credentials", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env["LOVABLE_API_KEY"]}`,
-      "X-Connection-Api-Key": connectionKey,
-    },
+async function verifyResend(key: string) {
+  const res = await fetch("https://api.resend.com/emails", {
+    headers: { Authorization: `Bearer ${key}` },
   });
-  const body = await res.text();
-  if (!res.ok) throw new Error(`Gateway responded ${res.status}: ${body.slice(0, 200)}`);
-  const json = JSON.parse(body);
-  if (json.outcome === "failed") throw new Error(json.error ?? "Credential verification failed");
+  if (res.status === 401) throw new Error("Invalid Resend API key");
+}
+
+async function verifySlack(key: string) {
+  const res = await fetch("https://slack.com/api/auth.test", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}` },
+  });
+  const json = await res.json();
+  if (!json.ok) throw new Error(json.error ?? "Invalid Slack token");
 }
 
 export const getServiceHealth = createServerFn({ method: "POST" })
@@ -106,7 +108,7 @@ export const getServiceHealth = createServerFn({ method: "POST" })
     if (!resendKey) {
       probes.push({ key: "email", label: "Email delivery", status: "not_configured", latencyMs: null, detail: "Resend is not linked" });
     } else {
-      const email = await timed(() => verifyGatewayKey(resendKey));
+      const email = await timed(() => verifyResend(resendKey));
       probes.push({
         key: "email",
         label: "Email delivery",
@@ -121,7 +123,7 @@ export const getServiceHealth = createServerFn({ method: "POST" })
     if (!slackKey) {
       probes.push({ key: "slack", label: "Slack bot", status: "not_configured", latencyMs: null, detail: "Slack is not connected" });
     } else {
-      const slack = await timed(() => verifyGatewayKey(slackKey));
+      const slack = await timed(() => verifySlack(slackKey));
       probes.push({
         key: "slack",
         label: "Slack bot",
@@ -134,10 +136,10 @@ export const getServiceHealth = createServerFn({ method: "POST" })
     // AI gateway
     probes.push({
       key: "ai",
-      label: "AI gateway",
-      status: process.env["LOVABLE_API_KEY"] ? "operational" : "not_configured",
+      label: "AI provider",
+      status: process.env["OPENROUTER_API_KEY"] ? "operational" : "not_configured",
       latencyMs: null,
-      detail: process.env["LOVABLE_API_KEY"] ? "Gateway key present" : "No gateway key",
+      detail: process.env["OPENROUTER_API_KEY"] ? "OpenRouter key present" : "No OpenRouter key",
     });
 
     // Errors
