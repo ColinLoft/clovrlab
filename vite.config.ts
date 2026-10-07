@@ -65,7 +65,15 @@ export default defineConfig(async ({ command, mode }) => {
       ignoreOutdatedRequests: true,
     },
     ssr: {
-      noExternal: ["@supabase/supabase-js", "@supabase/functions-js", "tslib"],
+      noExternal: [
+        "@supabase/supabase-js", 
+        "@supabase/functions-js", 
+        "@supabase/auth-js", 
+        "@supabase/postgrest-js", 
+        "@supabase/storage-js", 
+        "@supabase/realtime-js", 
+        "tslib"
+      ],
     },
     server: {
       host: "::",
