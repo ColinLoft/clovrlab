@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-Cx0BB4qO.js";import{t}from"./PagingConsole-DMRXdY0V.js";var n=e(),r=()=>(0,n.jsx)(t,{queue:`ops`,lede:`Field and flight emergencies page the mission on-call rotation. Every page opens a tracking ticket so nothing gets lost after the alarm stops.`});export{r as component};

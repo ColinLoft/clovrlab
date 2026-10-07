@@ -34,6 +34,17 @@ export default defineConfig(async ({ command, mode }) => {
     plugins.push(
       nitro({
         preset: "vercel",
+        externals: {
+          inline: [
+            "@supabase/supabase-js",
+            "@supabase/functions-js",
+            "@supabase/auth-js",
+            "@supabase/postgrest-js",
+            "@supabase/storage-js",
+            "@supabase/realtime-js",
+            "tslib"
+          ]
+        }
       }),
     );
   }
