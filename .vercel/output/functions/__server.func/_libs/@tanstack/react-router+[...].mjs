@@ -7172,11 +7172,6 @@ function ScriptOnce({ children }) {
 	});
 }
 //#endregion
-//#region node_modules/@tanstack/react-router/dist/esm/SafeFragment.js
-function SafeFragment(props) {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: props.children });
-}
-//#endregion
 //#region node_modules/@tanstack/react-router/dist/esm/renderRouteNotFound.js
 /**
 * Renders a not found component for a route when no matching route is found.
@@ -7241,37 +7236,42 @@ function MatchView({ router, match }) {
 	const routeOnCatch = route.options.onCatch ?? router.options.defaultOnCatch;
 	const routeNotFoundComponent = route.isRoot ? route.options.notFoundComponent ?? router.options.notFoundRoute?.options.component : route.options.notFoundComponent;
 	const resolvedNoSsr = match.ssr === false || match.ssr === "data-only";
-	const ResolvedSuspenseBoundary = canWrapInSuspense(router, route, match.ssr) && (route.options.wrapInSuspense ?? pendingElement ?? (route.options.errorComponent?.preload || resolvedNoSsr)) ? import_react.Suspense : SafeFragment;
-	const ResolvedCatchBoundary = routeErrorComponent ? CatchBoundary : SafeFragment;
-	const ResolvedNotFoundBoundary = routeNotFoundComponent ? CatchNotFound : SafeFragment;
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(route.isRoot ? route.options.shellComponent ?? SafeFragment : SafeFragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(matchContext.Provider, {
+	const wrapInSuspense = canWrapInSuspense(router, route, match.ssr) && (route.options.wrapInSuspense ?? pendingElement ?? (route.options.errorComponent?.preload || resolvedNoSsr));
+	let content = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MatchInner, { match });
+	if (resolvedNoSsr) content = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClientOnly, {
+		fallback: pendingElement,
+		children: content
+	});
+	if (routeNotFoundComponent) content = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CatchNotFound, {
+		fallback: (error) => {
+			error.routeId ??= match.routeId;
+			if (error.routeId !== match.routeId) throw error;
+			return import_react.createElement(routeNotFoundComponent, error);
+		},
+		children: content
+	});
+	if (routeErrorComponent) content = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CatchBoundary, {
+		getResetKey: () => match,
+		errorComponent: routeErrorComponent,
+		onCatch: (error, errorInfo) => {
+			if (isNotFound(error)) {
+				error.routeId ??= match.routeId;
+				throw error;
+			}
+			routeOnCatch?.(error, errorInfo);
+		},
+		children: content
+	});
+	if (wrapInSuspense) content = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Suspense, {
+		fallback: pendingElement,
+		children: content
+	});
+	const scrollRestoration = route.parentRoute?.id === "__root__" && router.options.scrollRestoration ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ScrollRestoration, {}) : null;
+	const ShellComponent = route.isRoot ? route.options.shellComponent : void 0;
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(matchContext.Provider, {
 		value: match.routeId,
-		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResolvedSuspenseBoundary, {
-			fallback: pendingElement,
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResolvedCatchBoundary, {
-				getResetKey: () => match,
-				errorComponent: routeErrorComponent,
-				onCatch: (error, errorInfo) => {
-					if (isNotFound(error)) {
-						error.routeId ??= match.routeId;
-						throw error;
-					}
-					routeOnCatch?.(error, errorInfo);
-				},
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResolvedNotFoundBoundary, {
-					fallback: (error) => {
-						error.routeId ??= match.routeId;
-						if (error.routeId !== match.routeId) throw error;
-						return import_react.createElement(routeNotFoundComponent, error);
-					},
-					children: resolvedNoSsr ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClientOnly, {
-						fallback: pendingElement,
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MatchInner, { match })
-					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MatchInner, { match })
-				})
-			})
-		})
-	}), route.parentRoute?.id === "__root__" && router.options.scrollRestoration ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ScrollRestoration, {}) : null] });
+		children: ShellComponent ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(ShellComponent, { children: [content, scrollRestoration] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [content, scrollRestoration] })
+	});
 }
 var MatchInner = import_react.memo(function MatchInnerImpl({ match }) {
 	const router = useRouter();
@@ -7359,12 +7359,8 @@ function settleOwner(owner, rendered) {
 function Matches() {
 	const router = useRouter();
 	const rootRoute = router.routesById[rootRouteId];
-	const pendingElement = renderPending(router, rootRoute);
-	const ResolvedSuspense = SafeFragment;
-	const inner = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [false, /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ResolvedSuspense, {
-		fallback: pendingElement,
-		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MatchesInner, {})
-	})] });
+	renderPending(router, rootRoute);
+	const inner = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [false, /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MatchesInner, {})] });
 	return router.options.InnerWrap ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(router.options.InnerWrap, { children: inner }) : inner;
 }
 function MatchesInner() {
@@ -7377,13 +7373,10 @@ function MatchesInner() {
 		if (acknowledgement[0] === matches) settleOwner(acknowledgement, true);
 	}, [acknowledgement, matches]);
 	const matchComponent = routeId ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Match, { routeId }) : null;
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(matchContext.Provider, {
-		value: routeId,
-		children: router.options.disableGlobalCatchBoundary ? matchComponent : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CatchBoundary, {
-			getResetKey: () => match,
-			onCatch: void 0,
-			children: matchComponent
-		})
+	return router.options.disableGlobalCatchBoundary ? matchComponent : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CatchBoundary, {
+		getResetKey: () => match,
+		onCatch: void 0,
+		children: matchComponent
 	});
 }
 function useMatches(opts) {
@@ -8210,13 +8203,17 @@ function createHydrationScripts(nonce, initialSources) {
 //#endregion
 //#region node_modules/@tanstack/router-core/dist/esm/ssr/handlerCallback.js
 function isSsrResponse(value) {
-	return typeof value === "object" && value !== null && "response" in value && "serverSsrCleanup" in value;
+	if (typeof value !== "object" || value === null || !("response" in value) || !(value.response instanceof Response) || !("serverSsrCleanup" in value)) return false;
+	if (value.serverSsrCleanup === "none") return true;
+	return value.serverSsrCleanup === "stream" && "dispose" in value && typeof value.dispose === "function";
 }
 function normalizeSsrResponse(result) {
-	return isSsrResponse(result) ? result : {
+	if (result instanceof Response) return {
 		response: result,
 		serverSsrCleanup: "none"
 	};
+	if (isSsrResponse(result)) return result;
+	throw new TypeError("Expected a Response from the SSR handler");
 }
 function cancelResponseBody(response, reason) {
 	const body = response.body;

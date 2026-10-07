@@ -1,1 +1,0 @@
-import{W as e}from"./index-Cl-NAboD.js";var t=e({type:`function`});export{t};
