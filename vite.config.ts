@@ -64,6 +64,9 @@ export default defineConfig(async ({ command, mode }) => {
       ],
       ignoreOutdatedRequests: true,
     },
+    ssr: {
+      noExternal: ["@supabase/supabase-js", "@supabase/functions-js", "tslib"],
+    },
     server: {
       host: "::",
       port: 8080,

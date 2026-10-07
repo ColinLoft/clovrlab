@@ -8633,4 +8633,4 @@ GoTrueClient.nextInstanceID = {};
 //#region node_modules/@supabase/auth-js/dist/module/AuthClient.js
 var AuthClient = GoTrueClient;
 //#endregion
-export { isAuthSessionMissingError as S, isAuthApiError as _, AuthImplicitGrantRedirectError as a, isAuthRefreshDiscardedError as b, AuthInvalidTokenResponseError as c, AuthRefreshDiscardedError as d, AuthRetryableFetchError as f, CustomAuthError as g, AuthWeakPasswordError as h, AuthError as i, AuthPKCECodeVerifierMissingError as l, AuthUnknownError as m, SIGN_OUT_SCOPES as n, AuthInvalidCredentialsError as o, AuthSessionMissingError as p, AuthApiError as r, AuthInvalidJwtError as s, AuthClient as t, AuthPKCEGrantCodeExchangeError as u, isAuthError as v, isAuthRetryableFetchError as x, isAuthImplicitGrantRedirectError as y };
+export { AuthClient as t };

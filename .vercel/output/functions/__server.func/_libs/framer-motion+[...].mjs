@@ -226,161 +226,16 @@ var easingDefinitionToFunction = (definition) => {
 	return definition;
 };
 //#endregion
-//#region node_modules/motion-dom/dist/es/frameloop/order.mjs
-var stepsOrder = [
-	"setup",
-	"read",
-	"resolveKeyframes",
-	"preUpdate",
-	"update",
-	"preRender",
-	"render",
-	"postRender"
-];
-//#endregion
-//#region node_modules/motion-dom/dist/es/frameloop/render-step.mjs
-function createRenderStep(runNextFrame) {
-	/**
-	* We create and reuse two queues, one to queue jobs for the current frame
-	* and one for the next. We reuse to avoid triggering GC after x frames.
-	*/
-	let thisFrame = /* @__PURE__ */ new Set();
-	let nextFrame = /* @__PURE__ */ new Set();
-	/**
-	* Track whether we're currently processing jobs in this step. This way
-	* we can decide whether to schedule new jobs for this frame or next.
-	*/
-	let isProcessing = false;
-	let flushNextFrame = false;
-	/**
-	* A set of processes which were marked keepAlive when scheduled.
-	* A keepAlive process is always also held by a frame queue until
-	* it's cancelled, so a Set has the same lifetime semantics as a
-	* WeakSet here while being considerably faster to query every frame.
-	*/
-	const toKeepAlive = /* @__PURE__ */ new Set();
-	let latestFrameData = {
-		delta: 0,
-		timestamp: 0,
-		isProcessing: false
-	};
-	function triggerCallback(callback) {
-		if (toKeepAlive.has(callback)) {
-			nextFrame.add(callback);
-			runNextFrame();
-		}
-		callback(latestFrameData);
-	}
-	const step = {
-		/**
-		* Schedule a process to run on the next frame.
-		*/
-		schedule: (callback, keepAlive = false, immediate = false) => {
-			const queue = immediate && isProcessing ? thisFrame : nextFrame;
-			if (keepAlive) toKeepAlive.add(callback);
-			queue.add(callback);
-			return callback;
-		},
-		/**
-		* Cancel the provided callback from running on the next frame.
-		*/
-		cancel: (callback) => {
-			nextFrame.delete(callback);
-			toKeepAlive.delete(callback);
-		},
-		/**
-		* Execute all schedule callbacks.
-		*/
-		process: (frameData) => {
-			latestFrameData = frameData;
-			/**
-			* If we're already processing we've probably been triggered by a flushSync
-			* inside an existing process. Instead of executing, mark flushNextFrame
-			* as true and ensure we flush the following frame at the end of this one.
-			*/
-			if (isProcessing) {
-				flushNextFrame = true;
-				return;
-			}
-			isProcessing = true;
-			const prevFrame = thisFrame;
-			thisFrame = nextFrame;
-			nextFrame = prevFrame;
-			thisFrame.forEach(triggerCallback);
-			thisFrame.clear();
-			isProcessing = false;
-			if (flushNextFrame) {
-				flushNextFrame = false;
-				step.process(frameData);
-			}
-		}
-	};
-	return step;
-}
-//#endregion
-//#region node_modules/motion-dom/dist/es/frameloop/batcher.mjs
-var maxElapsed$1 = 40;
-function createRenderBatcher(scheduleNextBatch, allowKeepAlive) {
-	let runNextFrame = false;
-	let useDefaultElapsed = true;
-	const state = {
-		delta: 0,
-		timestamp: 0,
-		isProcessing: false
-	};
-	const flagRunNextFrame = () => runNextFrame = true;
-	const steps = stepsOrder.reduce((acc, key) => {
-		acc[key] = createRenderStep(flagRunNextFrame);
-		return acc;
-	}, {});
-	const { setup, read, resolveKeyframes, preUpdate, update, preRender, render, postRender } = steps;
-	const processBatch = () => {
-		const useManualTiming = MotionGlobalConfig.useManualTiming;
-		const timestamp = useManualTiming ? state.timestamp : performance.now();
-		runNextFrame = false;
-		if (!useManualTiming) state.delta = useDefaultElapsed ? 1e3 / 60 : Math.max(Math.min(timestamp - state.timestamp, maxElapsed$1), 1);
-		state.timestamp = timestamp;
-		state.isProcessing = true;
-		setup.process(state);
-		read.process(state);
-		resolveKeyframes.process(state);
-		preUpdate.process(state);
-		update.process(state);
-		preRender.process(state);
-		render.process(state);
-		postRender.process(state);
-		state.isProcessing = false;
-		if (runNextFrame && allowKeepAlive) {
-			useDefaultElapsed = false;
-			scheduleNextBatch(processBatch);
-		}
-	};
-	const wake = () => {
-		runNextFrame = true;
-		useDefaultElapsed = true;
-		if (!state.isProcessing) scheduleNextBatch(processBatch);
-	};
-	const schedule = stepsOrder.reduce((acc, key) => {
-		const step = steps[key];
-		acc[key] = (process, keepAlive = false, immediate = false) => {
-			if (!runNextFrame) wake();
-			return step.schedule(process, keepAlive, immediate);
-		};
-		return acc;
-	}, {});
-	const cancel = (process) => {
-		for (let i = 0; i < stepsOrder.length; i++) steps[stepsOrder[i]].cancel(process);
-	};
-	return {
-		schedule,
-		cancel,
-		state,
-		steps
-	};
-}
-//#endregion
-//#region node_modules/motion-dom/dist/es/frameloop/frame.mjs
-var { schedule: frame, cancel: cancelFrame, state: frameData, steps: frameSteps } = /* @__PURE__ */ createRenderBatcher(typeof requestAnimationFrame !== "undefined" ? requestAnimationFrame : noop, true);
+//#region node_modules/motion-dom/dist/es/frameloop/frame-data.mjs
+/**
+* The frameloop's state, kept apart from the frameloop itself so that
+* reading it doesn't bundle the scheduler.
+*/
+var frameData = {
+	delta: 0,
+	timestamp: 0,
+	isProcessing: false
+};
 //#endregion
 //#region node_modules/motion-dom/dist/es/frameloop/sync-time.mjs
 var now;
@@ -857,6 +712,161 @@ function mix(from, to, p) {
 	return getMixer(from)(from, to);
 }
 //#endregion
+//#region node_modules/motion-dom/dist/es/frameloop/order.mjs
+var stepsOrder = [
+	"setup",
+	"read",
+	"resolveKeyframes",
+	"preUpdate",
+	"update",
+	"preRender",
+	"render",
+	"postRender"
+];
+//#endregion
+//#region node_modules/motion-dom/dist/es/frameloop/render-step.mjs
+function createRenderStep(runNextFrame) {
+	/**
+	* We create and reuse two queues, one to queue jobs for the current frame
+	* and one for the next. We reuse to avoid triggering GC after x frames.
+	*/
+	let thisFrame = /* @__PURE__ */ new Set();
+	let nextFrame = /* @__PURE__ */ new Set();
+	/**
+	* Track whether we're currently processing jobs in this step. This way
+	* we can decide whether to schedule new jobs for this frame or next.
+	*/
+	let isProcessing = false;
+	let flushNextFrame = false;
+	/**
+	* A set of processes which were marked keepAlive when scheduled.
+	* A keepAlive process is always also held by a frame queue until
+	* it's cancelled, so a Set has the same lifetime semantics as a
+	* WeakSet here while being considerably faster to query every frame.
+	*/
+	const toKeepAlive = /* @__PURE__ */ new Set();
+	let latestFrameData = {
+		delta: 0,
+		timestamp: 0,
+		isProcessing: false
+	};
+	function triggerCallback(callback) {
+		if (toKeepAlive.has(callback)) {
+			nextFrame.add(callback);
+			runNextFrame();
+		}
+		callback(latestFrameData);
+	}
+	const step = {
+		/**
+		* Schedule a process to run on the next frame.
+		*/
+		schedule: (callback, keepAlive = false, immediate = false) => {
+			const queue = immediate && isProcessing ? thisFrame : nextFrame;
+			if (keepAlive) toKeepAlive.add(callback);
+			queue.add(callback);
+			return callback;
+		},
+		/**
+		* Cancel the provided callback from running on the next frame.
+		*/
+		cancel: (callback) => {
+			nextFrame.delete(callback);
+			toKeepAlive.delete(callback);
+		},
+		/**
+		* Execute all schedule callbacks.
+		*/
+		process: (frameData) => {
+			latestFrameData = frameData;
+			/**
+			* If we're already processing we've probably been triggered by a flushSync
+			* inside an existing process. Instead of executing, mark flushNextFrame
+			* as true and ensure we flush the following frame at the end of this one.
+			*/
+			if (isProcessing) {
+				flushNextFrame = true;
+				return;
+			}
+			isProcessing = true;
+			const prevFrame = thisFrame;
+			thisFrame = nextFrame;
+			nextFrame = prevFrame;
+			thisFrame.forEach(triggerCallback);
+			thisFrame.clear();
+			isProcessing = false;
+			if (flushNextFrame) {
+				flushNextFrame = false;
+				step.process(frameData);
+			}
+		}
+	};
+	return step;
+}
+//#endregion
+//#region node_modules/motion-dom/dist/es/frameloop/batcher.mjs
+var maxElapsed$1 = 40;
+function createRenderBatcher(scheduleNextBatch, allowKeepAlive, state = {
+	delta: 0,
+	timestamp: 0,
+	isProcessing: false
+}) {
+	let runNextFrame = false;
+	let useDefaultElapsed = true;
+	const flagRunNextFrame = () => runNextFrame = true;
+	const steps = stepsOrder.reduce((acc, key) => {
+		acc[key] = createRenderStep(flagRunNextFrame);
+		return acc;
+	}, {});
+	const { setup, read, resolveKeyframes, preUpdate, update, preRender, render, postRender } = steps;
+	const processBatch = () => {
+		const useManualTiming = MotionGlobalConfig.useManualTiming;
+		const timestamp = useManualTiming ? state.timestamp : performance.now();
+		runNextFrame = false;
+		if (!useManualTiming) state.delta = useDefaultElapsed ? 1e3 / 60 : Math.max(Math.min(timestamp - state.timestamp, maxElapsed$1), 1);
+		state.timestamp = timestamp;
+		state.isProcessing = true;
+		setup.process(state);
+		read.process(state);
+		resolveKeyframes.process(state);
+		preUpdate.process(state);
+		update.process(state);
+		preRender.process(state);
+		render.process(state);
+		postRender.process(state);
+		state.isProcessing = false;
+		if (runNextFrame && allowKeepAlive) {
+			useDefaultElapsed = false;
+			scheduleNextBatch(processBatch);
+		}
+	};
+	const wake = () => {
+		runNextFrame = true;
+		useDefaultElapsed = true;
+		if (!state.isProcessing) scheduleNextBatch(processBatch);
+	};
+	const schedule = stepsOrder.reduce((acc, key) => {
+		const step = steps[key];
+		acc[key] = (process, keepAlive = false, immediate = false) => {
+			if (!runNextFrame) wake();
+			return step.schedule(process, keepAlive, immediate);
+		};
+		return acc;
+	}, {});
+	const cancel = (process) => {
+		for (let i = 0; i < stepsOrder.length; i++) steps[stepsOrder[i]].cancel(process);
+	};
+	return {
+		schedule,
+		cancel,
+		state,
+		steps
+	};
+}
+//#endregion
+//#region node_modules/motion-dom/dist/es/frameloop/frame.mjs
+var { schedule: frame, cancel: cancelFrame, steps: frameSteps } = /* @__PURE__ */ createRenderBatcher(typeof requestAnimationFrame !== "undefined" ? requestAnimationFrame : noop, true, frameData);
+//#endregion
 //#region node_modules/motion-dom/dist/es/animation/drivers/frame.mjs
 var frameloopDriver = (update) => {
 	const passTimestamp = ({ timestamp }) => update(timestamp);
@@ -934,9 +944,33 @@ var springDefaults = {
 	},
 	minDuration: .01,
 	maxDuration: 10,
-	minDamping: .05,
-	maxDamping: 1
+	minDamping: .05
 };
+/**
+* Maps bounce to a damping ratio as SwiftUI does: 0 is critically damped, and
+* it approaches undamped towards 1 and infinitely overdamped towards -1. Both
+* ends are limited so the spring still moves and settles.
+*/
+var bounceToDampingRatio = (bounce) => bounce < 0 ? 1 / Math.max(1 + bounce, springDefaults.minDamping) : Math.max(1 - bounce, springDefaults.minDamping);
+/**
+* Scales an overdamped spring's undamped frequency so that, at its defining
+* time, it has as far left to go as the critically damped spring that's
+* criticalFreqTime radians in by then. A negative bounce then changes the
+* shape of the curve, not when it arrives. 1 at a damping ratio of 1, so
+* there's no jump at a bounce of 0.
+*
+* Solved by Newton on the remaining distance (times fast - slow), which is
+* convex from criticalFreqTime onwards. criticalFreqTime is always below the
+* answer, so it converges from below without overshooting.
+*/
+function overdampedFreqScale(dampingRatio, criticalFreqTime) {
+	if (!(dampingRatio > 1)) return 1;
+	const root = Math.sqrt(dampingRatio * dampingRatio - 1);
+	const slow = dampingRatio - root;
+	const fast = dampingRatio + root;
+	const target = 2 * root * Math.exp(-criticalFreqTime) * (1 + criticalFreqTime);
+	return approximateRoot((freqTime) => fast * Math.exp(-slow * freqTime) - slow * Math.exp(-fast * freqTime) - target, (freqTime) => Math.exp(-fast * freqTime) - Math.exp(-slow * freqTime), criticalFreqTime) / criticalFreqTime;
+}
 function calcAngularFreq(undampedFreq, dampingRatio) {
 	return undampedFreq * Math.sqrt(1 - dampingRatio * dampingRatio);
 }
@@ -959,11 +993,7 @@ function findSpring({ duration = springDefaults.duration, bounce = springDefault
 	let envelope;
 	let derivative;
 	springDefaults.maxDuration;
-	let dampingRatio = 1 - bounce;
-	/**
-	* Restrict dampingRatio and duration to within acceptable ranges.
-	*/
-	dampingRatio = clamp(springDefaults.minDamping, springDefaults.maxDamping, dampingRatio);
+	const dampingRatio = bounceToDampingRatio(bounce);
 	duration = clamp(springDefaults.minDuration, springDefaults.maxDuration, /* @__PURE__ */ millisecondsToSeconds(duration));
 	if (dampingRatio < 1) {
 		/**
@@ -985,7 +1015,8 @@ function findSpring({ duration = springDefaults.duration, bounce = springDefault
 		};
 	} else {
 		/**
-		* Critically-damped spring
+		* Critically-damped spring. Overdamped springs reuse this root,
+		* scaled below.
 		*/
 		envelope = (undampedFreq) => {
 			return -.001 + Math.exp(-undampedFreq * duration) * (undampedFreq * duration + 1);
@@ -995,7 +1026,8 @@ function findSpring({ duration = springDefaults.duration, bounce = springDefault
 		};
 	}
 	const initialGuess = 5 / duration;
-	const undampedFreq = approximateRoot(envelope, derivative, initialGuess);
+	const criticalFreq = approximateRoot(envelope, derivative, initialGuess);
+	const undampedFreq = criticalFreq * overdampedFreqScale(dampingRatio, criticalFreq * duration);
 	const stiffness = undampedFreq * undampedFreq;
 	return {
 		stiffness,
@@ -1038,9 +1070,10 @@ function getSpringOptions(options) {
 	};
 	if (springOptions.isTimeDefined) {
 		if (options.visualDuration) {
-			const root = 2 * Math.PI / (options.visualDuration * 1.2);
+			const dampingRatio = bounceToDampingRatio(options.bounce || 0);
+			const root = 2 * Math.PI / (options.visualDuration * 1.2) * overdampedFreqScale(dampingRatio, 2 * Math.PI / 1.2);
 			springOptions.stiffness = root * root;
-			springOptions.damping = 2 * clamp(.05, 1, 1 - (options.bounce || 0)) * Math.sqrt(springOptions.stiffness);
+			springOptions.damping = 2 * dampingRatio * Math.sqrt(springOptions.stiffness);
 		} else {
 			Object.assign(springOptions, findSpring(springOptions));
 			springOptions.isResolvedFromDuration = true;
@@ -1166,27 +1199,34 @@ function spring(optionsOrVisualDuration = springDefaults.visualDuration, bounce 
 		};
 		resolveVelocity = (t) => Math.exp(-undampedAngularFreq * t) * (undampedAngularFreq * c.C * t - s.velocity);
 	} else {
+		/**
+		* Overdamped spring: the sum of a slow and a fast decaying
+		* exponential, so no term can overflow however heavily it's damped.
+		*/
 		const dampedAngularFreq = undampedAngularFreq * Math.sqrt(dampingRatio * dampingRatio - 1);
-		resolveSpring = (t) => {
-			const envelope = Math.exp(-decay * t);
-			const freqForT = Math.min(dampedAngularFreq * t, 300);
-			return s.target - envelope * ((s.velocity + decay * s.delta) * Math.sinh(freqForT) + dampedAngularFreq * s.delta * Math.cosh(freqForT)) / dampedAngularFreq;
-		};
+		const slow = decay - dampedAngularFreq;
+		const fast = decay + dampedAngularFreq;
+		/**
+		* Physics-defined springs keep a non-physical limit: once
+		* dampedAngularFreq * t passes 300, both terms decay at the damping
+		* rate. Heavily overdamped drag springs (dragElastic: 0,
+		* dragTransition) rely on this to settle almost at once rather than
+		* creep at stiffness / damping. Negative bounce needs the exact
+		* curve, so time-defined springs are exempt.
+		*/
+		const limit = isTimeDefined ? Infinity : 300 / dampedAngularFreq;
+		const decayAt = (rate, t) => Math.exp(t > limit ? -rate * limit - decay * (t - limit) : -rate * t);
 		const c = {
-			P: 0,
-			sinh: 0,
-			cosh: 0
+			S: 0,
+			F: 0
 		};
 		update = () => {
-			c.P = (s.velocity + decay * s.delta) / dampedAngularFreq;
-			c.sinh = decay * c.P - s.delta * dampedAngularFreq;
-			c.cosh = decay * s.delta - c.P * dampedAngularFreq;
+			const P = (s.velocity + decay * s.delta) / dampedAngularFreq;
+			c.S = (s.delta + P) / 2;
+			c.F = (s.delta - P) / 2;
 		};
-		resolveVelocity = (t) => {
-			const envelope = Math.exp(-decay * t);
-			const freqForT = Math.min(dampedAngularFreq * t, 300);
-			return envelope * (c.sinh * Math.sinh(freqForT) + c.cosh * Math.cosh(freqForT));
-		};
+		resolveSpring = (t) => s.target - c.S * decayAt(slow, t) - c.F * decayAt(fast, t);
+		resolveVelocity = (t) => slow * c.S * decayAt(slow, t) + fast * c.F * decayAt(fast, t);
 	}
 	update();
 	const calculatedDuration = isResolvedFromDuration ? duration || null : null;
@@ -2560,13 +2600,13 @@ var NativeAnimation = class extends WithPromise {
 	/**
 	* Attaches a timeline to the animation, for instance the `ScrollTimeline`.
 	*/
-	attachTimeline({ timeline, rangeStart, rangeEnd, observe }) {
+	attachTimeline({ timeline, onAttach, observe, ...range }) {
 		if (this.allowFlatten) this.animation.effect?.updateTiming({ easing: "linear" });
 		this.animation.onfinish = null;
 		if (timeline && supportsScrollTimeline()) {
 			this.animation.timeline = timeline;
-			if (rangeStart) this.animation.rangeStart = rangeStart;
-			if (rangeEnd) this.animation.rangeEnd = rangeEnd;
+			Object.assign(this.animation, range);
+			onAttach?.(this.animation);
 			return noop;
 		} else return observe(this);
 	}
@@ -3460,35 +3500,26 @@ function getValueState(visualElement) {
 	return state;
 }
 function resolveVariantFromProps(props, definition, custom, visualElement) {
+	const resolveFunction = (def) => typeof def === "function" ? def(custom !== void 0 ? custom : props.custom, ...getValueState(visualElement)) : def;
 	/**
-	* If the variant definition is a function, resolve.
+	* Resolve a function, then a variant label (which the function may have
+	* returned), then a function again as the label may point to one. The
+	* final function can only return a target object.
 	*/
-	if (typeof definition === "function") {
-		const [current, velocity] = getValueState(visualElement);
-		definition = definition(custom !== void 0 ? custom : props.custom, current, velocity);
-	}
-	/**
-	* If the variant definition is a variant label, or
-	* the function returned a variant label, resolve.
-	*/
+	definition = resolveFunction(definition);
 	if (typeof definition === "string") definition = props.variants && props.variants[definition];
-	/**
-	* At this point we've resolved both functions and variant labels,
-	* but the resolved variant label might itself have been a function.
-	* If so, resolve. This can only have returned a valid target object.
-	*/
-	if (typeof definition === "function") {
-		const [current, velocity] = getValueState(visualElement);
-		definition = definition(custom !== void 0 ? custom : props.custom, current, velocity);
-	}
-	return definition;
+	return resolveFunction(definition);
 }
 //#endregion
 //#region node_modules/motion-dom/dist/es/render/utils/resolve-dynamic-variants.mjs
 function resolveVariant(visualElement, definition, custom) {
-	const props = visualElement.getProps();
-	return resolveVariantFromProps(props, definition, custom !== void 0 ? custom : props.custom, visualElement);
+	return resolveVariantFromProps(visualElement.getProps(), definition, custom, visualElement);
 }
+/**
+* Exit variants resolve with AnimatePresence's custom, every other type
+* with the element's own.
+*/
+var getTypeCustom = (visualElement, type) => type === "exit" ? visualElement.presenceContext?.custom : void 0;
 //#endregion
 //#region node_modules/motion-dom/dist/es/render/utils/keys-position.mjs
 var positionalKeys = /* @__PURE__ */ new Set([
@@ -3570,7 +3601,7 @@ var isBrowser$1 = typeof window !== "undefined";
 * had been set to true in the meantime.
 */
 function shouldBlockAnimation({ protectedKeys, needsAnimating }, key) {
-	const shouldBlock = protectedKeys.hasOwnProperty(key) && needsAnimating[key] !== true;
+	const shouldBlock = key in protectedKeys && !needsAnimating[key];
 	needsAnimating[key] = false;
 	return shouldBlock;
 }
@@ -3582,7 +3613,7 @@ function animateTarget(visualElement, targetAndTransition, { delay = 0, transiti
 	const skipAnimations = transition?.skipAnimations;
 	if (transitionOverride) transition = transitionOverride;
 	const animations = [];
-	const animationTypeState = type && visualElement.animationState && visualElement.animationState.getState()[type];
+	const animationTypeState = type && visualElement.animationState?.getState()[type];
 	const path = transition?.path;
 	if (path) path.animateVisualElement(visualElement, target, transition, delay, animations);
 	for (const key in target) {
@@ -3637,57 +3668,34 @@ function animateTarget(visualElement, targetAndTransition, { delay = 0, transiti
 //#endregion
 //#region node_modules/motion-dom/dist/es/animation/interfaces/visual-element-variant.mjs
 function animateVariant(visualElement, variant, options = {}) {
-	const resolved = resolveVariant(visualElement, variant, options.type === "exit" ? visualElement.presenceContext?.custom : void 0);
-	let { transition = visualElement.getDefaultTransition() || {} } = resolved || {};
-	if (options.transitionOverride) transition = options.transitionOverride;
-	/**
-	* If we have a variant, create a callback that runs it as an animation.
-	* Otherwise, we resolve a Promise immediately for a composable no-op.
-	*/
-	const getAnimation = resolved ? () => Promise.all(animateTarget(visualElement, resolved, options)) : () => Promise.resolve();
-	/**
-	* If we have children, create a callback that runs all their animations.
-	* Otherwise, we resolve a Promise immediately for a composable no-op.
-	*/
-	const getChildAnimations = visualElement.variantChildren && visualElement.variantChildren.size ? (forwardDelay = 0) => {
+	const resolved = resolveVariant(visualElement, variant, getTypeCustom(visualElement, options.type));
+	const transition = options.transitionOverride || (resolved?.transition ?? (visualElement.getDefaultTransition() || {}));
+	const getAnimation = () => Promise.all(resolved ? animateTarget(visualElement, resolved, options) : []);
+	const getChildAnimations = (delay = 0) => {
+		const { variantChildren } = visualElement;
 		const { delayChildren = 0, staggerChildren, staggerDirection } = transition;
-		return animateChildren(visualElement, variant, forwardDelay, delayChildren, staggerChildren, staggerDirection, options);
-	} : () => Promise.resolve();
+		const animations = [];
+		variantChildren?.forEach((child) => {
+			child.notify("AnimationStart", variant);
+			animations.push(animateVariant(child, variant, {
+				...options,
+				delay: delay + (typeof delayChildren === "function" ? 0 : delayChildren) + calcChildStagger(variantChildren, child, delayChildren, staggerChildren, staggerDirection)
+			}).then(() => child.notify("AnimationComplete", variant)));
+		});
+		return Promise.all(animations);
+	};
 	/**
-	* If the transition explicitly defines a "when" option, we need to resolve either
-	* this animation or all children animations before playing the other.
+	* when: "beforeChildren" | "afterChildren" runs this element's animation
+	* and its children's in sequence.
 	*/
 	const { when } = transition;
-	if (when) {
-		const [first, last] = when === "beforeChildren" ? [getAnimation, getChildAnimations] : [getChildAnimations, getAnimation];
-		return first().then(() => last());
-	} else return Promise.all([getAnimation(), getChildAnimations(options.delay)]);
-}
-function animateChildren(visualElement, variant, delay = 0, delayChildren = 0, staggerChildren = 0, staggerDirection = 1, options) {
-	const animations = [];
-	for (const child of visualElement.variantChildren) {
-		child.notify("AnimationStart", variant);
-		animations.push(animateVariant(child, variant, {
-			...options,
-			delay: delay + (typeof delayChildren === "function" ? 0 : delayChildren) + calcChildStagger(visualElement.variantChildren, child, delayChildren, staggerChildren, staggerDirection)
-		}).then(() => child.notify("AnimationComplete", variant)));
-	}
-	return Promise.all(animations);
+	return when ? when === "beforeChildren" ? getAnimation().then(() => getChildAnimations()) : getChildAnimations().then(getAnimation) : Promise.all([getAnimation(), getChildAnimations(options.delay)]);
 }
 //#endregion
 //#region node_modules/motion-dom/dist/es/animation/interfaces/visual-element.mjs
 function animateVisualElement(visualElement, definition, options = {}) {
 	visualElement.notify("AnimationStart", definition);
-	let animation;
-	if (Array.isArray(definition)) {
-		const animations = definition.map((variant) => animateVariant(visualElement, variant, options));
-		animation = Promise.all(animations);
-	} else if (typeof definition === "string") animation = animateVariant(visualElement, definition, options);
-	else {
-		const resolvedDefinition = typeof definition === "function" ? resolveVariant(visualElement, definition, options.custom) : definition;
-		animation = Promise.all(animateTarget(visualElement, resolvedDefinition, options));
-	}
-	return animation.then(() => {
+	return (Array.isArray(definition) ? Promise.all(definition.map((variant) => animateVariant(visualElement, variant, options))) : typeof definition === "string" ? animateVariant(visualElement, definition, options) : Promise.all(animateTarget(visualElement, resolveVariant(visualElement, definition, options.custom), options))).then(() => {
 		visualElement.notify("AnimationComplete", definition);
 	});
 }
@@ -4627,19 +4635,6 @@ function resize(a, b) {
 	return typeof a === "function" ? resizeWindow(a) : resizeElement(a, b);
 }
 //#endregion
-//#region node_modules/motion-dom/dist/es/scroll/observe.mjs
-function observeTimeline(update, timeline) {
-	let prevProgress;
-	const onFrame = () => {
-		const { currentTime } = timeline;
-		const progress = (currentTime === null ? 0 : currentTime.value) / 100;
-		if (prevProgress !== progress) update(progress);
-		prevProgress = progress;
-	};
-	frame.preUpdate(onFrame, true);
-	return () => cancelFrame(onFrame);
-}
-//#endregion
 //#region node_modules/motion-dom/dist/es/stats/buffer.mjs
 var statsBuffer = {
 	value: null,
@@ -4708,8 +4703,7 @@ var FollowAnimation = class extends WithPromise {
 			this.options.onStop?.();
 		};
 		this.options = options;
-		replaceTransitionType(options);
-		this.factory = options.type || keyframes;
+		this.factory = options.type;
 		this.generator = this.factory(options);
 		const { driver } = options;
 		if (driver) this.driver = driver((timestamp) => this.tick(timestamp));
@@ -4795,19 +4789,17 @@ var FollowAnimation = class extends WithPromise {
 	}
 };
 //#endregion
-//#region node_modules/motion-dom/dist/es/value/follow-value.mjs
+//#region node_modules/motion-dom/dist/es/value/utils/as-number.mjs
+var asNumber = (v) => typeof v === "number" ? v : parseFloat(v);
+//#endregion
+//#region node_modules/motion-dom/dist/es/value/utils/follow.mjs
 /**
-* Attach an animation to a MotionValue that will animate whenever the value changes.
-* Similar to attachSpring but supports any transition type (spring, tween, inertia, etc.)
-*
-* @param value - The MotionValue to animate
-* @param source - Initial value or MotionValue to track
-* @param options - Animation transition options
-* @returns Cleanup function
-*
-* @public
+* Animate `value` to its latest value with the generator in
+* `options.type`, tracking `source` if it's a `MotionValue`. Takes a
+* generator rather than a type name, so spring-only callers don't
+* bundle every generator.
 */
-function attachFollow(value, source, options = {}) {
+function follow(value, source, options) {
 	const initialValue = value.get();
 	let activeAnimation = null;
 	let set;
@@ -4823,7 +4815,7 @@ function attachFollow(value, source, options = {}) {
 	};
 	value.attach((v, safeSet) => {
 		set = safeSet;
-		const target = asNumber$1(v);
+		const target = asNumber(v);
 		if (activeAnimation?.state === "running") {
 			/**
 			* Steer the running animation rather than replacing it. This
@@ -4834,14 +4826,13 @@ function attachFollow(value, source, options = {}) {
 			activeAnimation.setTarget(target, options.velocity);
 			return;
 		}
-		const current = asNumber$1(value.get());
+		const current = asNumber(value.get());
 		const velocity = activeAnimation ? activeAnimation.getGeneratorVelocity() : value.getVelocity();
 		stopAnimation();
 		if (current === target) return;
 		const animation = activeAnimation = new FollowAnimation({
 			keyframes: [current, target],
 			velocity,
-			type: "spring",
 			restDelta: .001,
 			restSpeed: .01,
 			...options,
@@ -4875,8 +4866,23 @@ function attachFollow(value, source, options = {}) {
 function parseValue(v, unit) {
 	return unit ? v + unit : v;
 }
-function asNumber$1(v) {
-	return typeof v === "number" ? v : parseFloat(v);
+//#endregion
+//#region node_modules/motion-dom/dist/es/value/spring-value.mjs
+/**
+* Attach a spring animation to a MotionValue that will animate whenever the value changes.
+*
+* @param value - The MotionValue to animate
+* @param source - Initial value or MotionValue to track
+* @param options - Spring configuration options
+* @returns Cleanup function
+*
+* @public
+*/
+function attachSpring(value, source, options) {
+	return follow(value, source, {
+		...options,
+		type: spring
+	});
 }
 //#endregion
 //#region node_modules/motion-dom/dist/es/projection/geometry/models.mjs
@@ -5162,7 +5168,21 @@ var VisualElement = class {
 		this.current = instance;
 		visualElementStore.set(instance, this);
 		if (this.projection && !this.projection.instance) this.projection.mount(instance);
-		if (this.parent && this.isVariantNode && !this.isControllingVariants) this.removeFromVariantTree = this.parent.addVariantChild(this);
+		/**
+		* Join the closest variant node above, so its variant changes
+		* propagate here, unless inherit={false} cuts the chain.
+		*/
+		if (this.isVariantNode && !this.isControllingVariants) {
+			let node = this;
+			do
+				node = node.props.inherit !== false && node.parent;
+			while (node && !node.isVariantNode);
+			if (node) {
+				const { variantChildren } = node;
+				variantChildren.add(this);
+				this.removeFromVariantTree = () => variantChildren.delete(this);
+			}
+		}
 		this.values.forEach((value, key) => this.bindToMotionValue(key, value));
 		/**
 		* Determine reduced motion preference. Only initialize the matchMedia
@@ -5246,9 +5266,10 @@ var VisualElement = class {
 	}
 	sortNodePosition(other) {
 		/**
-		* If these nodes aren't even of the same type we can't compare their depth.
+		* If either node isn't mounted, or they aren't even of the same type,
+		* we can't compare their document order.
 		*/
-		if (!this.current || !this.sortInstanceNodePosition || this.type !== other.type) return 0;
+		if (!this.current || !other.current || !this.sortInstanceNodePosition || this.type !== other.type) return 0;
 		return this.sortInstanceNodePosition(this.current, other.current);
 	}
 	updateFeatures() {
@@ -5334,19 +5355,6 @@ var VisualElement = class {
 	getTransformPagePoint() {
 		return this.props.transformPagePoint;
 	}
-	getClosestVariantNode() {
-		return this.isVariantNode ? this : this.parent ? this.parent.getClosestVariantNode() : void 0;
-	}
-	/**
-	* Add a child visual element to our set of children.
-	*/
-	addVariantChild(child) {
-		const closestVariantNode = this.getClosestVariantNode();
-		if (closestVariantNode) {
-			closestVariantNode.variantChildren && closestVariantNode.variantChildren.add(child);
-			return () => closestVariantNode.variantChildren.delete(child);
-		}
-	}
 	/**
 	* Add a motion value and bind it to this visual element.
 	*/
@@ -5356,7 +5364,14 @@ var VisualElement = class {
 			if (existingValue) this.removeValue(key);
 			this.bindToMotionValue(key, value);
 			this.values.set(key, value);
-			this.latestValues[key] = value.get();
+			/**
+			* An animated value with no base value is undefined until the
+			* keyframe resolver reads its origin. Rendering it before then
+			* writes an invalid placeholder (e.g. points="undefined") that
+			* the resolver can read back from the DOM as the origin.
+			*/
+			const latest = value.get();
+			if (latest !== void 0) this.latestValues[key] = latest;
 		}
 	}
 	/**
@@ -5382,7 +5397,7 @@ var VisualElement = class {
 		if (this.props.values && this.props.values[key]) return this.props.values[key];
 		let value = this.values.get(key);
 		if (value === void 0 && defaultValue !== void 0) {
-			value = motionValue(defaultValue === null ? void 0 : defaultValue, { owner: this });
+			value = motionValue(defaultValue ?? this.getDefaultValue?.(key), { owner: this });
 			this.addValue(key, value);
 		}
 		return value;
@@ -5407,33 +5422,6 @@ var VisualElement = class {
 	*/
 	setBaseTarget(key, value) {
 		this.baseTarget[key] = value;
-	}
-	/**
-	* Find the base target for a value thats been removed from all animation
-	* props.
-	*/
-	getBaseTarget(key) {
-		const { initial } = this.props;
-		let valueFromInitial;
-		if (typeof initial === "string" || typeof initial === "object") {
-			const variant = resolveVariantFromProps(this.props, initial, this.presenceContext?.custom);
-			if (variant) valueFromInitial = variant[key];
-		}
-		/**
-		* If this value still exists in the current initial variant, read that.
-		*/
-		if (initial && valueFromInitial !== void 0) return valueFromInitial;
-		/**
-		* Alternatively, if this VisualElement config has defined a getBaseTarget
-		* so we can read the value from an alternative source, try that.
-		*/
-		const target = this.getBaseTargetFromProps(this.props, key);
-		if (target !== void 0 && !isMotionValue(target)) return target;
-		/**
-		* If the value was initially defined on initial, but it doesn't any more,
-		* return undefined. Otherwise return the value as initially read from the DOM.
-		*/
-		return this.initialValues[key] !== void 0 && valueFromInitial === void 0 ? void 0 : this.baseTarget[key];
 	}
 	on(eventName, callback) {
 		if (!this.events[eventName]) this.events[eventName] = new SubscriptionManager();
@@ -5504,66 +5492,8 @@ function renderHTML(element, { style, vars }, styleProp, projection) {
 	for (key in vars) elementStyle.setProperty(key, vars[key]);
 }
 //#endregion
-//#region node_modules/motion-dom/dist/es/projection/styles/scale-border-radius.mjs
-function pixelsToPercent(pixels, axis) {
-	if (axis.max === axis.min) return 0;
-	return pixels / (axis.max - axis.min) * 100;
-}
-/**
-* We always correct borderRadius as a percentage rather than pixels to reduce paints.
-* For example, if you are projecting a box that is 100px wide with a 10px borderRadius
-* into a box that is 200px wide with a 20px borderRadius, that is actually a 10%
-* borderRadius in both states. If we animate between the two in pixels that will trigger
-* a paint each time. If we animate between the two in percentage we'll avoid a paint.
-*/
-var correctBorderRadius = { correct: (latest, node) => {
-	if (!node.target) return latest;
-	/**
-	* If latest is a string, if it's a percentage we can return immediately as it's
-	* going to be stretched appropriately. Otherwise, if it's a pixel, convert it to a number.
-	*/
-	if (typeof latest === "string") {
-		if (px.test(latest)) latest = parseFloat(latest);
-		else return latest;
-	}
-	return `${pixelsToPercent(latest, node.target.x)}% ${pixelsToPercent(latest, node.target.y)}%`;
-} };
-//#endregion
-//#region node_modules/motion-dom/dist/es/projection/styles/scale-box-shadow.mjs
-var correctBoxShadow = { correct: (latest, { treeScale, projectionDelta }) => {
-	const original = latest;
-	const shadow = complex.parse(latest);
-	if (shadow.length > 5) return original;
-	const template = complex.createTransformer(latest);
-	const offset = typeof shadow[0] !== "number" ? 1 : 0;
-	const xScale = projectionDelta.x.scale * treeScale.x;
-	const yScale = projectionDelta.y.scale * treeScale.y;
-	shadow[0 + offset] /= xScale;
-	shadow[1 + offset] /= yScale;
-	/**
-	* Ideally we'd correct x and y scales individually, but because blur and
-	* spread apply to both we have to take a scale average and apply that instead.
-	* We could potentially improve the outcome of this by incorporating the ratio between
-	* the two scales.
-	*/
-	const averageScale = mixNumber$1(xScale, yScale, .5);
-	if (typeof shadow[2 + offset] === "number") shadow[2 + offset] /= averageScale;
-	if (typeof shadow[3 + offset] === "number") shadow[3 + offset] /= averageScale;
-	return template(shadow);
-} };
-//#endregion
 //#region node_modules/motion-dom/dist/es/projection/styles/scale-correction.mjs
-var scaleCorrectors = {
-	borderRadius: {
-		...correctBorderRadius,
-		applyTo: [...cornerRadiusProps]
-	},
-	borderTopLeftRadius: correctBorderRadius,
-	borderTopRightRadius: correctBorderRadius,
-	borderBottomLeftRadius: correctBorderRadius,
-	borderBottomRightRadius: correctBorderRadius,
-	boxShadow: correctBoxShadow
-};
+var scaleCorrectors = {};
 //#endregion
 //#region node_modules/motion-dom/dist/es/render/utils/is-forced-motion-value.mjs
 function isForcedMotionValue(key, { layout, layoutId }) {
@@ -5676,7 +5606,19 @@ var SVGVisualElement = class extends DOMVisualElement {
 		this.measureInstanceViewportBox = createBox;
 	}
 	getBaseTargetFromProps(props, key) {
-		return props[key];
+		/**
+		* An independent transform's base is never an attribute of the same
+		* name, e.g. <rect x> is a position, not a translate. Like HTML it
+		* comes from style, falling back to the transform's default.
+		*/
+		return transformProps.has(key) ? super.getBaseTargetFromProps(props, key) ?? defaultTransformValue(key) : props[key];
+	}
+	/**
+	* An independent transform's origin is never read from the DOM, so it
+	* starts from its latest or default value and renders on mount.
+	*/
+	getDefaultValue(key) {
+		return transformProps.has(key) ? this.latestValues[key] ?? defaultTransformValue(key) : void 0;
 	}
 	readValueFromInstance(instance, key) {
 		if (transformProps.has(key)) {
@@ -5705,28 +5647,6 @@ var SVGVisualElement = class extends DOMVisualElement {
 	}
 };
 //#endregion
-//#region node_modules/motion-dom/dist/es/render/utils/get-variant-context.mjs
-var numVariantProps = variantProps.length;
-/**
-* Get variant context from a visual element's parent chain.
-* Uses `any` type for visualElement to avoid circular dependencies.
-*/
-function getVariantContext(visualElement) {
-	if (!visualElement) return void 0;
-	if (!visualElement.isControllingVariants) {
-		const context = visualElement.parent ? getVariantContext(visualElement.parent) || {} : {};
-		if (visualElement.props.initial !== void 0) context.initial = visualElement.props.initial;
-		return context;
-	}
-	const context = {};
-	for (let i = 0; i < numVariantProps; i++) {
-		const name = variantProps[i];
-		const prop = visualElement.props[name];
-		if (isVariantLabel(prop) || prop === false) context[name] = prop;
-	}
-	return context;
-}
-//#endregion
 //#region node_modules/motion-dom/dist/es/render/utils/shallow-compare.mjs
 function shallowCompare(next, prev) {
 	if (!Array.isArray(prev)) return false;
@@ -5738,260 +5658,158 @@ function shallowCompare(next, prev) {
 //#endregion
 //#region node_modules/motion-dom/dist/es/render/utils/animation-state.mjs
 var reversePriorityOrder = [...variantPriorityOrder].reverse();
-var numAnimationTypes = variantPriorityOrder.length;
-function createAnimateFunction(visualElement) {
-	return (animations) => {
-		return Promise.all(animations.map(({ animation, options }) => animateVisualElement(visualElement, animation, options)));
-	};
-}
+/**
+* Diffs the element's animation props (one layer per AnimationType, highest
+* priority wins each value) against the previous call and starts animations
+* for what changed.
+*
+* Uses `any` type for visualElement to avoid circular dependencies. It reads
+* props, parent, presenceContext, variantChildren, enteringChildren,
+* manuallyAnimateOnMount, blockInitialAnimation, getValue(),
+* getBaseTargetFromProps(), baseTarget and initialValues.
+*/
 function createAnimationState(visualElement) {
-	let animate = createAnimateFunction(visualElement);
+	let animate = (animations) => Promise.all(animations.map(({ animation, options }) => animateVisualElement(visualElement, animation, options)));
 	let state = createState();
 	let isInitialRender = true;
 	/**
-	* Track whether the animation state has been reset (e.g. via StrictMode
-	* double-invocation or Suspense unmount/remount). On the first
-	* animateChanges() call after a reset we need to behave like the initial
-	* render for variant-inheritance checks, even though isInitialRender is
-	* already false.
+	* After a reset (StrictMode, Suspense, AnimatePresence re-entry) the next
+	* animateChanges() mounts again, but initial={false} no longer applies.
 	*/
 	let wasReset = false;
-	/**
-	* This function will be used to reduce the animation definitions for
-	* each active animation type into an object of resolved values for it.
-	*/
-	const buildResolvedTypeValues = (type) => (acc, definition) => {
-		const resolved = resolveVariant(visualElement, definition, type === "exit" ? visualElement.presenceContext?.custom : void 0);
-		if (resolved) {
-			const { transition, transitionEnd, ...target } = resolved;
-			acc = {
-				...acc,
-				...target,
-				...transitionEnd
-			};
-		}
-		return acc;
-	};
-	/**
-	* This just allows us to inject mocked animation functions
-	* @internal
-	*/
-	function setAnimateFunction(makeAnimator) {
-		animate = makeAnimator(visualElement);
-	}
-	/**
-	* When we receive new props, we need to:
-	* 1. Create a list of protected keys for each type. This is a directory of
-	*    value keys that are currently being "handled" by types of a higher priority
-	*    so that whenever an animation is played of a given type, these values are
-	*    protected from being animated.
-	* 2. Determine if an animation type needs animating.
-	* 3. Determine if any values have been removed from a type and figure out
-	*    what to animate those to.
-	*/
 	function animateChanges(changedActiveType) {
-		const { props } = visualElement;
-		const context = getVariantContext(visualElement.parent) || {};
-		/**
-		* A list of animations that we'll build into as we iterate through the animation
-		* types. This will get executed at the end of the function.
-		*/
+		const { props, parent, manuallyAnimateOnMount } = visualElement;
+		const isMounting = isInitialRender || wasReset;
 		const animations = [];
 		/**
-		* Keep track of which values have been removed. Then, as we hit lower priority
-		* animation types, we can check if they contain removed values and animate to that.
+		* Values removed from a type. A lower-priority type that defines
+		* them animates them back, otherwise they fall back to a base target.
 		*/
 		const removedKeys = /* @__PURE__ */ new Set();
 		/**
-		* A dictionary of all encountered keys. This is an object to let us build into and
-		* copy it without iteration. Each time we hit an animation type we set its protected
-		* keys - the keys its not allowed to animate - to the latest version of this object.
+		* Values claimed by active, higher-priority types.
 		*/
 		let encounteredKeys = {};
 		/**
-		* If a variant has been removed at a given index, and this component is controlling
-		* variant animations, we want to ensure lower-priority variants are forced to animate.
+		* Once a type has been deactivated, lower-priority variant labels
+		* re-animate so variant children animate back too.
 		*/
 		let removedVariantIndex = Infinity;
 		/**
-		* Iterate through all animation types in reverse priority order. For each, we want to
-		* detect which values it's handling and whether or not they've changed (and therefore
-		* need to be animated). If any values have been removed, we want to detect those in
-		* lower priority props and flag for animation.
+		* Variant labels are inherited from the closest variant-controlling
+		* ancestor, unless an element on the way has inherit={false}.
 		*/
-		for (let i = 0; i < numAnimationTypes; i++) {
-			const type = reversePriorityOrder[i];
+		let source = visualElement;
+		do
+			source = source.props.inherit !== false && source.parent;
+		while (source && !source.isControllingVariants);
+		reversePriorityOrder.forEach((type, i) => {
 			const typeState = state[type];
-			const prop = props[type] !== void 0 ? props[type] : context[type];
+			const ownProp = props[type];
+			const inheritedProp = source && source.props[type];
+			const prop = ownProp !== void 0 ? ownProp : isVariantLabel(inheritedProp) || inheritedProp === false ? inheritedProp : void 0;
 			const propIsVariant = isVariantLabel(prop);
-			/**
-			* If this type has *just* changed isActive status, set activeDelta
-			* to that status. Otherwise set to null.
-			*/
 			const activeDelta = type === changedActiveType ? typeState.isActive : null;
 			if (activeDelta === false) removedVariantIndex = i;
 			/**
-			* If this prop is an inherited variant, rather than been set directly on the
-			* component itself, we want to make sure we allow the parent to trigger animations.
-			*
-			* TODO: Can probably change this to a !isControllingVariants check
+			* Inherited labels are animated by the parent through
+			* variantChildren, unless this element mounted after its parent.
 			*/
-			let isInherited = prop === context[type] && prop !== props[type] && propIsVariant;
-			if (isInherited && (isInitialRender || wasReset) && visualElement.manuallyAnimateOnMount) isInherited = false;
-			/**
-			* Set all encountered keys so far as the protected keys for this type. This will
-			* be any key that has been animated or otherwise handled by active, higher-priority types.
-			*/
+			const isInherited = propIsVariant && ownProp === void 0 && !(isMounting && manuallyAnimateOnMount);
 			typeState.protectedKeys = { ...encounteredKeys };
-			if (!typeState.isActive && activeDelta === null || !prop && !typeState.prevProp || isAnimationControls(prop) || typeof prop === "boolean") continue;
+			if (!typeState.isActive && activeDelta === null || !prop && !typeState.prevProp || isAnimationControls(prop) || typeof prop === "boolean") return;
 			/**
-			* If exit is already active and wasn't just activated, skip
-			* re-processing to prevent interrupting running exit animations.
-			* Re-resolving exit with a changed custom value can start new
-			* value animations that stop the originals, leaving the exit
-			* animation promise unresolved and the component stuck in the DOM.
+			* Don't re-resolve a running exit: a changed custom would start
+			* new value animations that stop the originals, leaving the exit
+			* promise unresolved and the element stuck in the DOM.
 			*/
 			if (type === "exit" && typeState.isActive && activeDelta !== true) {
-				if (typeState.prevResolvedValues) encounteredKeys = {
+				encounteredKeys = {
 					...encounteredKeys,
 					...typeState.prevResolvedValues
 				};
-				continue;
+				return;
 			}
-			/**
-			* As we go look through the values defined on this type, if we detect
-			* a changed value or a value that was removed in a higher priority, we set
-			* this to true and add this prop to the animation list.
-			*/
 			const variantDidChange = checkVariantsDidChange(typeState.prevProp, prop);
-			let shouldAnimateType = variantDidChange || type === changedActiveType && typeState.isActive && !isInherited && propIsVariant || i > removedVariantIndex && propIsVariant;
+			let shouldAnimateType = variantDidChange || propIsVariant && (activeDelta && !isInherited || i > removedVariantIndex);
 			let handledRemovedValues = false;
-			/**
-			* As animations can be set as variant lists, variants or target objects, we
-			* coerce everything to an array if it isn't one already
-			*/
 			const definitionList = Array.isArray(prop) ? prop : [prop];
-			/**
-			* Build an object of all the resolved values. We'll use this in the subsequent
-			* animateChanges calls to determine whether a value has changed.
-			*/
-			let resolvedValues = definitionList.reduce(buildResolvedTypeValues(type), {});
-			if (activeDelta === false) resolvedValues = {};
-			/**
-			* Now we need to loop through all the keys in the prev prop and this prop,
-			* and decide:
-			* 1. If the value has changed, and needs animating
-			* 2. If it has been removed, and needs adding to the removedKeys set
-			* 3. If it has been removed in a higher priority type and needs animating
-			* 4. If it hasn't been removed in a higher priority but hasn't changed, and
-			*    needs adding to the type's protectedKeys list.
-			*/
-			const { prevResolvedValues = {} } = typeState;
-			const allKeys = {
+			let resolvedValues = {};
+			if (activeDelta !== false) for (const definition of definitionList) {
+				const { transition, transitionEnd, ...target } = resolveVariant(visualElement, definition, getTypeCustom(visualElement, type)) || {};
+				resolvedValues = {
+					...resolvedValues,
+					...target,
+					...transitionEnd
+				};
+			}
+			const { prevResolvedValues } = typeState;
+			for (const key in {
 				...prevResolvedValues,
 				...resolvedValues
-			};
-			const markToAnimate = (key) => {
-				shouldAnimateType = true;
-				if (removedKeys.has(key)) {
-					handledRemovedValues = true;
-					removedKeys.delete(key);
-				}
-				typeState.needsAnimating[key] = true;
-				const motionValue = visualElement.getValue(key);
-				if (motionValue) motionValue.liveStyle = false;
-			};
-			for (const key in allKeys) {
+			}) {
+				if (key in encounteredKeys) continue;
 				const next = resolvedValues[key];
 				const prev = prevResolvedValues[key];
-				if (encounteredKeys.hasOwnProperty(key)) continue;
 				/**
-				* If the value has changed, we probably want to animate it.
+				* Keyframes compare by value, but replay whenever the
+				* variant label changed.
 				*/
-				let valueHasChanged = false;
-				if (isKeyframesTarget(next) && isKeyframesTarget(prev)) valueHasChanged = !shallowCompare(next, prev) || variantDidChange;
-				else valueHasChanged = next !== prev;
-				if (valueHasChanged) {
-					if (next !== void 0 && next !== null) markToAnimate(key);
-					else removedKeys.add(key);
-				} else if (next !== void 0 && removedKeys.has(key))
- /**
-				* If next hasn't changed and it isn't undefined, we want to check if it's
-				* been removed by a higher priority
-				*/
-				markToAnimate(key);
-				else
- /**
-				* If it hasn't changed, we add it to the list of protected values
-				* to ensure it doesn't get animated.
-				*/
-				typeState.protectedKeys[key] = true;
+				const valueHasChanged = Array.isArray(next) && Array.isArray(prev) ? !shallowCompare(next, prev) || variantDidChange : next !== prev;
+				if (valueHasChanged && (next === void 0 || next === null)) removedKeys.add(key);
+				else if (valueHasChanged || next !== void 0 && removedKeys.has(key)) {
+					shouldAnimateType = true;
+					if (removedKeys.delete(key)) handledRemovedValues = true;
+					typeState.needsAnimating[key] = true;
+					const motionValue = visualElement.getValue(key);
+					if (motionValue) motionValue.liveStyle = false;
+				} else typeState.protectedKeys[key] = true;
 			}
-			/**
-			* Update the typeState so next time animateChanges is called we can compare the
-			* latest prop and resolvedValues to these.
-			*/
 			typeState.prevProp = prop;
 			typeState.prevResolvedValues = resolvedValues;
 			if (typeState.isActive) encounteredKeys = {
 				...encounteredKeys,
 				...resolvedValues
 			};
-			if ((isInitialRender || wasReset) && visualElement.blockInitialAnimation) shouldAnimateType = false;
-			/**
-			* If this is an inherited prop we want to skip this animation
-			* unless the inherited variants haven't changed on this render.
-			*/
-			const willAnimateViaParent = isInherited && variantDidChange;
-			if (shouldAnimateType && (!willAnimateViaParent || handledRemovedValues)) animations.push(...definitionList.map((animation) => {
+			if (shouldAnimateType && (!(isInherited && variantDidChange) || handledRemovedValues)) for (const animation of definitionList) {
 				const options = { type };
 				/**
-				* If we're performing the initial animation, but we're not
-				* rendering at the same time as the variant-controlling parent,
-				* we want to use the parent's transition to calculate the stagger.
+				* Elements that mount into an already-mounted parent
+				* animate themselves, staggered by the parent variant's
+				* delayChildren.
 				*/
-				if (typeof animation === "string" && (isInitialRender || wasReset) && !willAnimateViaParent && visualElement.manuallyAnimateOnMount && visualElement.parent) {
-					const { parent } = visualElement;
-					const parentVariant = resolveVariant(parent, animation);
-					if (parent.enteringChildren && parentVariant) {
-						const { delayChildren } = parentVariant.transition || {};
-						options.delay = calcChildStagger(parent.enteringChildren, visualElement, delayChildren);
-					}
+				if (typeof animation === "string" && isMounting && manuallyAnimateOnMount && parent?.enteringChildren) {
+					const delayChildren = resolveVariant(parent, animation)?.transition?.delayChildren;
+					options.delay = calcChildStagger(parent.enteringChildren, visualElement, delayChildren);
 				}
-				return {
+				animations.push({
 					animation,
 					options
-				};
-			}));
-		}
+				});
+			}
+		});
 		/**
-		* If there are some removed value that haven't been dealt with,
-		* we need to create a new animation that falls back either to the value
-		* defined in the style prop, or the last read value.
+		* Removed values that no lower-priority type defines animate back to
+		* initial, then style, then the value as first read. If initial no
+		* longer defines a value it once did, it stays where it is.
 		*/
 		if (removedKeys.size) {
+			const { initial } = props;
 			const fallbackAnimation = {};
-			/**
-			* If the initial prop contains a transition we can use that, otherwise
-			* allow the animation function to use the visual element's default.
-			*/
-			if (typeof props.initial !== "boolean") {
-				const initialTransition = resolveVariant(visualElement, Array.isArray(props.initial) ? props.initial[0] : props.initial);
-				if (initialTransition && initialTransition.transition) fallbackAnimation.transition = initialTransition.transition;
-			}
+			const resolvedInitial = typeof initial !== "boolean" && resolveVariant(visualElement, Array.isArray(initial) ? initial[0] : initial, visualElement.presenceContext?.custom);
+			if (resolvedInitial && resolvedInitial.transition) fallbackAnimation.transition = resolvedInitial.transition;
 			removedKeys.forEach((key) => {
-				const fallbackTarget = visualElement.getBaseTarget(key);
 				const motionValue = visualElement.getValue(key);
 				if (motionValue) motionValue.liveStyle = true;
-				fallbackAnimation[key] = fallbackTarget ?? null;
+				const fromInitial = resolvedInitial && !Array.isArray(initial) ? resolvedInitial[key] : void 0;
+				const fromProps = visualElement.getBaseTargetFromProps(props, key);
+				fallbackAnimation[key] = (fromInitial !== void 0 ? fromInitial : fromProps !== void 0 && !isMotionValue(fromProps) ? fromProps : visualElement.initialValues[key] === void 0 ? visualElement.baseTarget[key] : void 0) ?? null;
 			});
 			animations.push({ animation: fallbackAnimation });
 		}
-		let shouldAnimate = Boolean(animations.length);
-		if (isInitialRender && (props.initial === false || props.initial === props.animate) && !visualElement.manuallyAnimateOnMount) shouldAnimate = false;
-		isInitialRender = false;
-		wasReset = false;
-		return shouldAnimate ? animate(animations) : Promise.resolve();
+		const blockAnimation = isMounting && visualElement.blockInitialAnimation || isInitialRender && !manuallyAnimateOnMount && (props.initial === false || props.initial === props.animate);
+		isInitialRender = wasReset = false;
+		return !blockAnimation && animations.length ? animate(animations) : Promise.resolve();
 	}
 	/**
 	* Change whether a certain animation type is active.
@@ -6007,7 +5825,13 @@ function createAnimationState(visualElement) {
 	return {
 		animateChanges,
 		setActive,
-		setAnimateFunction,
+		/**
+		* Allows tests to inject a mocked animate function.
+		* @internal
+		*/
+		setAnimateFunction: (makeAnimator) => {
+			animate = makeAnimator(visualElement);
+		},
 		getState: () => state,
 		reset: () => {
 			state = createState();
@@ -6020,24 +5844,15 @@ function checkVariantsDidChange(prev, next) {
 	else if (Array.isArray(next)) return !shallowCompare(next, prev);
 	return false;
 }
-function createTypeState(isActive = false) {
-	return {
-		isActive,
+function createState() {
+	const state = {};
+	for (const type of variantPriorityOrder) state[type] = {
+		isActive: type === "animate",
 		protectedKeys: {},
 		needsAnimating: {},
 		prevResolvedValues: {}
 	};
-}
-function createState() {
-	return {
-		animate: createTypeState(true),
-		whileInView: createTypeState(),
-		whileHover: createTypeState(),
-		whileTap: createTypeState(),
-		whileDrag: createTypeState(),
-		whileFocus: createTypeState(),
-		exit: createTypeState()
-	};
+	return state;
 }
 //#endregion
 //#region node_modules/motion-dom/dist/es/projection/geometry/copy.mjs
@@ -6196,6 +6011,54 @@ function eachAxis(callback) {
 	return [callback("x"), callback("y")];
 }
 //#endregion
+//#region node_modules/motion-dom/dist/es/projection/styles/scale-border-radius.mjs
+function pixelsToPercent(pixels, axis) {
+	if (axis.max === axis.min) return 0;
+	return pixels / (axis.max - axis.min) * 100;
+}
+/**
+* We always correct borderRadius as a percentage rather than pixels to reduce paints.
+* For example, if you are projecting a box that is 100px wide with a 10px borderRadius
+* into a box that is 200px wide with a 20px borderRadius, that is actually a 10%
+* borderRadius in both states. If we animate between the two in pixels that will trigger
+* a paint each time. If we animate between the two in percentage we'll avoid a paint.
+*/
+var correctBorderRadius = { correct: (latest, node) => {
+	if (!node.target) return latest;
+	/**
+	* If latest is a string, if it's a percentage we can return immediately as it's
+	* going to be stretched appropriately. Otherwise, if it's a pixel, convert it to a number.
+	*/
+	if (typeof latest === "string") {
+		if (px.test(latest)) latest = parseFloat(latest);
+		else return latest;
+	}
+	return `${pixelsToPercent(latest, node.target.x)}% ${pixelsToPercent(latest, node.target.y)}%`;
+} };
+//#endregion
+//#region node_modules/motion-dom/dist/es/projection/styles/scale-box-shadow.mjs
+var correctBoxShadow = { correct: (latest, { treeScale, projectionDelta }) => {
+	const original = latest;
+	const shadow = complex.parse(latest);
+	if (shadow.length > 5) return original;
+	const template = complex.createTransformer(latest);
+	const offset = typeof shadow[0] !== "number" ? 1 : 0;
+	const xScale = projectionDelta.x.scale * treeScale.x;
+	const yScale = projectionDelta.y.scale * treeScale.y;
+	shadow[0 + offset] /= xScale;
+	shadow[1 + offset] /= yScale;
+	/**
+	* Ideally we'd correct x and y scales individually, but because blur and
+	* spread apply to both we have to take a scale average and apply that instead.
+	* We could potentially improve the outcome of this by incorporating the ratio between
+	* the two scales.
+	*/
+	const averageScale = mixNumber$1(xScale, yScale, .5);
+	if (typeof shadow[2 + offset] === "number") shadow[2 + offset] /= averageScale;
+	if (typeof shadow[3 + offset] === "number") shadow[3 + offset] /= averageScale;
+	return template(shadow);
+} };
+//#endregion
 //#region node_modules/motion-dom/dist/es/projection/styles/transform.mjs
 function buildProjectionTransform(delta, treeScale, latestTransform) {
 	let transform = "";
@@ -6236,7 +6099,6 @@ function buildProjectionTransform(delta, treeScale, latestTransform) {
 //#endregion
 //#region node_modules/motion-dom/dist/es/projection/animation/mix-values.mjs
 var numBorders = cornerRadiusProps.length;
-var asNumber = (value) => typeof value === "string" ? parseFloat(value) : value;
 var isPx = (value) => typeof value === "number" || px.test(value);
 function mixValues(target, follow, lead, progress, shouldCrossfadeOpacity, isOnlyMember) {
 	if (shouldCrossfadeOpacity) {
@@ -6411,6 +6273,19 @@ var NodeStack = class {
 	}
 };
 //#endregion
+//#region node_modules/motion-dom/dist/es/projection/styles/default-scale-correctors.mjs
+var defaultScaleCorrectors = {
+	borderRadius: {
+		...correctBorderRadius,
+		applyTo: [...cornerRadiusProps]
+	},
+	borderTopLeftRadius: correctBorderRadius,
+	borderTopRightRadius: correctBorderRadius,
+	borderBottomLeftRadius: correctBorderRadius,
+	borderBottomRightRadius: correctBorderRadius,
+	boxShadow: correctBoxShadow
+};
+//#endregion
 //#region node_modules/motion-dom/dist/es/projection/node/state.mjs
 /**
 * This should only ever be modified on the client otherwise it'll
@@ -6431,6 +6306,14 @@ var globalProjectionState = {
 };
 //#endregion
 //#region node_modules/motion-dom/dist/es/projection/node/create-projection-node.mjs
+/**
+* Correctors registered via addScaleCorrector before projection loaded
+* (e.g. with an async LazyMotion bundle) take precedence over the defaults.
+*/
+Object.assign(scaleCorrectors, {
+	...defaultScaleCorrectors,
+	...scaleCorrectors
+});
 var metrics = {
 	nodes: 0,
 	calculatedTargetDeltas: 0,
@@ -8440,7 +8323,6 @@ var validMotionProps = /* @__PURE__ */ new Set([
 	"initial",
 	"style",
 	"values",
-	"variants",
 	"transition",
 	"transformTemplate",
 	"custom",
@@ -8968,48 +8850,43 @@ var ExitAnimationFeature = class extends Feature {
 	constructor() {
 		super(...arguments);
 		this.id = id++;
-		this.isExitComplete = false;
 	}
 	update() {
-		if (!this.node.presenceContext) return;
-		const { isPresent, onExitComplete } = this.node.presenceContext;
-		const { isPresent: prevIsPresent } = this.node.prevPresenceContext || {};
-		if (!this.node.animationState || isPresent === prevIsPresent) return;
+		const { presenceContext, prevPresenceContext, animationState } = this.node;
+		if (!presenceContext || !animationState) return;
+		const { isPresent, onExitComplete } = presenceContext;
+		const prevIsPresent = prevPresenceContext?.isPresent;
+		if (isPresent === prevIsPresent) return;
 		if (isPresent && prevIsPresent === false) {
 			/**
-			* When re-entering, if the exit animation already completed
-			* (element is at rest), reset to initial values so the enter
-			* animation replays from the correct position.
+			* When re-entering after the exit completed (element is at
+			* rest), replay the enter animation from initial.
 			*/
-			if (this.isExitComplete) {
-				const { initial, custom } = this.node.getProps();
-				if (typeof initial === "string" || typeof initial === "object" && initial !== null && !Array.isArray(initial)) {
-					const resolved = resolveVariant(this.node, initial, custom);
-					if (resolved) {
-						const { transition, transitionEnd, ...target } = resolved;
-						for (const key in target) this.node.getValue(key)?.jump(target[key]);
-					}
+			if (this.exit === true) {
+				const { initial } = this.node.getProps();
+				if (initial && !Array.isArray(initial)) {
+					const { transition, transitionEnd, ...target } = resolveVariant(this.node, initial) || {};
+					for (const key in target) this.node.getValue(key)?.jump(target[key]);
 				}
 				/**
 				* A re-entering element is no longer an initial child, so
 				* AnimatePresence's initial={false} mustn't block its enter.
 				*/
 				this.node.blockInitialAnimation = false;
-				this.node.animationState.reset();
-				this.node.animationState.animateChanges();
-			} else this.node.animationState.setActive("exit", false);
-			this.isExitComplete = false;
-			this.exitAnimation = void 0;
+				animationState.reset();
+				animationState.animateChanges();
+			} else animationState.setActive("exit", false);
+			this.exit = void 0;
 			return;
 		}
-		const exitAnimation = this.exitAnimation = this.node.animationState.setActive("exit", !isPresent);
-		if (onExitComplete && !isPresent) exitAnimation.then(() => {
+		const exit = this.exit = animationState.setActive("exit", !isPresent);
+		if (onExitComplete && !isPresent) exit.then(() => {
 			/**
 			* An exit can resolve after the element has re-entered, e.g.
 			* when its final tick lands in the stop() of the enter.
 			*/
-			if (this.exitAnimation !== exitAnimation) return;
-			this.isExitComplete = true;
+			if (this.exit !== exit) return;
+			this.exit = true;
 			onExitComplete(this.id);
 		});
 	}
@@ -10290,12 +10167,6 @@ var motion = /*@__PURE__*/ createMotionProxy({
 	...layout
 }, createDomVisualElement);
 //#endregion
-//#region node_modules/framer-motion/dist/es/render/dom/scroll/utils/can-use-native-timeline.mjs
-function canUseNativeTimeline(target) {
-	if (typeof window === "undefined") return false;
-	return target ? supportsViewTimeline() : supportsScrollTimeline();
-}
-//#endregion
 //#region node_modules/framer-motion/dist/es/render/dom/scroll/info.mjs
 /**
 * A time in milliseconds, beyond which we consider the scroll velocity to be 0.
@@ -10415,12 +10286,7 @@ function resolveOffset(offset, containerLength, targetLength, targetInset) {
 }
 //#endregion
 //#region node_modules/framer-motion/dist/es/render/dom/scroll/offsets/presets.mjs
-var ScrollOffset = {
-	Enter: [[0, 1], [1, 1]],
-	Exit: [[0, 0], [1, 0]],
-	Any: [[1, 0], [0, 1]],
-	All: [[0, 0], [1, 1]]
-};
+var ScrollOffset = { All: [[0, 0], [1, 1]] };
 //#endregion
 //#region node_modules/framer-motion/dist/es/render/dom/scroll/offsets/index.mjs
 /**
@@ -10629,133 +10495,152 @@ function scrollInfo(onScroll, { container = document.scrollingElement, trackCont
 	};
 }
 //#endregion
-//#region node_modules/framer-motion/dist/es/render/dom/scroll/utils/offset-to-range.mjs
-/**
-* Maps from ProgressIntersection pairs used by Motion's preset offsets to
-* ViewTimeline named ranges. Returns undefined for unrecognised patterns,
-* which signals the caller to fall back to JS-based scroll tracking.
-*/
-var presets = [
-	[ScrollOffset.Enter, "entry"],
-	[ScrollOffset.Exit, "exit"],
-	[ScrollOffset.Any, "cover"],
-	[ScrollOffset.All, "contain"]
-];
-var stringToProgress = {
-	start: 0,
-	end: 1
-};
-function parseStringOffset(s) {
-	const parts = s.trim().split(/\s+/);
-	if (parts.length !== 2) return void 0;
-	const a = stringToProgress[parts[0]];
-	const b = stringToProgress[parts[1]];
-	if (a === void 0 || b === void 0) return void 0;
-	return [a, b];
-}
-function normaliseOffset(offset) {
-	if (offset.length !== 2) return void 0;
-	const result = [];
-	for (const item of offset) if (Array.isArray(item)) result.push(item);
-	else if (typeof item === "string") {
-		const parsed = parseStringOffset(item);
-		if (!parsed) return void 0;
-		result.push(parsed);
-	} else return;
-	return result;
-}
-function matchesPreset(offset, preset) {
-	const normalised = normaliseOffset(offset);
-	if (!normalised) return false;
-	for (let i = 0; i < 2; i++) {
-		const o = normalised[i];
-		const p = preset[i];
-		if (o[0] !== p[0] || o[1] !== p[1]) return false;
-	}
-	return true;
-}
-function offsetToViewTimelineRange(offset) {
-	if (!offset) return {
-		rangeStart: "contain 0%",
-		rangeEnd: "contain 100%"
-	};
-	for (const [preset, name] of presets) if (matchesPreset(offset, preset)) return {
-		rangeStart: `${name} 0%`,
-		rangeEnd: `${name} 100%`
-	};
+//#region node_modules/framer-motion/dist/es/render/dom/scroll/utils/can-use-native-timeline.mjs
+function canUseNativeTimeline(target) {
+	if (typeof window === "undefined") return false;
+	return target ? supportsViewTimeline() : supportsScrollTimeline();
 }
 //#endregion
 //#region node_modules/framer-motion/dist/es/render/dom/scroll/utils/get-timeline.mjs
 var timelineCache = /* @__PURE__ */ new Map();
-function scrollTimelineFallback(options) {
-	const currentTime = { value: 0 };
-	return {
-		currentTime,
-		cancel: scrollInfo((info) => {
-			currentTime.value = info[options.axis].progress * 100;
-		}, options)
-	};
-}
-function getTimeline({ container, ...options }) {
-	const { axis } = options;
+/**
+* Native timelines are only attached to WAAPI animations. Offsets are
+* applied to each animation as a range, so a timeline is shared by every
+* offset.
+*/
+function getTimeline({ container, target, axis }) {
 	let containerCache = timelineCache.get(container);
 	if (!containerCache) {
 		containerCache = /* @__PURE__ */ new Map();
 		timelineCache.set(container, containerCache);
 	}
-	const targetKey = options.target ?? "self";
+	const targetKey = target ?? "self";
 	let targetCache = containerCache.get(targetKey);
 	if (!targetCache) {
 		targetCache = {};
 		containerCache.set(targetKey, targetCache);
 	}
-	const axisKey = axis + (options.offset ?? []).join(",");
-	if (!targetCache[axisKey]) {
-		if (options.target && canUseNativeTimeline(options.target)) {
-			if (offsetToViewTimelineRange(options.offset)) targetCache[axisKey] = new ViewTimeline({
-				subject: options.target,
-				axis
-			});
-			else targetCache[axisKey] = scrollTimelineFallback({
-				container,
-				...options
-			});
-		} else if (canUseNativeTimeline()) targetCache[axisKey] = new ScrollTimeline({
-			source: container,
-			axis
-		});
-		else targetCache[axisKey] = scrollTimelineFallback({
-			container,
-			...options
-		});
-	}
-	return targetCache[axisKey];
+	return targetCache[axis] || (targetCache[axis] = target ? new ViewTimeline({
+		subject: target,
+		axis
+	}) : new ScrollTimeline({
+		source: container,
+		axis
+	}));
+}
+//#endregion
+//#region node_modules/framer-motion/dist/es/render/dom/scroll/utils/offset-to-range.mjs
+/**
+* Resolved offsets are linear in the target and container lengths, so
+* probing them gives [target progress, container progress, pixels].
+* vw/vh can resolve to 0px, so they're rejected up front.
+*/
+var toIntersection = (o) => {
+	if (/v/u.test(o)) return [];
+	const px = resolveOffset(o, 0, 0, 0);
+	return [
+		resolveOffset(o, 0, 1, 0) - px,
+		px - resolveOffset(o, 1, 0, 0),
+		px
+	];
+};
+var toRange = ([t, c, px]) => !px && (c === 0 || c === 1) && `${c ? "entry" : "exit"}-crossing ${t * 100}%`;
+/**
+* Maps an offset to an equivalent ViewTimeline range. Returns undefined when
+* there isn't one, which signals the caller to fall back to JS-based scroll
+* tracking.
+*/
+function offsetToViewTimelineRange(offset = ScrollOffset.All) {
+	if (offset.length !== 2) return;
+	const [start, end] = offset.map(toIntersection);
+	const points = [toRange(start), toRange(end)];
+	const a = end[0] - start[0];
+	const b = start[1] - end[1];
+	if (points[0] && points[1] && (a || b)) return {
+		points,
+		a,
+		b,
+		cover: !start[0] && a === 1 && b === 1
+	};
 }
 //#endregion
 //#region node_modules/framer-motion/dist/es/render/dom/scroll/attach-animation.mjs
 function attachToAnimation(animation, options) {
-	const timeline = getTimeline(options);
-	const range = options.target ? offsetToViewTimelineRange(options.offset) : void 0;
+	const { target, container, axis } = options;
+	const range = target && offsetToViewTimelineRange(options.offset);
 	/**
 	* Use native timeline when:
-	* - No target: ScrollTimeline (existing behaviour)
+	* - No target and no offset: ScrollTimeline
 	* - Target with mappable offset: ViewTimeline with named range
-	* - Target with unmappable offset: fall back to JS observe
+	* - Otherwise: fall back to JS observe. A ScrollTimeline has no offset,
+	*   so page offsets are applied by the JS timeline.
 	*/
-	const useNative = options.target ? canUseNativeTimeline(options.target) && !!range : canUseNativeTimeline();
-	return animation.attachTimeline({
-		timeline: useNative ? timeline : void 0,
-		...range && useNative && {
-			rangeStart: range.rangeStart,
-			rangeEnd: range.rangeEnd
+	const native = canUseNativeTimeline(target) && (target ? !!range : !options.offset);
+	const animations = /* @__PURE__ */ new Map();
+	const observed = /* @__PURE__ */ new Set();
+	let stopObserving;
+	let reverse = false;
+	/**
+	* When an offset's second point comes first, its range is swapped and
+	* the animation played backwards. The range is set after the direction,
+	* as that's what realigns a running animation with its timeline. Chrome
+	* skips that realignment when the range changes in the frame the
+	* animation starts, leaving it offset for good, so it's replayed too.
+	*/
+	const apply = (direction, waapi) => {
+		const [start, end] = range.points;
+		waapi.effect.updateTiming({ direction: reverse ? direction === "normal" ? "reverse" : "alternate-reverse" : direction });
+		Object.assign(waapi, {
+			rangeStart: reverse ? end : start,
+			rangeEnd: reverse ? start : end
+		});
+		waapi.play();
+	};
+	const stops = [animation.attachTimeline({
+		/**
+		* Read only by WAAPI animations, so values driven from JS don't
+		* create a native timeline they won't use.
+		*/
+		get timeline() {
+			return native ? getTimeline(options) : void 0;
 		},
+		onAttach: range && ((waapi) => {
+			const direction = waapi.effect.getTiming().direction;
+			animations.set(waapi, direction);
+			apply(direction, waapi);
+		}),
+		/**
+		* Values driven from JS all track the offset with scrollInfo,
+		* which measures once per frame for all of them.
+		*/
 		observe: (valueAnimation) => {
 			valueAnimation.pause();
-			return observeTimeline((progress) => {
-				valueAnimation.time = valueAnimation.iterationDuration * progress;
-			}, timeline);
+			observed.add(valueAnimation);
+			stopObserving || (stopObserving = scrollInfo((info) => {
+				observed.forEach((observedAnimation) => {
+					observedAnimation.time = observedAnimation.iterationDuration * info[axis].progress;
+				});
+			}, options));
+			return () => observed.delete(valueAnimation);
 		}
-	});
+	})];
+	if (native && range) {
+		const { a, b } = range;
+		const length = axis === "y" ? "clientHeight" : "clientWidth";
+		/**
+		* Offsets like All only run forwards when the target is longer than
+		* the container, so their direction is remeasured on resize.
+		*/
+		const update = () => {
+			if (reverse !== (reverse = a * target[length] + b * container[length] < 0)) animations.forEach(apply);
+		};
+		update();
+		if (a * b < 0) stops.push(resize(update), resize([target, container], update));
+	}
+	return () => {
+		stops.forEach((stop) => stop());
+		stopObserving?.();
+	};
 }
 //#endregion
 //#region node_modules/framer-motion/dist/es/render/dom/scroll/index.mjs
@@ -10810,7 +10695,7 @@ function makeAccelerateConfig(axis, options, container, target) {
 }
 function canAccelerateScroll(target, offset) {
 	if (typeof window === "undefined") return false;
-	return target ? supportsViewTimeline() && !!offsetToViewTimelineRange(offset) : supportsScrollTimeline();
+	return target ? supportsViewTimeline() && !!offsetToViewTimelineRange(offset) : supportsScrollTimeline() && !offset;
 }
 function useScroll({ container, target, ...options } = {}) {
 	const values = useConstant(createScrollMotionValues);
@@ -10952,13 +10837,28 @@ function useTransform(input, inputRangeOrTransformer, outputRangeOrMap, options)
 	const transformer = typeof inputRangeOrTransformer === "function" ? inputRangeOrTransformer : transform(inputRangeOrTransformer, outputRangeOrMap, options);
 	const result = Array.isArray(input) ? useListTransform(input, transformer) : useListTransform([input], ([latest]) => transformer(latest));
 	const inputAccelerate = !Array.isArray(input) ? input.accelerate : void 0;
-	if (inputAccelerate && !inputAccelerate.isTransformed && typeof inputRangeOrTransformer !== "function" && Array.isArray(outputRangeOrMap) && options?.clamp !== false) result.accelerate = {
-		...inputAccelerate,
-		times: inputRangeOrTransformer,
-		keyframes: outputRangeOrMap,
-		isTransformed: true,
-		...options?.ease ? { ease: options.ease } : {}
-	};
+	if (inputAccelerate && !inputAccelerate.isTransformed && typeof inputRangeOrTransformer !== "function" && Array.isArray(outputRangeOrMap) && options?.clamp !== false) {
+		const ease = options?.ease;
+		/**
+		* WAAPI fills missing 0 and 1 offsets with the underlying value, so
+		* hold the end values to match the clamped transform.
+		*/
+		result.accelerate = {
+			...inputAccelerate,
+			times: [
+				0,
+				...inputRangeOrTransformer,
+				1
+			],
+			keyframes: [
+				outputRangeOrMap[0],
+				...outputRangeOrMap,
+				outputRangeOrMap[outputRangeOrMap.length - 1]
+			],
+			isTransformed: true,
+			...ease ? { ease: Array.isArray(ease) ? [ease[0], ...ease] : ease } : {}
+		};
+	}
 	return result;
 }
 function useListTransform(values, transformer) {
@@ -10981,23 +10881,20 @@ function useMapTransform(inputValue, inputRange, outputMap, options) {
 }
 //#endregion
 //#region node_modules/framer-motion/dist/es/value/use-follow-value.mjs
-function useFollowValue(source, options = {}) {
+function useFollow(source, options, attach) {
 	const { isStatic } = (0, import_react.useContext)(MotionConfigContext);
 	const getFromSource = () => isMotionValue(source) ? source.get() : source;
 	if (isStatic) return useTransform(getFromSource);
 	const value = useMotionValue(getFromSource());
 	(0, import_react.useInsertionEffect)(() => {
-		return attachFollow(value, source, options);
+		return attach(value, source, options);
 	}, [value, JSON.stringify(options)]);
 	return value;
 }
 //#endregion
 //#region node_modules/framer-motion/dist/es/value/use-spring.mjs
 function useSpring(source, options = {}) {
-	return useFollowValue(source, {
-		type: "spring",
-		...options
-	});
+	return useFollow(source, options, attachSpring);
 }
 //#endregion
 export { motion as a, useScroll as i, useTransform as n, MotionConfig as o, useMotionValue as r, AnimatePresence as s, useSpring as t };

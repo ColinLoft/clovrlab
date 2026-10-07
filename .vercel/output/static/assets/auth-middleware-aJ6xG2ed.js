@@ -1,0 +1,1 @@
+import{W as e}from"./index-CsAhAJU3.js";var t=e({type:`function`});export{t};
