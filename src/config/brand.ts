@@ -3,9 +3,9 @@
 // detection and UAV investigation technology.
 
 export const brand = {
-  name: "Clovr Labs",
-  shortName: "Clovr",
-  legalName: "Clovr Labs",
+  name: "Season Report",
+  shortName: "Season Report",
+  legalName: "Season Report",
   mission01: "Autonomous wildfire detection + UAV response",
   tagline: "See the fire sooner.",
   status: "Early-stage",
