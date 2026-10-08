@@ -11,19 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HqRouteImport } from './routes/_hq'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as DevelopmentRouteImport } from './routes/development'
-import { Route as DonateRouteImport } from './routes/donate'
-import { Route as FaqRouteImport } from './routes/faq'
 import { Route as HqLoginRouteImport } from './routes/hq-login'
-import { Route as JoinRouteImport } from './routes/join'
-import { Route as MissionRouteImport } from './routes/mission'
-import { Route as OperationsRouteImport } from './routes/operations'
-import { Route as PartnersRouteImport } from './routes/partners'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SystemRouteImport } from './routes/system'
-import { Route as TechnologyRouteImport } from './routes/technology'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as WorkspacesRouteImport } from './routes/workspaces'
 import { Route as HqAccountingRouteImport } from './routes/_hq.accounting'
@@ -60,9 +48,6 @@ import { Route as HqTeamsRouteImport } from './routes/_hq.teams'
 import { Route as HqTimeOffRouteImport } from './routes/_hq.time-off'
 import { Route as HqTrainingRouteImport } from './routes/_hq.training'
 import { Route as ApiPlanesRouteImport } from './routes/api/planes'
-import { Route as LegalCookiesRouteImport } from './routes/legal.cookies'
-import { Route as LegalPrivacyRouteImport } from './routes/legal.privacy'
-import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as MeetingIdRouteImport } from './routes/meeting.$id'
 import { Route as HqAdminAppsRouteImport } from './routes/_hq.admin.apps'
 import { Route as HqAdminCompanyRouteImport } from './routes/_hq.admin.company'
@@ -137,69 +122,9 @@ const HqRoute = HqRouteImport.update({
   id: '/_hq',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DevelopmentRoute = DevelopmentRouteImport.update({
-  id: '/development',
-  path: '/development',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DonateRoute = DonateRouteImport.update({
-  id: '/donate',
-  path: '/donate',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const HqLoginRoute = HqLoginRouteImport.update({
   id: '/hq-login',
   path: '/hq-login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JoinRoute = JoinRouteImport.update({
-  id: '/join',
-  path: '/join',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MissionRoute = MissionRouteImport.update({
-  id: '/mission',
-  path: '/mission',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OperationsRoute = OperationsRouteImport.update({
-  id: '/operations',
-  path: '/operations',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PartnersRoute = PartnersRouteImport.update({
-  id: '/partners',
-  path: '/partners',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SystemRoute = SystemRouteImport.update({
-  id: '/system',
-  path: '/system',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TechnologyRoute = TechnologyRouteImport.update({
-  id: '/technology',
-  path: '/technology',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -380,21 +305,6 @@ const HqTrainingRoute = HqTrainingRouteImport.update({
 const ApiPlanesRoute = ApiPlanesRouteImport.update({
   id: '/api/planes',
   path: '/api/planes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LegalCookiesRoute = LegalCookiesRouteImport.update({
-  id: '/legal/cookies',
-  path: '/legal/cookies',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LegalPrivacyRoute = LegalPrivacyRouteImport.update({
-  id: '/legal/privacy',
-  path: '/legal/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LegalTermsRoute = LegalTermsRouteImport.update({
-  id: '/legal/terms',
-  path: '/legal/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MeetingIdRoute = MeetingIdRouteImport.update({
@@ -720,19 +630,7 @@ const ApiPublicNetSweepRoute = ApiPublicNetSweepRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/contact': typeof ContactRoute
-  '/development': typeof DevelopmentRoute
-  '/donate': typeof DonateRoute
-  '/faq': typeof FaqRoute
   '/hq-login': typeof HqLoginRoute
-  '/join': typeof JoinRoute
-  '/mission': typeof MissionRoute
-  '/operations': typeof OperationsRoute
-  '/partners': typeof PartnersRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/system': typeof SystemRoute
-  '/technology': typeof TechnologyRoute
   '/welcome': typeof WelcomeRoute
   '/workspaces': typeof WorkspacesRoute
   '/accounting': typeof HqAccountingRoute
@@ -769,9 +667,6 @@ export interface FileRoutesByFullPath {
   '/time-off': typeof HqTimeOffRoute
   '/training': typeof HqTrainingRoute
   '/api/planes': typeof ApiPlanesRoute
-  '/legal/cookies': typeof LegalCookiesRoute
-  '/legal/privacy': typeof LegalPrivacyRoute
-  '/legal/terms': typeof LegalTermsRoute
   '/meeting/$id': typeof MeetingIdRoute
   '/admin/apps': typeof HqAdminAppsRoute
   '/admin/company': typeof HqAdminCompanyRoute
@@ -839,19 +734,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/contact': typeof ContactRoute
-  '/development': typeof DevelopmentRoute
-  '/donate': typeof DonateRoute
-  '/faq': typeof FaqRoute
   '/hq-login': typeof HqLoginRoute
-  '/join': typeof JoinRoute
-  '/mission': typeof MissionRoute
-  '/operations': typeof OperationsRoute
-  '/partners': typeof PartnersRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/system': typeof SystemRoute
-  '/technology': typeof TechnologyRoute
   '/welcome': typeof WelcomeRoute
   '/workspaces': typeof WorkspacesRoute
   '/accounting': typeof HqAccountingRoute
@@ -887,9 +770,6 @@ export interface FileRoutesByTo {
   '/time-off': typeof HqTimeOffRoute
   '/training': typeof HqTrainingRoute
   '/api/planes': typeof ApiPlanesRoute
-  '/legal/cookies': typeof LegalCookiesRoute
-  '/legal/privacy': typeof LegalPrivacyRoute
-  '/legal/terms': typeof LegalTermsRoute
   '/meeting/$id': typeof MeetingIdRoute
   '/admin/apps': typeof HqAdminAppsRoute
   '/admin/company': typeof HqAdminCompanyRoute
@@ -959,19 +839,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_hq': typeof HqRouteWithChildren
-  '/about': typeof AboutRoute
-  '/contact': typeof ContactRoute
-  '/development': typeof DevelopmentRoute
-  '/donate': typeof DonateRoute
-  '/faq': typeof FaqRoute
   '/hq-login': typeof HqLoginRoute
-  '/join': typeof JoinRoute
-  '/mission': typeof MissionRoute
-  '/operations': typeof OperationsRoute
-  '/partners': typeof PartnersRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/system': typeof SystemRoute
-  '/technology': typeof TechnologyRoute
   '/welcome': typeof WelcomeRoute
   '/workspaces': typeof WorkspacesRoute
   '/_hq/accounting': typeof HqAccountingRoute
@@ -1008,9 +876,6 @@ export interface FileRoutesById {
   '/_hq/time-off': typeof HqTimeOffRoute
   '/_hq/training': typeof HqTrainingRoute
   '/api/planes': typeof ApiPlanesRoute
-  '/legal/cookies': typeof LegalCookiesRoute
-  '/legal/privacy': typeof LegalPrivacyRoute
-  '/legal/terms': typeof LegalTermsRoute
   '/meeting/$id': typeof MeetingIdRoute
   '/_hq/admin/apps': typeof HqAdminAppsRoute
   '/_hq/admin/company': typeof HqAdminCompanyRoute
@@ -1080,19 +945,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
-    | '/contact'
-    | '/development'
-    | '/donate'
-    | '/faq'
     | '/hq-login'
-    | '/join'
-    | '/mission'
-    | '/operations'
-    | '/partners'
-    | '/sitemap.xml'
-    | '/system'
-    | '/technology'
     | '/welcome'
     | '/workspaces'
     | '/accounting'
@@ -1129,9 +982,6 @@ export interface FileRouteTypes {
     | '/time-off'
     | '/training'
     | '/api/planes'
-    | '/legal/cookies'
-    | '/legal/privacy'
-    | '/legal/terms'
     | '/meeting/$id'
     | '/admin/apps'
     | '/admin/company'
@@ -1199,19 +1049,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
-    | '/contact'
-    | '/development'
-    | '/donate'
-    | '/faq'
     | '/hq-login'
-    | '/join'
-    | '/mission'
-    | '/operations'
-    | '/partners'
-    | '/sitemap.xml'
-    | '/system'
-    | '/technology'
     | '/welcome'
     | '/workspaces'
     | '/accounting'
@@ -1247,9 +1085,6 @@ export interface FileRouteTypes {
     | '/time-off'
     | '/training'
     | '/api/planes'
-    | '/legal/cookies'
-    | '/legal/privacy'
-    | '/legal/terms'
     | '/meeting/$id'
     | '/admin/apps'
     | '/admin/company'
@@ -1318,19 +1153,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_hq'
-    | '/about'
-    | '/contact'
-    | '/development'
-    | '/donate'
-    | '/faq'
     | '/hq-login'
-    | '/join'
-    | '/mission'
-    | '/operations'
-    | '/partners'
-    | '/sitemap.xml'
-    | '/system'
-    | '/technology'
     | '/welcome'
     | '/workspaces'
     | '/_hq/accounting'
@@ -1367,9 +1190,6 @@ export interface FileRouteTypes {
     | '/_hq/time-off'
     | '/_hq/training'
     | '/api/planes'
-    | '/legal/cookies'
-    | '/legal/privacy'
-    | '/legal/terms'
     | '/meeting/$id'
     | '/_hq/admin/apps'
     | '/_hq/admin/company'
@@ -1439,25 +1259,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HqRoute: typeof HqRouteWithChildren
-  AboutRoute: typeof AboutRoute
-  ContactRoute: typeof ContactRoute
-  DevelopmentRoute: typeof DevelopmentRoute
-  DonateRoute: typeof DonateRoute
-  FaqRoute: typeof FaqRoute
   HqLoginRoute: typeof HqLoginRoute
-  JoinRoute: typeof JoinRoute
-  MissionRoute: typeof MissionRoute
-  OperationsRoute: typeof OperationsRoute
-  PartnersRoute: typeof PartnersRoute
-  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  SystemRoute: typeof SystemRoute
-  TechnologyRoute: typeof TechnologyRoute
   WelcomeRoute: typeof WelcomeRoute
   WorkspacesRoute: typeof WorkspacesRoute
   ApiPlanesRoute: typeof ApiPlanesRoute
-  LegalCookiesRoute: typeof LegalCookiesRoute
-  LegalPrivacyRoute: typeof LegalPrivacyRoute
-  LegalTermsRoute: typeof LegalTermsRoute
   MeetingIdRoute: typeof MeetingIdRoute
   ApiPublicNetPageAckRoute: typeof ApiPublicNetPageAckRoute
   ApiPublicNetPageEmailRoute: typeof ApiPublicNetPageEmailRoute
@@ -1480,95 +1285,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/development': {
-      id: '/development'
-      path: '/development'
-      fullPath: '/development'
-      preLoaderRoute: typeof DevelopmentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/donate': {
-      id: '/donate'
-      path: '/donate'
-      fullPath: '/donate'
-      preLoaderRoute: typeof DonateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/hq-login': {
       id: '/hq-login'
       path: '/hq-login'
       fullPath: '/hq-login'
       preLoaderRoute: typeof HqLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/join': {
-      id: '/join'
-      path: '/join'
-      fullPath: '/join'
-      preLoaderRoute: typeof JoinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mission': {
-      id: '/mission'
-      path: '/mission'
-      fullPath: '/mission'
-      preLoaderRoute: typeof MissionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/operations': {
-      id: '/operations'
-      path: '/operations'
-      fullPath: '/operations'
-      preLoaderRoute: typeof OperationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/partners': {
-      id: '/partners'
-      path: '/partners'
-      fullPath: '/partners'
-      preLoaderRoute: typeof PartnersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/system': {
-      id: '/system'
-      path: '/system'
-      fullPath: '/system'
-      preLoaderRoute: typeof SystemRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/technology': {
-      id: '/technology'
-      path: '/technology'
-      fullPath: '/technology'
-      preLoaderRoute: typeof TechnologyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/welcome': {
@@ -1821,27 +1542,6 @@ declare module '@tanstack/react-router' {
       path: '/api/planes'
       fullPath: '/api/planes'
       preLoaderRoute: typeof ApiPlanesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/legal/cookies': {
-      id: '/legal/cookies'
-      path: '/legal/cookies'
-      fullPath: '/legal/cookies'
-      preLoaderRoute: typeof LegalCookiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/legal/privacy': {
-      id: '/legal/privacy'
-      path: '/legal/privacy'
-      fullPath: '/legal/privacy'
-      preLoaderRoute: typeof LegalPrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/legal/terms': {
-      id: '/legal/terms'
-      path: '/legal/terms'
-      fullPath: '/legal/terms'
-      preLoaderRoute: typeof LegalTermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/meeting/$id': {
@@ -2501,25 +2201,10 @@ const HqRouteWithChildren = HqRoute._addFileChildren(HqRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HqRoute: HqRouteWithChildren,
-  AboutRoute: AboutRoute,
-  ContactRoute: ContactRoute,
-  DevelopmentRoute: DevelopmentRoute,
-  DonateRoute: DonateRoute,
-  FaqRoute: FaqRoute,
   HqLoginRoute: HqLoginRoute,
-  JoinRoute: JoinRoute,
-  MissionRoute: MissionRoute,
-  OperationsRoute: OperationsRoute,
-  PartnersRoute: PartnersRoute,
-  SitemapDotxmlRoute: SitemapDotxmlRoute,
-  SystemRoute: SystemRoute,
-  TechnologyRoute: TechnologyRoute,
   WelcomeRoute: WelcomeRoute,
   WorkspacesRoute: WorkspacesRoute,
   ApiPlanesRoute: ApiPlanesRoute,
-  LegalCookiesRoute: LegalCookiesRoute,
-  LegalPrivacyRoute: LegalPrivacyRoute,
-  LegalTermsRoute: LegalTermsRoute,
   MeetingIdRoute: MeetingIdRoute,
   ApiPublicNetPageAckRoute: ApiPublicNetPageAckRoute,
   ApiPublicNetPageEmailRoute: ApiPublicNetPageEmailRoute,

@@ -1,0 +1,9 @@
+COMMENT ON TABLE public.blog_posts IS 'DEPRECATED: public site removed';
+COMMENT ON TABLE public.guides IS 'DEPRECATED: public site removed';
+COMMENT ON TABLE public.newsletter_signups IS 'DEPRECATED: public site removed';
+COMMENT ON TABLE public.contact_submissions IS 'DEPRECATED: public site removed';
+COMMENT ON TABLE public.interest_submissions IS 'DEPRECATED: public site removed';
+COMMENT ON TABLE public.orders IS 'DEPRECATED: public site removed';
+COMMENT ON TABLE public.products IS 'DEPRECATED: public site removed';
+COMMENT ON TABLE public.quote_requests IS 'DEPRECATED: public site removed';
+COMMENT ON TABLE public.project_requests IS 'DEPRECATED: public site removed';
