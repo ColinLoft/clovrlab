@@ -11,19 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HqRouteImport } from './routes/_hq'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as DevelopmentRouteImport } from './routes/development'
-import { Route as DonateRouteImport } from './routes/donate'
-import { Route as FaqRouteImport } from './routes/faq'
 import { Route as HqLoginRouteImport } from './routes/hq-login'
 import { Route as JoinRouteImport } from './routes/join'
-import { Route as MissionRouteImport } from './routes/mission'
 import { Route as OperationsRouteImport } from './routes/operations'
-import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SystemRouteImport } from './routes/system'
-import { Route as TechnologyRouteImport } from './routes/technology'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as WorkspacesRouteImport } from './routes/workspaces'
 import { Route as HqAccountingRouteImport } from './routes/_hq.accounting'
@@ -137,31 +128,6 @@ const HqRoute = HqRouteImport.update({
   id: '/_hq',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DevelopmentRoute = DevelopmentRouteImport.update({
-  id: '/development',
-  path: '/development',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DonateRoute = DonateRouteImport.update({
-  id: '/donate',
-  path: '/donate',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const HqLoginRoute = HqLoginRouteImport.update({
   id: '/hq-login',
   path: '/hq-login',
@@ -172,34 +138,14 @@ const JoinRoute = JoinRouteImport.update({
   path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MissionRoute = MissionRouteImport.update({
-  id: '/mission',
-  path: '/mission',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const OperationsRoute = OperationsRouteImport.update({
   id: '/operations',
   path: '/operations',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PartnersRoute = PartnersRouteImport.update({
-  id: '/partners',
-  path: '/partners',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SystemRoute = SystemRouteImport.update({
-  id: '/system',
-  path: '/system',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TechnologyRoute = TechnologyRouteImport.update({
-  id: '/technology',
-  path: '/technology',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -720,19 +666,10 @@ const ApiPublicNetSweepRoute = ApiPublicNetSweepRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/contact': typeof ContactRoute
-  '/development': typeof DevelopmentRoute
-  '/donate': typeof DonateRoute
-  '/faq': typeof FaqRoute
   '/hq-login': typeof HqLoginRoute
   '/join': typeof JoinRoute
-  '/mission': typeof MissionRoute
   '/operations': typeof OperationsRoute
-  '/partners': typeof PartnersRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/system': typeof SystemRoute
-  '/technology': typeof TechnologyRoute
   '/welcome': typeof WelcomeRoute
   '/workspaces': typeof WorkspacesRoute
   '/accounting': typeof HqAccountingRoute
@@ -839,19 +776,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/contact': typeof ContactRoute
-  '/development': typeof DevelopmentRoute
-  '/donate': typeof DonateRoute
-  '/faq': typeof FaqRoute
   '/hq-login': typeof HqLoginRoute
   '/join': typeof JoinRoute
-  '/mission': typeof MissionRoute
   '/operations': typeof OperationsRoute
-  '/partners': typeof PartnersRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/system': typeof SystemRoute
-  '/technology': typeof TechnologyRoute
   '/welcome': typeof WelcomeRoute
   '/workspaces': typeof WorkspacesRoute
   '/accounting': typeof HqAccountingRoute
@@ -959,19 +887,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_hq': typeof HqRouteWithChildren
-  '/about': typeof AboutRoute
-  '/contact': typeof ContactRoute
-  '/development': typeof DevelopmentRoute
-  '/donate': typeof DonateRoute
-  '/faq': typeof FaqRoute
   '/hq-login': typeof HqLoginRoute
   '/join': typeof JoinRoute
-  '/mission': typeof MissionRoute
   '/operations': typeof OperationsRoute
-  '/partners': typeof PartnersRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/system': typeof SystemRoute
-  '/technology': typeof TechnologyRoute
   '/welcome': typeof WelcomeRoute
   '/workspaces': typeof WorkspacesRoute
   '/_hq/accounting': typeof HqAccountingRoute
@@ -1080,19 +999,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
-    | '/contact'
-    | '/development'
-    | '/donate'
-    | '/faq'
     | '/hq-login'
     | '/join'
-    | '/mission'
     | '/operations'
-    | '/partners'
     | '/sitemap.xml'
-    | '/system'
-    | '/technology'
     | '/welcome'
     | '/workspaces'
     | '/accounting'
@@ -1199,19 +1109,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
-    | '/contact'
-    | '/development'
-    | '/donate'
-    | '/faq'
     | '/hq-login'
     | '/join'
-    | '/mission'
     | '/operations'
-    | '/partners'
     | '/sitemap.xml'
-    | '/system'
-    | '/technology'
     | '/welcome'
     | '/workspaces'
     | '/accounting'
@@ -1318,19 +1219,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_hq'
-    | '/about'
-    | '/contact'
-    | '/development'
-    | '/donate'
-    | '/faq'
     | '/hq-login'
     | '/join'
-    | '/mission'
     | '/operations'
-    | '/partners'
     | '/sitemap.xml'
-    | '/system'
-    | '/technology'
     | '/welcome'
     | '/workspaces'
     | '/_hq/accounting'
@@ -1439,19 +1331,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HqRoute: typeof HqRouteWithChildren
-  AboutRoute: typeof AboutRoute
-  ContactRoute: typeof ContactRoute
-  DevelopmentRoute: typeof DevelopmentRoute
-  DonateRoute: typeof DonateRoute
-  FaqRoute: typeof FaqRoute
   HqLoginRoute: typeof HqLoginRoute
   JoinRoute: typeof JoinRoute
-  MissionRoute: typeof MissionRoute
   OperationsRoute: typeof OperationsRoute
-  PartnersRoute: typeof PartnersRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  SystemRoute: typeof SystemRoute
-  TechnologyRoute: typeof TechnologyRoute
   WelcomeRoute: typeof WelcomeRoute
   WorkspacesRoute: typeof WorkspacesRoute
   ApiPlanesRoute: typeof ApiPlanesRoute
@@ -1480,41 +1363,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HqRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/development': {
-      id: '/development'
-      path: '/development'
-      fullPath: '/development'
-      preLoaderRoute: typeof DevelopmentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/donate': {
-      id: '/donate'
-      path: '/donate'
-      fullPath: '/donate'
-      preLoaderRoute: typeof DonateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/hq-login': {
       id: '/hq-login'
       path: '/hq-login'
@@ -1529,13 +1377,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JoinRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mission': {
-      id: '/mission'
-      path: '/mission'
-      fullPath: '/mission'
-      preLoaderRoute: typeof MissionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/operations': {
       id: '/operations'
       path: '/operations'
@@ -1543,32 +1384,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OperationsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/partners': {
-      id: '/partners'
-      path: '/partners'
-      fullPath: '/partners'
-      preLoaderRoute: typeof PartnersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/system': {
-      id: '/system'
-      path: '/system'
-      fullPath: '/system'
-      preLoaderRoute: typeof SystemRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/technology': {
-      id: '/technology'
-      path: '/technology'
-      fullPath: '/technology'
-      preLoaderRoute: typeof TechnologyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/welcome': {
@@ -2501,19 +2321,10 @@ const HqRouteWithChildren = HqRoute._addFileChildren(HqRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HqRoute: HqRouteWithChildren,
-  AboutRoute: AboutRoute,
-  ContactRoute: ContactRoute,
-  DevelopmentRoute: DevelopmentRoute,
-  DonateRoute: DonateRoute,
-  FaqRoute: FaqRoute,
   HqLoginRoute: HqLoginRoute,
   JoinRoute: JoinRoute,
-  MissionRoute: MissionRoute,
   OperationsRoute: OperationsRoute,
-  PartnersRoute: PartnersRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  SystemRoute: SystemRoute,
-  TechnologyRoute: TechnologyRoute,
   WelcomeRoute: WelcomeRoute,
   WorkspacesRoute: WorkspacesRoute,
   ApiPlanesRoute: ApiPlanesRoute,
