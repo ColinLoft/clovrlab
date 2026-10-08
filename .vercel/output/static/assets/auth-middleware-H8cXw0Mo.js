@@ -1,1 +1,0 @@
-import{W as e}from"./index-C6X-EYOp.js";var t=e({type:`function`});export{t};

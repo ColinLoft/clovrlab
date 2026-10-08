@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-runtime-Cx0BB4qO.js";var t=e();function n({children:e,note:n}){return(0,t.jsx)(`span`,{className:`rounded-md border border-dashed border-primary/40 bg-primary-soft/40 px-1.5 py-0.5 text-primary/90`,title:n??`Placeholder — replace with real content`,children:e})}export{n as t};

@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-runtime-Cx0BB4qO.js";import{t}from"./PagingConsole-DMRXdY0V.js";var n=e(),r=()=>(0,n.jsx)(t,{queue:`systems`,lede:`Platform, infrastructure and security incidents page the systems on-call rotation, separately from mission operations. Every page opens a tracking ticket.`});export{r as component};
