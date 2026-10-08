@@ -34,6 +34,7 @@ export default defineConfig(async ({ command, mode }) => {
     plugins.push(
       nitro({
         preset: "vercel",
+        // @ts-expect-error nitro accepts externals at runtime
         externals: {
           inline: [
             "@supabase/supabase-js",
@@ -53,7 +54,7 @@ export default defineConfig(async ({ command, mode }) => {
 
   return {
     define: envDefine,
-    css: { transformer: "lightningcss" },
+    css: { transformer: "lightningcss" as const },
     resolve: {
       alias: { "@": `${process.cwd()}/src` },
       dedupe: [
