@@ -52,6 +52,26 @@ export default defineConfig(async ({ command, mode }) => {
 
   plugins.push(react());
 
+  // Lovable deploys dist/ and may run `vite build` directly (skipping the
+  // npm postbuild script), so mirror the Vercel static output into dist/ here.
+  if (command === "build") {
+    plugins.push({
+      name: "lovable-dist-mirror",
+      apply: "build",
+      buildApp: {
+        order: "post",
+        async handler() {
+          const { cpSync, existsSync, rmSync } = await import("node:fs");
+          const src = `${process.cwd()}/.vercel/output/static`;
+          const dest = `${process.cwd()}/dist`;
+          if (!existsSync(src)) return;
+          rmSync(dest, { recursive: true, force: true });
+          cpSync(src, dest, { recursive: true });
+        },
+      },
+    } as any);
+  }
+
   return {
     define: envDefine,
     css: { transformer: "lightningcss" as const },
