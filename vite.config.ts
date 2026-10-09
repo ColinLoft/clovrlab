@@ -29,11 +29,14 @@ export default defineConfig(async ({ command, mode }) => {
     }),
   ];
 
-  // Nitro build plugin (deploy target) — only active during `vite build`
+  // Nitro build plugin (deploy target) — only active during `vite build`.
+  // The "vercel" preset is only used when building on Vercel; Lovable's
+  // deploy needs the default TanStack Start output (dist/ with SSR entry).
+  const isVercel = process.env.VERCEL === "1";
   if (command === "build") {
     plugins.push(
       nitro({
-        preset: "vercel",
+        preset: isVercel ? "vercel" : "node-server",
         // @ts-expect-error nitro accepts externals at runtime
         externals: {
           inline: [
