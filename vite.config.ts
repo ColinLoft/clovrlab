@@ -36,7 +36,7 @@ export default defineConfig(async ({ command, mode }) => {
   if (command === "build") {
     plugins.push(
       nitro({
-        preset: isVercel ? "vercel" : "node-server",
+        preset: isVercel ? "vercel" : "cloudflare-module",
         // @ts-expect-error nitro accepts externals at runtime
         externals: {
           inline: [
